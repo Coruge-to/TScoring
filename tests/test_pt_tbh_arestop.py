@@ -689,14 +689,14 @@ class F_Machine(Base):
                 self.assertIsNone(self.host_state(v, 1000.0)[0], "not a finite real number: not observed")
 
     def test_AR_32_the_range_boundaries_are_inside_and_unknown_numbers_are_outside(self):
-        for loc, inside in ((995.0, True), (1005.0, True), (1000.0, True), (994.999, False), (1005.001, False), (None, False), (float("nan"), False), (True, False)):
+        for loc, inside in ((995.0, True), (1005.0, False), (1004.999, True), (1000.0, True), (994.999, False), (1005.001, False), (None, False), (float("nan"), False), (True, False)):   # HUD stop range = BVE official (on purpose; Owner 2026-11-15): the short end d = +5 is in, the overrun end d = -5 is OUT
             with self.subTest(location=loc):
                 self.assertIs(self.host_state(0.0, loc)[1], inside)
         self.assertIs(self.host_state(0.0, 1000.0, kept=None)[1], False, "no range kept: never a re-stop")
         self.assertIs(self.host_state(0.0, 1000.0, kept=(1000.0, float("nan"), 5.0))[1], False)
         self.assertIs(self.host_state(0.0, 1000.0, kept=(1000.0, 5.0))[1], False)
         asym = (1000.0, 2.0, 8.0)         # margin_f in front of the mark (-2 m), margin_b behind it (+8 m): d = A - train
-        self.assertEqual([self.host_state(0.0, x, kept=asym)[1] for x in (1002.0, 1002.1, 992.0, 991.9)], [True, False, True, False])
+        self.assertEqual([self.host_state(0.0, x, kept=asym)[1] for x in (1001.999, 1002.0, 992.0, 991.9)], [True, False, True, False])
 
     def test_AR_33_the_cancellation_does_not_consume_the_issued_key_and_the_arrival_time_is_kept(self):
         m = self.machine()

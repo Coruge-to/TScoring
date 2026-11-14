@@ -1800,10 +1800,12 @@ class I_DesktopLogAndStaticGuards(unittest.TestCase):
         # F2 Rollback Message Lifetime (on purpose): execute_retry sets the F2 rollback message through set_rollback_message (a deadline of the monotonic clock, not BVE time): these are the 2 distinct lines (stripped) that the
         # diff shows as removed; no score, no rule and no constant of the scoring is among them (tests/test_f2_rollback_message_lifetime.py).
         f2_rollback_message_lifetime = ('self.rollback_msg = f">>> {cp.get(\'station_name\', \'駅\')} へロールバック完了 <<<"', 'self.rollback_msg_timer = self.bve_time_ms / 1000.0 + 5.0')
+        # Stop range = the BVE official half-open range (on purpose; Owner 2026-11-15): the overrun end is outside the range (-margin_f < d <= margin_b); these are the 6 distinct lines (stripped) the diff shows as removed; the points, the rules and the constants are not among them (tests/test_stop_range_official_contract.py)
+        stop_range_official_half_open = ('if not (-self.bve_margin_f <= d_m <= self.bve_margin_b): return False', 'if not (-self.bve_margin_f <= dist_to_stop <= self.bve_margin_b):', '<= d', '<= arrival_stop_error', 'if (-self.bve_margin_f <= dist_to_stop <= self.bve_margin_b):', '# 作者定義の停止位置許容範囲内（-margin_f～margin_b）で停車した場合にのみ到着処理を行う')
         self.assertEqual(removed, [l for l in removed if "from utils import" in l or l.strip("-").strip() in ("", ")", pid_d6_transport) + tbd_running_end_judgement + pseudo_turnback_a_seam + st2a_checkpoint_identity + st2b_retry_by_saved_index
                                    + st3d_request_by_the_one_builder + st2c_first_station_distance + timefix_b_departure_margins + timefix_b3_zero_speed_and_jump_boundary
                                    + close_range_shared_basic_braking_init + si_r5_2a_p03_target_index + si_r5_2b_arrival_target_index + si_r5_2c_departure_prev_target_index
-                                   + lc3b_same_time_history_replace + stage_tbh6_illegal_move_wording + formal_bveg_retired + initial_defaults_settings_reads + stage_f2_desktop_log_label + f2_rollback_message_lifetime], removed)
+                                   + lc3b_same_time_history_replace + stage_tbh6_illegal_move_wording + formal_bveg_retired + initial_defaults_settings_reads + stage_f2_desktop_log_label + f2_rollback_message_lifetime + stop_range_official_half_open], removed)
 
     def test_the_scoring_function_bodies_are_ast_identical_to_the_baseline(self):
         old = git("show", BASELINE + ":scoring_logic.py")
@@ -1848,7 +1850,7 @@ class I_DesktopLogAndStaticGuards(unittest.TestCase):
         # LC-3B: update_physics_and_scoring replaces the last g_history entry when the clock time repeats; LC-4 / LC-4b: execute_retry refuses after the scoring finished and while the Jump group is unavailable;
         # the points, the rules and the constants are not among them (tests/test_lc3a_stop_jerk_boundary.py / test_lc3b_clock_freeze.py / test_lc4_retry_after_finish.py / test_lc4b_python_jump_state.py pin the behaviour)
         # INITIAL-DEFAULTS Commit 3 (on purpose): + add_score_popup, update_manual_emergency_brake_penalty, update_speed_limit_penalty (the settings are read through scoring_settings; the points, the rules and the constants are the same)
-        self.assertEqual(changed, ["add_score_popup", "create_save_data", "evaluate_arrival", "evaluate_departure", "execute_retry", "reset_station_evaluation_state", "reset_transient_scoring_state", "update_initial_and_release_brake_penalty",
+        self.assertEqual(changed, ["add_score_popup", "apply_stop_score", "create_save_data", "evaluate_arrival", "evaluate_departure", "execute_retry", "reset_station_evaluation_state", "reset_transient_scoring_state", "update_basic_braking_first_stop", "update_initial_and_release_brake_penalty",
                                    "update_manual_emergency_brake_penalty", "update_physics_and_scoring", "update_speed_limit_penalty", "update_stop_jerk_penalty", "write_limit_debug_log"])       # 2026-11-08: + update_initial_and_release_brake_penalty (the write-only CalcG parameter decel_g / hb_cushion_max_g is gone)
 
     def test_the_config_constants_are_identical_to_the_baseline(self):

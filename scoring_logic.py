@@ -924,7 +924,7 @@ def apply_time_score(self, diff_s, current_time):
 def apply_stop_score(self, d_m, current_time):
     if not getattr(self, 'is_scoring_mode', False): return False
     if self.is_stopped_out_of_range: return False
-    if not (-self.bve_margin_f <= d_m <= self.bve_margin_b): return False
+    if not (-self.bve_margin_f < d_m <= self.bve_margin_b): return False        # the BVE official stop range: the overrun end is outside, the short end inside
     d_m_rounded = round(d_m, 2)
     x_cm = int(round(abs(d_m_rounded) * 100))
     if x_cm <= 100:
@@ -1501,8 +1501,8 @@ def turnback_stop_range_capture(self, stop_position):
 
 def turnback_train_state(self):
     """Stage TB-H: the two facts the re-stop wait needs, judged STRICTLY here (the machine knows neither a speed nor a position): `moving` = speed != 0 (no small-speed threshold, no consecutive ticks, no travelled
-    distance; None when the speed is not a finite real number), `in_range` = the train is inside the author-defined stop range of the A that was kept at its arrival: -margin_f <= (A position - train position) <= margin_b,
-    boundaries inside (False on any missing / non-finite number; never the 330 m scoring range, never the range of the next target). Door, indicator lamp and signalFlag are no input."""
+    distance; None when the speed is not a finite real number), `in_range` = the train is inside the author-defined stop range of the A that was kept at its arrival: -margin_f < (A position - train position) <= margin_b (the BVE official range: the overrun end outside, the short end inside)
+    (False on any missing / non-finite number; never the 330 m scoring range, never the range of the next target). Door, indicator lamp and signalFlag are no input."""
     speed = getattr(self, 'bve_speed', None)
     moving = None if (isinstance(speed, bool) or not isinstance(speed, (int, float)) or speed != speed or speed in (float("inf"), float("-inf"))) else (speed != 0)
     machine = self.__dict__.get('turnback_machine')
@@ -1513,7 +1513,7 @@ def turnback_train_state(self):
         numbers = tuple(kept) + (position,)
         if not any(isinstance(n, bool) or not isinstance(n, (int, float)) or n != n or n in (float("inf"), float("-inf")) for n in numbers):
             a_position, margin_f, margin_b = kept
-            in_range = -margin_f <= a_position - position <= margin_b
+            in_range = -margin_f < a_position - position <= margin_b
     return moving, in_range
 
 
@@ -1945,7 +1945,7 @@ def evaluate_departure(self, current_time):
                     self.has_scored_time_this_station = True
                     self.is_official_retry = False
                 # 過去にちゃんと許容範囲で止まっており、かつ、出発時刻の今この瞬間も許容範囲内にいること
-                elif (getattr(self, 'has_scored_stop_this_station', False) or getattr(self, 'is_official_retry', False)) and (-margin_f <= d <= margin_b):
+                elif (getattr(self, 'has_scored_stop_this_station', False) or getattr(self, 'is_official_retry', False)) and (-margin_f < d <= margin_b):
                     # 発車時刻(raw_dep)を自力で引っ張り出して計算
                     dep_target_s = -1
                     if p_idx >= 0:
@@ -2053,7 +2053,7 @@ def update_basic_braking_first_stop(self):
         return
 
     dist_to_stop = self.bve_next_loc - self.bve_location
-    if not (-self.bve_margin_f <= dist_to_stop <= self.bve_margin_b):
+    if not (-self.bve_margin_f < dist_to_stop <= self.bve_margin_b):
         return
 
     # 初回有効停止: 保留中のノッチ変化を確定し、基本制動の結果を仮確定する
@@ -2441,7 +2441,7 @@ def update_physics_and_scoring(self, current_time, dt):
 
         if not (
             -self.bve_margin_f
-            <= d
+            < d
             <= self.bve_margin_b
         ):
             self.is_stopped_out_of_range = True
@@ -2457,9 +2457,9 @@ def update_physics_and_scoring(self, current_time, dt):
 
     # Time Fix B3: 公式ジャンプの完了待ちの間のテレメトリは、ジャンプが置き換える前の世界(旧位置・旧時刻)を表す。運転停車の停止成立・latchは作らない(着地後の最初の停止から作り直す)
     if is_operational_stop and getattr(self, 'is_approaching', False) and self.bve_speed == 0.0 and not getattr(self, 'has_scored_stop_this_station', False) and not getattr(self, 'is_official_jumping', False) and not getattr(self, 'close_range_departure_reset_pending', False):
-        # 作者定義の停止位置許容範囲内（-margin_f～margin_b）で停車した場合にのみ到着処理を行う
+        # 作者定義の停止位置許容範囲内（BVE公式の半開区間: 行き過ぎ側の端は範囲外、手前側の端は範囲内）で停車した場合にのみ到着処理を行う
         dist_to_stop = self.bve_next_loc - self.bve_location
-        if (-self.bve_margin_f <= dist_to_stop <= self.bve_margin_b):
+        if (-self.bve_margin_f < dist_to_stop <= self.bve_margin_b):
             arrival_deferred = False
             if not getattr(self, 'jump_lock', False) and not getattr(self, 'is_first_station', False):
                 # Phase SI-R5.2-B 明示ゲート: 駅が確定しない間は時分採点・checkpoint作成・採点終了・latch・採点済み記録のいずれも行わない(レベル型: identityが戻れば次Tickで評価する)
@@ -2528,7 +2528,7 @@ def update_physics_and_scoring(self, current_time, dt):
         is_within_arrival_target_margin = (
             arrival_target_loc >= 0.0
             and -self.bve_margin_f
-            <= arrival_stop_error
+            < arrival_stop_error
             <= self.bve_margin_b
         )
 

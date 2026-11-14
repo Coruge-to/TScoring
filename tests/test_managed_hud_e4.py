@@ -1815,7 +1815,7 @@ class G_RealOverlayAndScoringLifecycle(unittest.TestCase):
                 # Pseudo-turnback A-side seam (Stage TB-B, on purpose): 7 new functions and 4 module constants (the qualification at the arrival, the 3.0 s special popup window, the guidance, the B checkpoint) and the import of pseudo_turnback_machine;
                 # evaluate_arrival and update_physics_and_scoring (already changed above) call them; no score, no rule, no constant (tests/test_pt_scoring_continuity.py / test_pt_display_contract.py)
                 # no score, no rule, no constant (E3 -> now: scoring_logic.py +488 -120 by git numstat, the numbers of Test-HudLinkE4.ps1 S10b)
-                ("scoring_logic.py", old_scoring, {"write_limit_debug_log", "execute_retry", "create_save_data", "evaluate_arrival", "update_physics_and_scoring", "evaluate_departure", "reset_station_evaluation_state",
+                ("scoring_logic.py", old_scoring, {"write_limit_debug_log", "apply_stop_score", "update_basic_braking_first_stop", "execute_retry", "create_save_data", "evaluate_arrival", "update_physics_and_scoring", "evaluate_departure", "reset_station_evaluation_state",
                                                    "reset_transient_scoring_state", "update_stop_jerk_penalty", "update_initial_and_release_brake_penalty",
                                                    "add_score_popup", "update_manual_emergency_brake_penalty", "update_speed_limit_penalty"},          # INITIAL-DEFAULTS Commit 3 (on purpose): the scoring settings are read through scoring_settings (no score, no rule, no constant)
                  {"note_save_skipped", "operational_stop_station", "resolve_operational_stop_completion", "Import(names=[alias(name='station_identity')])",

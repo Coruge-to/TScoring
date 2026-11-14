@@ -224,7 +224,7 @@ TIMEFIX_B2_EVALUATE_DEPARTURE_PIN = ("slice", "CEA6E1FA983E7E338A5EF4638B945C9EE
 # Time Fix B3 (an INTENDED change of the same scoring region, not of the jump contract): the departure scoring of a timed non-pass stop is not run for an operational stop whose departure is seen while an official
 # jump is outstanding (the telemetry then describes the world the jump is about to replace: tests/test_timefix_b3_zero_speed_contract.py Z-T17). ONE more statement names `is_official_jumping` (7 -> 8 jump records). The new
 # digest is pinned on its own (it was CEA6E1FA...); every other SLICE region is still compared with the blob of the formal LJX-1 commit (identical).
-TIMEFIX_B3_EVALUATE_DEPARTURE_PIN = ("slice", "E2F27FF844D94A4D24756620B2F1379505F9DF5453F7DF560943653B9BA0EFAF", 8)
+TIMEFIX_B3_EVALUATE_DEPARTURE_PIN = ("slice", "D4EA882E780F1B98BC0024449D3BBFA60FA5F09FC7EEB53A89834BAFA5FF4EA2", 8)   # the BVE official half-open stop range (on purpose; Owner 2026-11-15): the overrun end of the departure range is outside (was E2F27FF8...)
 
 # Time Fix B3 (an INTENDED change of the same kind): the arrival of an operational stop (update_physics_and_scoring) is not formed while an official jump is outstanding - the telemetry then describes the world the jump
 # is about to replace (old position, old clock), so it must not become the stop of the retried attempt (tests/test_timefix_b3_zero_speed_contract.py Z-T16b / Z-T18 / Z-T19). ONE more statement names `is_official_jumping`

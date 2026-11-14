@@ -294,8 +294,9 @@ def draw_hud(self, painter, logical_width):
             is_p = (self.hud_target_is_pass == 1)
             d_color = COLOR_WHITE
             if not is_p:
-                if -self.hud_target_margin_f <= d <= self.hud_target_margin_b: d_color = COLOR_N
-                elif d < -self.hud_target_margin_f: d_color = COLOR_B_EMG
+                # Stop range = the BVE official contract (BVE 5 and 6 identical): in range = -margin_f < d <= margin_b (green, scored); short of it = white; the overrun end d == -margin_f and beyond = red
+                if -self.hud_target_margin_f < d <= self.hud_target_margin_b: d_color = COLOR_N
+                elif d <= -self.hud_target_margin_f: d_color = COLOR_B_EMG
 
             # =================================================================
             # ★ 修正：BVEの生データ(bve_is_timing)を捨て、ユーザー設定(抽出済み)を使う！

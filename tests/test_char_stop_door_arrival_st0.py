@@ -226,9 +226,9 @@ class A_NormalStop(Base):
 # T17 : the author-defined stop range gates the arrival
 # ==============================================================================================================================================
 class B_Tolerance(Base):
-    @st0("T17", "REQUIREMENT-BACKED", items=(10, 11), note="the arrival needs -MARGINF <= (NEXTLOC - location) <= MARGINB; both bounds belong to the range")
+    @st0("T17", "REQUIREMENT-BACKED", items=(10, 11), note="the arrival needs -MARGINF < (NEXTLOC - location) <= MARGINB (the BVE official half-open range, on purpose 2026-11-15): the short end belongs to the range, the overrun end does not")
     def test_CHAR_T17_the_range_bounds_are_inclusive_and_a_stop_outside_makes_no_arrival(self):
-        for d, inside in ((5.0, True), (-5.0, True), (5.01, False), (-5.01, False)):
+        for d, inside in ((5.0, True), (-5.0, False), (-4.99, True), (5.01, False), (-5.01, False)):
             with self.subTest(d=d):
                 self.rig.close()
                 self.setUp()
