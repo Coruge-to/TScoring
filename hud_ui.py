@@ -301,7 +301,7 @@ def draw_hud(self, painter, logical_width):
             # ★ 修正：BVEの生データ(bve_is_timing)を捨て、ユーザー設定(抽出済み)を使う！
             # Phase SI-R2.3: 採時の判定(区間内に採時駅がある かつ 次駅が採時)は、表示ターゲットを決める main.py が行う
             # =================================================================
-            if self.hud_target_timing:
+            if self.hud_target_timing and self.is_scoring_mode and not self.is_scoring_finished:   # HUD-1: the timing blink is shown only while a scoring Run is ACTIVE; free driving shows the stop / pass label alone
                 # ★ 鶴さんの元の設定 (5.0) に完全復元しました！
                 show_timing = int((self.bve_time_ms / 1000.0) / 5.0) % 2 == 0
                 label_text = "採時" if show_timing else ("通過" if is_p else "停車")

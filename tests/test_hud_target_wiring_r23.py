@@ -386,7 +386,8 @@ class B_Overlay(unittest.TestCase):
             sc.o.setting_start_idx, sc.o.setting_end_idx = 0, 4
             bve = {"mode": False, "finished": False}
             self.step(sc, own=bve, official={"state": "K", "index": 1})
-            self.assertEqual(sc.hud["label"], "\u63a1\u6642")
+            self.assertEqual(sc.hud["label"], "\u505c\u8eca")                          # HUD-1 (on purpose; Owner 2026-11-14): free driving never shows the timing label (the alternation is for an ACTIVE scoring Run: tests/test_hud_semantics_fix.py)
+            self.assertTrue(sc.o.hud_target_timing)                                   # the display target still knows the timing attribute
             sc.o.user_timing_overrides[1] = False
             self.step(sc, own=bve, official={"state": "K", "index": 1})
             self.assertEqual(sc.hud["label"], "\u505c\u8eca")
