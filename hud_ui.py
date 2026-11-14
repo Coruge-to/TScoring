@@ -289,7 +289,7 @@ def draw_hud(self, painter, logical_width):
             elif abs_d >= 9999.95: d_str = f"{abs_d/1000.0:.3f} km"
             elif abs_d >= 4.95: d_str = f"{abs_d:.1f} m"
             else: d_str = f"{abs_d:.2f} m"
-            if d < -0.01: d_str = "-" + d_str
+            if d < 0 and d_str.split(" ", 1)[0].strip("0.") != "": d_str = "-" + d_str   # HUD-2: the sign follows the SAME rounded text it signs (a negative that rounds to 0.00 shows no sign; one that rounds to 0.01 or more always does)
 
             is_p = (self.hud_target_is_pass == 1)
             d_color = COLOR_WHITE
