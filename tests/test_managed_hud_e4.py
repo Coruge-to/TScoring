@@ -1843,7 +1843,7 @@ class G_RealOverlayAndScoringLifecycle(unittest.TestCase):
                   "Assign(targets=[Name(id='TURNBACK_CANCEL_TEXTS', ctx=Store())], value=Tuple(elts=[Constant(value='発車位置への移動がキャンセルされました。'), Constant(value='許容範囲内に再度列車を停止させてください。')], ctx=Load()))",
                   "Assign(targets=[Name(id='TURNBACK_CANCEL_CATEGORY', ctx=Store())], value=Constant(value='疑似折り返し中止'))",
                   # Stage TB-H 6 (on purpose): the ONE wording constant of the illegal-movement warning (illegal Jump and B reached by driving; tests/test_pt_tbh_selfdrive_hud.py SD-04/05)
-                  "Assign(targets=[Name(id='ILLEGAL_MOVE_TEXTS', ctx=Store())], value=Tuple(elts=[Constant(value='不正な移動が検知されました。'), Constant(value='採点を中止します。')], ctx=Load()))",
+                  "Assign(targets=[Name(id='ILLEGAL_MOVE_TEXTS', ctx=Store())], value=Tuple(elts=[Constant(value='不正な移動が検知されました。'), Constant(value='採点を中断します。')], ctx=Load()))",
                   # Stage TB-H 5b (on purpose): TURNBACK_SPECIAL_SECONDS (the 3.0 s exception of the arrival result popups) is gone (tests/test_pt_tbh_first_jump_10s.py JM-02)
                   "Assign(targets=[Name(id='TURNBACK_TOTAL_SECONDS', ctx=Store())], value=BinOp(left=Attribute(value=Name(id='pseudo_turnback_machine', ctx=Load()), attr='REQUEST_AFTER_MS', ctx=Load()), op=Div(), right=Constant(value=1000.0)))",
                   # INITIAL-DEFAULTS Commit 3 (on purpose): the import of scoring_settings and the HUD feature text of the scoring settings

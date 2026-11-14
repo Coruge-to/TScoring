@@ -95,7 +95,7 @@
     {"set": "python", "path": "pseudo_turnback_contract.py", "blob_sha256": "A85E49C4980818DC84FBE68EB73D51877781314C2616DDF1503268D8833E21E4", "blob_size": 4198, "blob_eol": "lf"},
     {"set": "python", "path": "pseudo_turnback_machine.py", "blob_sha256": "D3440A69BC83BA5FB27F4EB4029C2712796B66E8B4EECF3647E5748151EB8CC1", "blob_size": 24005, "blob_eol": "lf"},
     {"set": "python", "path": "route_pairset.py", "blob_sha256": "B3BDDEA71BDEA7850CE785DF13D42A8FABB29FE4B5B373A5089CA57547D8C695", "blob_size": 16462, "blob_eol": "lf"},
-    {"set": "python", "path": "scoring_logic.py", "blob_sha256": "D1578AC05C62638D05CDF4D7EFFFECB7BA1816DB8743445DA8E77E75ABBDE4FA", "blob_size": 145799, "blob_eol": "lf"},
+    {"set": "python", "path": "scoring_logic.py", "blob_sha256": "2562B7356FA1033BC96013138E69F5B0B3D61FA746DFBE721C4DD1DB5F49CC50", "blob_size": 145799, "blob_eol": "lf"},
     {"set": "python", "path": "scoring_settings.py", "blob_sha256": "4A96A29D7BACCC75D6EC7B9D253EF9999AE62E51AD9C74FBFF2D21EAB5B8DD87", "blob_size": 4663, "blob_eol": "lf"},
     {"set": "python", "path": "station_identity.py", "blob_sha256": "4D0E6E5A5AACF93D379735F485AEC66FC48C8F0F0C5B04805DC86CAB230BE3B5", "blob_size": 44027, "blob_eol": "lf"},
     {"set": "python", "path": "station_index_contract.py", "blob_sha256": "E95E0D446D8AD7002EDFC3D7E638AF93D127BBAA473374DA4F1CD29F9053CAAD", "blob_size": 23406, "blob_eol": "lf"},
@@ -138,5 +138,5 @@
     {"set": "shared", "path": "TsScoringPlugin/Handshake/Telemetry/Shared/TelemetryContract.cs", "blob_sha256": "D5E4AAB343C9BB6145CDFDE9226C1871BDDAD1D4EAE503D368C5841922D966D8", "blob_size": 9030, "blob_eol": "lf"},
     {"set": "shared", "path": "TsScoringPlugin/Handshake/Telemetry/Shared/TelemetryDirectoryReader.cs", "blob_sha256": "9D6C47493457FD840E8CA5186C8E16181F0B5CF85C10721087C9098DD6644680", "blob_size": 6615, "blob_eol": "lf"}
   ],
-  "fingerprint": "0D7A38946C7EDA602205588AF8B2744B85CB69BF685E3614641B0DFB41E372A7"
+  "fingerprint": "EE43F2EE7A3E73B7D020C1762704EA3B692A404AD6BB1EE9C009520E6D5A22E9"
 }

@@ -1050,7 +1050,7 @@ TURNBACK_GUIDANCE_TEXT = "発車位置へ移動します。"
 TURNBACK_RESTOP_GUIDANCE_TEXT = "列車を動かさないでください。"
 TURNBACK_GUIDANCE_CATEGORY = "疑似折り返し"
 TURNBACK_CANCEL_TEXTS = ("発車位置への移動がキャンセルされました。", "許容範囲内に再度列車を停止させてください。")
-ILLEGAL_MOVE_TEXTS = ("不正な移動が検知されました。", "採点を中止します。")        # Stage TB-H 6: the user-facing wording of an unrecoverable illegal movement (an illegal Jump, B reached by driving); the internal reasons stay different
+ILLEGAL_MOVE_TEXTS = ("不正な移動が検知されました。", "採点を中断します。")        # Stage TB-H 6: the user-facing wording of an unrecoverable illegal movement (an illegal Jump, B reached by driving); the internal reasons stay different
 TURNBACK_CANCEL_CATEGORY = "疑似折り返し中止"
 TURNBACK_TOTAL_SECONDS = pseudo_turnback_machine.REQUEST_AFTER_MS / 1000.0
 

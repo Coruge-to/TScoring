@@ -975,7 +975,7 @@ class G_StationListAndJumpReference(ManagedCase):
         r.send(self.MR.tele(1, JUMP=6))
         r.tick(2)
         self.assertFalse(o.is_scoring_mode)
-        self.assertEqual([p["text"] for p in o.popups], ["不正な移動が検知されました。", "採点を中止します。"])   # Stage TB-H 6 (on purpose): the one wording of the illegal-movement warning (tests/test_pt_tbh_selfdrive_hud.py SD-04/05)
+        self.assertEqual([p["text"] for p in o.popups], ["不正な移動が検知されました。", "採点を中断します。"])   # Stage TB-H 6 (on purpose): the one wording of the illegal-movement warning (tests/test_pt_tbh_selfdrive_hud.py SD-04/05)
         self.assertTrue(any("reason=jump" in e for e in r.events("scoring-abort")))
         self.assertEqual(self.held(), [])
 

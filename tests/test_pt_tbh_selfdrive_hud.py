@@ -25,9 +25,9 @@ for _p in (ROOT, HERE):
 _TMP = {}
 
 U1 = "不正な移動が検知されました。"
-U2 = "採点を中止します。"
+U2 = "採点を中断します。"   # HUD-0 (on purpose; Owner 2026-11-14): the menu item and the red popup both say 中断
 OLD_J1 = "不正なジャンプを検知しました。"
-OLD_J2 = "採点を中断します。"
+OLD_J2 = "採点を中止します。"   # the wording of Stage TB-H 6 .. HUD-0 (retired)
 W1 = "発車位置への移動がキャンセルされました。"
 W2 = "許容範囲内に再度列車を停止させてください。"
 G1 = "発車位置へ移動します。"
@@ -162,7 +162,7 @@ class A_SelfDriveB(Base):
         import scoring_logic
         source = inspect.getsource(scoring_logic)
         self.assertNotIn(OLD_J1, source, "RED on the baseline")
-        self.assertNotIn(OLD_J2, source, "RED on the baseline")
+        self.assertNotIn(OLD_J2, source, "RED on the baseline (HUD-0)")
         self.assertEqual(source.count(U1), 1, "the wording lives in ONE constant")
         self.assertEqual(self.S.ILLEGAL_MOVE_TEXTS, (U1, U2))
 

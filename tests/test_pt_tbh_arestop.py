@@ -477,7 +477,7 @@ class C_Lifecycle(Base):
         self.assertEqual(len(o.save_data), history_before, "no B checkpoint")
         reasons = [e[1].get("reason") for e in f.events if e[0] == "diag:turnback-fail"]
         self.assertEqual(reasons, [SELF_DRIVE_B_REASON], "a clear reason is left in the product diagnostics (no popup)")
-        self.assertEqual(shown, ["不正な移動が検知されました。", "採点を中止します。"],
+        self.assertEqual(shown, ["不正な移動が検知されました。", "採点を中断します。"],
                          "Stage TB-H 6 (on purpose): B reached by driving is an unrecoverable illegal movement: the red two-line user warning (the cause stays in the diagnostics; every OTHER internal failure is still diagnostics only, OD-TB-30)")
 
 

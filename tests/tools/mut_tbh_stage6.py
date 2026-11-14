@@ -21,7 +21,7 @@ def read(path):
     return raw, ("\r\n" in raw)
 
 
-TEXTS = 'ILLEGAL_MOVE_TEXTS = ("不正な移動が検知されました。", "採点を中止します。")'
+TEXTS = 'ILLEGAL_MOVE_TEXTS = ("不正な移動が検知されました。", "採点を中断します。")'
 JUMP_LOOP = '            for text in ILLEGAL_MOVE_TEXTS:\n                add_score_popup(self, 0, text, COLOR_B_EMG, "big", "警告", current_time, force=True)\n'
 SHOW_CALL = "            turnback_stop_scoring(self, act[1])\n            turnback_illegal_move_show(self)\n            aborted = True\n"
 SHOW_BODY = '        add_score_popup(self, 0, text, COLOR_B_EMG, "big", "警告", now, force=True)\n'
@@ -34,8 +34,8 @@ MAIN_USE = "        held = turnback_held_a_target(self)\n        if held is not 
 
 # (id, meaning, [(file, old, new), ...])
 M = [
- ("S6M-01", "the user wording is the old illegal-Jump line 1", [(SL, TEXTS, 'ILLEGAL_MOVE_TEXTS = ("不正なジャンプを検知しました。", "採点を中止します。")')]),
- ("S6M-02", "the user wording is the old illegal-Jump line 2", [(SL, TEXTS, 'ILLEGAL_MOVE_TEXTS = ("不正な移動が検知されました。", "採点を中断します。")')]),
+ ("S6M-01", "the user wording is the old illegal-Jump line 1", [(SL, TEXTS, 'ILLEGAL_MOVE_TEXTS = ("不正なジャンプを検知しました。", "採点を中断します。")')]),
+ ("S6M-02", "the user wording is the old illegal-Jump line 2", [(SL, TEXTS, 'ILLEGAL_MOVE_TEXTS = ("不正な移動が検知されました。", "採点を中止します。")')]),
  ("S6M-03", "the illegal Jump shows only the first line", [(SL, JUMP_LOOP, JUMP_LOOP.replace("ILLEGAL_MOVE_TEXTS:", "ILLEGAL_MOVE_TEXTS[:1]:"))]),
  ("S6M-04", "B reached by driving shows no user warning (diagnostics only again)", [(SL, SHOW_CALL, "            turnback_stop_scoring(self, act[1])\n            aborted = True\n")]),
  ("S6M-05", "the warning of B by driving is not forced (the popup is refused while the scoring is off)", [(SL, SHOW_BODY, SHOW_BODY.replace(", force=True", ""))]),
