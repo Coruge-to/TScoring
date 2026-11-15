@@ -90,6 +90,7 @@ SCORING_LOGIC_AT_LJX1 = {
 # Stage TB-C (OD-TB-25 / 27 / 28 / 29, INTENDED changes of the jump contract): the functions that were ADDED to scoring_logic.py after LJX-1 and name the contract. They did not exist at the formal LJX-1 commit
 # (so they are not compared with its blob); each is declared as a region and pinned on its own.
 TBC_ADDED_REGION_PINS = {
+    "jump_locked": ("whole", "80EE2D128CA13425B9057169AF9EEF15B942BF495F6DB5B4479CBC40F3B8688D", 1),       # backward pseudo-turnback Jump fix (Owner 2026-11-15, a NEW declared region): the lock the arrival rules read = jump_lock or the pseudo-turnback B window
     "note_jump_settlement": ("whole", "7F9537E1BAC901576036DAB4DAD5A15822B0EE7CB3DF65C71F9E2509B23C34EA", 1),       # Stage TB-H Commit 2 (was BC5F15FD...): + a SUCCESSFUL Retry of the current generation takes jump_lock at its settlement (the landing of the Retry belongs to the Retry whatever the order the host reports the Jump); OD-TB-33 (was 88645BC2...): + the planned time of the Jump in the settlement record
     "official_jump_f1_hold": ("whole", "FE2CBC6C1FF1E06D9245061DF851E00C582A694713DA1534CA8FD6C38A478512", 1),
     "turnback_drive": ("whole", "D8706FED07DA49CE7C9139991B81D2BFE6A90E565DD7F8C95ACE02989E49C35F", 1),       # Stage TB-H A re-stop wait (was 059E5770...): the wait states ARMED / RESTOP_WAIT are ticked with the strict facts of the train (turnback_train_state) and the cancellation / re-stop displays are called; Stage TB-D (was EA4060E5...): + the housekeeping call that drops the scoring section snapshot of a Run that is over
@@ -170,7 +171,7 @@ REGION_PINS = {
         # Phase ST-3d (was 84E656C2..., 8 records): the start request comes from _scoring_start_plan (refused before anything changes) and the start opens its transaction
         "Overlay.handle_menu_enter": ("slice", "EA0610CE7CA855C3CC9F916C2372B7D6EA473121D3220E99FB297E52893E7AD4", 3),      # Phase PFR-D (on purpose): the confirmation page writes retry-confirm-entered, a Retry that raises writes retry-exception (and is not swallowed), an accepted Retry writes retry-request-created; no Jump, score or rule changed (was 5943298E...)
         "Overlay._detect_and_release_fast_forward": ("slice", "6E15C0D15405AC3D2025E2EBD501EF36EC8D1D916D56CDA25E9E1D5E7B9092E7", 1),
-        "Overlay._advance_scoring_clock_and_score": ("slice", "781559CFFF388EE116614B528F018826B5A1FB0A2280C3D3CA72700C5F23779C", 2),
+        "Overlay._advance_scoring_clock_and_score": ("slice", "2E0B4434D4E402D2C20402FF3ADA789AED3F59D2647DA4F0E6665D2B72BCD98C", 2),       # backward pseudo-turnback Jump fix (Owner 2026-11-15): the time-rewind branch lowers jump_lock only while no pseudo-turnback B window is pending (was 781559CF...; 2 records)
         # Phase ST-3d (was CC159076..., 6 records): the shutdown closes an open transaction (before the client is closed)
         "run_managed": ("slice", "7C861C443A860D2869DA2D944AC8CA542422988E0AB2E761607AE985950C5674", 7),
     },
@@ -207,6 +208,7 @@ INITIAL_DEFAULTS_SPEED_LIMIT_PIN = ("slice", "CBF75A39FB78D742853315F4A20A8047E1
 
 # Legacy scoring LC-3A (an INTENDED change of the stop jerk judgement, not of the jump contract): update_stop_jerk_penalty returns without judging while `is_official_jumping` is set (a sample taken while the world is about to be
 # replaced is not a stop). At the LJX-1 commit the function names no jump word (an EMPTY slice, 0 records: the SHA-256 of the empty text); now it names `is_official_jumping` once (1 record) and is declared.
+BACKWARD_JUMP_BASIC_BRAKING_PIN = ("slice", "375DE438A16896C10F22F47C213953D808A3E3F78665E3FA08A9A181CA904244", 1)      # backward pseudo-turnback Jump fix (Owner 2026-11-15): update_basic_braking_first_stop reads jump_locked(self) (at LJX-1: C971A4A4..., 1 record)
 EMPTY_SLICE_PIN = ("slice", "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855", 0)
 # Shadow comparison (Stage 1, an intended change): update_stop_jerk_penalty hands the text of is_official_jumping to the shadow recorder (the second mention); the old value was ("slice", "D43FFB9C...", 1)
 LC3A_UPDATE_STOP_JERK_PIN = ("slice", "D43FFB9C0D190C9E0574CD41C08754A1AFCA7C3EC830742C4B14CFFAD9FA8387", 1)  # 2026-11-08 (an intended change, formal LastStop BveG): update_stop_jerk_penalty now names is_official_jumping once (the Shadow log line that carried it is gone; was C01E8271..., 2 records)
@@ -224,7 +226,7 @@ TIMEFIX_B2_EVALUATE_DEPARTURE_PIN = ("slice", "CEA6E1FA983E7E338A5EF4638B945C9EE
 # Time Fix B3 (an INTENDED change of the same scoring region, not of the jump contract): the departure scoring of a timed non-pass stop is not run for an operational stop whose departure is seen while an official
 # jump is outstanding (the telemetry then describes the world the jump is about to replace: tests/test_timefix_b3_zero_speed_contract.py Z-T17). ONE more statement names `is_official_jumping` (7 -> 8 jump records). The new
 # digest is pinned on its own (it was CEA6E1FA...); every other SLICE region is still compared with the blob of the formal LJX-1 commit (identical).
-TIMEFIX_B3_EVALUATE_DEPARTURE_PIN = ("slice", "D4EA882E780F1B98BC0024449D3BBFA60FA5F09FC7EEB53A89834BAFA5FF4EA2", 8)   # the BVE official half-open stop range (on purpose; Owner 2026-11-15): the overrun end of the departure range is outside (was E2F27FF8...)
+TIMEFIX_B3_EVALUATE_DEPARTURE_PIN = ("slice", "60FCD82ED46DDE63098A5E95C4285E9FF3AC48FDEBA010AF4DF2160787E6C61A", 8)       # backward pseudo-turnback Jump fix (Owner 2026-11-15): allow_score reads jump_locked(self) (was D4EA882E..., 8 records)   # the BVE official half-open stop range (on purpose; Owner 2026-11-15): the overrun end of the departure range is outside (was E2F27FF8...)
 
 # Time Fix B3 (an INTENDED change of the same kind): the arrival of an operational stop (update_physics_and_scoring) is not formed while an official jump is outstanding - the telemetry then describes the world the jump
 # is about to replace (old position, old clock), so it must not become the stop of the retried attempt (tests/test_timefix_b3_zero_speed_contract.py Z-T16b / Z-T18 / Z-T19). ONE more statement names `is_official_jumping`
@@ -232,12 +234,12 @@ TIMEFIX_B3_EVALUATE_DEPARTURE_PIN = ("slice", "D4EA882E780F1B98BC0024449D3BBFA60
 # Close-range departure reset (a scoring region, not a change of the jump contract): the target switch evaluates the close pair only when no official jump is outstanding (ONE more statement names
 # `is_official_jumping`, 25 -> 26 jump records; the new functions of the close-range reset name no jump word), and the operational-arrival condition (which already names it) gains the pending gate.
 # The new digest is pinned on its own (it was 5EBC117E...).
-TIMEFIX_B3_UPDATE_PHYSICS_PIN = ("slice", "76263B7C83BB397626D63F1678A78EC0A52A482CA1D63631CA7C8F2D7B615D79", 26)
+TIMEFIX_B3_UPDATE_PHYSICS_PIN = ("slice", "FDB37C9DE4C45DCEDE8983D20275C1DFD6BC37BD6FC8E44AB8C3EB790A95EE1A", 26)       # backward pseudo-turnback Jump fix (Owner 2026-11-15): the arrival / time score gates read jump_locked(self) (was 76263B7C..., 26 records)
 
 # Pseudo-turnback A-side seam (Stage TB-B, an INTENDED change of a scoring region, not of the jump contract): evaluate_arrival starts the chain of a pair A only when no Jump landing or outstanding Jump is involved
 # (one statement names `jump_lock` and `is_official_jumping`: PU-3 / PU-6), so the slice of the function grows from 3 to 5 records; the Jump contract regions (begin_official_jump, execute_retry, the JUMP detection of
 # update_physics_and_scoring) are unchanged. The new digest is pinned on its own (tests/test_pt_scoring_continuity.py, test_pt_display_contract.py).
-PSEUDO_TURNBACK_EVALUATE_ARRIVAL_PIN = ("slice", "1799B91A5825CC6369A569357692F6E5BF467D17FF1D8A8F5C602F44B0E3FCA3", 5)       # Stage TB-H A re-stop wait (was F86365E1..., 5 records): the same statement now also hands the arrival position to turnback_arrival_begin (the stop range of A); no record added
+PSEUDO_TURNBACK_EVALUATE_ARRIVAL_PIN = ("slice", "6EF2CFCBD32695015763050D658DC68CB41C8944D6BBD0DAD72D6A2178F3BDDC", 5)       # backward pseudo-turnback Jump fix (Owner 2026-11-15): the jump_lock reads are jump_locked(self) (was 1799B91A..., 5 records)       # Stage TB-H A re-stop wait (was F86365E1..., 5 records): the same statement now also hands the arrival position to turnback_arrival_begin (the stop range of A); no record added
 
 STATIONS = [0.0, 1000.0, 2000.0, 3000.0]
 SCORING_TOKENS = ["time", "speed", "loc", "station", "door", "handle", "brake_type", "brake_cab", "prates"]
@@ -324,6 +326,8 @@ class A2_TheLegacyJumpContractRegionsOfThePythonSide(unittest.TestCase):
         then.pop("update_speed_limit_penalty")
         self.assertEqual(then.pop("update_stop_jerk_penalty"), EMPTY_SLICE_PIN)      # Legacy scoring LC-3A: at LJX-1 the function names no jump word ...
         self.assertEqual(now.pop("update_stop_jerk_penalty"), LC3A_UPDATE_STOP_JERK_PIN)   # ... now it names `is_official_jumping` once: the intended change, pinned on its own
+        self.assertEqual(now.pop("update_basic_braking_first_stop"), BACKWARD_JUMP_BASIC_BRAKING_PIN)     # backward pseudo-turnback Jump fix: the intended change, pinned on its own
+        then.pop("update_basic_braking_first_stop")
         self.assertEqual(now.pop("evaluate_departure"), TIMEFIX_B3_EVALUATE_DEPARTURE_PIN)     # Time Fix B / B2 / B3: the intended changes, pinned on their own (the Time Fix B and B2 values stay above as history)
         then.pop("evaluate_departure")
         self.assertEqual(now.pop("update_physics_and_scoring"), TIMEFIX_B3_UPDATE_PHYSICS_PIN)   # Time Fix B3: the intended change, pinned on its own

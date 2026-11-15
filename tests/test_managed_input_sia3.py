@@ -1802,10 +1802,22 @@ class I_DesktopLogAndStaticGuards(unittest.TestCase):
         f2_rollback_message_lifetime = ('self.rollback_msg = f">>> {cp.get(\'station_name\', \'駅\')} へロールバック完了 <<<"', 'self.rollback_msg_timer = self.bve_time_ms / 1000.0 + 5.0')
         # Stop range = the BVE official half-open range (on purpose; Owner 2026-11-15): the overrun end is outside the range (-margin_f < d <= margin_b); these are the 6 distinct lines (stripped) the diff shows as removed; the points, the rules and the constants are not among them (tests/test_stop_range_official_contract.py)
         stop_range_official_half_open = ('if not (-self.bve_margin_f <= d_m <= self.bve_margin_b): return False', 'if not (-self.bve_margin_f <= dist_to_stop <= self.bve_margin_b):', '<= d', '<= arrival_stop_error', 'if (-self.bve_margin_f <= dist_to_stop <= self.bve_margin_b):', '# 作者定義の停止位置許容範囲内（-margin_f～margin_b）で停車した場合にのみ到着処理を行う')
+        # Backward pseudo-turnback Jump fix (on purpose; Owner 2026-11-15): the arrival / scoring gates read jump_locked(self) (jump_lock OR the pseudo-turnback B window) instead of getattr(self, 'jump_lock', False): these are the
+        # 8 distinct lines (stripped) the diff shows as removed; no point, no rule and no constant is among them (tests/test_turnback_backward_jump_contract.py)
+        backward_jump_lock_reads = (
+            "is_scoring_end_station = is_end_sta_match and not getattr(self, 'jump_lock', False) and getattr(self, 'is_scoring_mode', False)",
+            "is_turnback_a = identity_ok and not getattr(self, 'jump_lock', False) and not getattr(self, 'is_official_jumping', False) and turnback_arrival_begin(self, current_time, curr_sta_idx, p_loc)",
+            "if not getattr(self, 'jump_lock', False):",
+            'if b_rule_app != "OFF" and getattr(self, \'bb_is_in_zone\', False) and not getattr(self, \'bb_evaluated\', False) and not getattr(self, \'jump_lock\', False):',
+            "allow_score = not getattr(self, 'jump_lock', False) or getattr(self, 'is_official_retry', False)",
+            "if getattr(self, 'is_official_jumping', False) or getattr(self, 'jump_lock', False):",
+            "if not getattr(self, 'jump_lock', False) and not getattr(self, 'is_first_station', False):",
+            "not getattr(self, 'jump_lock', False)",
+        )
         self.assertEqual(removed, [l for l in removed if "from utils import" in l or l.strip("-").strip() in ("", ")", pid_d6_transport) + tbd_running_end_judgement + pseudo_turnback_a_seam + st2a_checkpoint_identity + st2b_retry_by_saved_index
                                    + st3d_request_by_the_one_builder + st2c_first_station_distance + timefix_b_departure_margins + timefix_b3_zero_speed_and_jump_boundary
                                    + close_range_shared_basic_braking_init + si_r5_2a_p03_target_index + si_r5_2b_arrival_target_index + si_r5_2c_departure_prev_target_index
-                                   + lc3b_same_time_history_replace + stage_tbh6_illegal_move_wording + formal_bveg_retired + initial_defaults_settings_reads + stage_f2_desktop_log_label + f2_rollback_message_lifetime + stop_range_official_half_open], removed)
+                                   + lc3b_same_time_history_replace + stage_tbh6_illegal_move_wording + formal_bveg_retired + initial_defaults_settings_reads + stage_f2_desktop_log_label + f2_rollback_message_lifetime + stop_range_official_half_open + backward_jump_lock_reads], removed)
 
     def test_the_scoring_function_bodies_are_ast_identical_to_the_baseline(self):
         old = git("show", BASELINE + ":scoring_logic.py")
@@ -1830,7 +1842,7 @@ class I_DesktopLogAndStaticGuards(unittest.TestCase):
                                "build_scoring_section", "active_scoring_section", "section_start_index", "section_end_judge_index", "scoring_section_housekeeping",
                                "run_identity", "finished_run_retained", "finished_run_refusal", "discard_run_context",   # Phase PFR-R (on purpose): the finished Run keeps its frozen settings (run_identity, finished_run_retained, finished_run_refusal, discard_run_context: no score, no rule, no constant)
                                "set_rollback_message", "clear_rollback_message", "rollback_message_visible",   # F2 Rollback Message Lifetime (on purpose): the F2 rollback message is shown for 5.0 real seconds of the monotonic clock (no score, no rule, no constant of the scoring)
-                               "turnback_fix_section", "turnback_session_active", "turnback_lifecycle_guard", "turnback_diag", "turnback_stop_scoring", "official_jump_f1_hold", "note_jump_settlement", "turnback_jump_available", "turnback_request", "turnback_establish_b", "turnback_landing_step", "turnback_drive",
+                               "turnback_fix_section", "turnback_session_active", "turnback_b_pending", "jump_locked", "turnback_lifecycle_guard", "turnback_diag", "turnback_stop_scoring", "official_jump_f1_hold", "note_jump_settlement", "turnback_jump_available", "turnback_request", "turnback_establish_b", "turnback_landing_step", "turnback_drive",
                                    # Stage TB-H (on purpose): pair B untimed by contract - one PURE helper of the section (turnback_crossed_pairs; turnback_fix_section itself is untouched), the set of the crossed B (turnback_b_indexes) and the reason (untimed_reason); the points, the rules and the constants of the scoring are not among them (tests/test_pt_tbh_pairb_contract.py)
                                    "turnback_crossed_pairs", "turnback_b_indexes", "untimed_reason",
                                    # Shadow comparison (Stage 1, on purpose): the BveG stop-jerk beside the CalcG one - three PURE helpers and one recorder that only reads (no score, no rule, no constant; tests/test_shadow_stop_jerk.py RS38)

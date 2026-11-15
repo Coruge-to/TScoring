@@ -1228,6 +1228,21 @@ def turnback_session_active(self):
     return bool(getattr(self, 'is_scoring_mode', False)) and not getattr(self, 'is_scoring_finished', False)
 
 
+def turnback_b_pending(self):
+    """The window in which the landing at B belongs to the pseudo-turnback chain: from the Jump request (the machine is REQUESTED) until B is established (awaiting_b False, state COMPLETED) or the chain is dropped by an explicit
+    failure / generation / session end (state IDLE). The ONLY source is the machine state (no second flag). Backward-Jump fix (Owner 2026-11-15): the landing is never an ordinary arrival, whatever the Jump did to BVE time."""
+    machine = self.__dict__.get('turnback_machine')
+    if machine is None or not turnback_session_active(self):
+        return False
+    return machine.state == pseudo_turnback_machine.REQUESTED or bool(machine.awaiting_b)
+
+
+def jump_locked(self):
+    """The lock the arrival / scoring rules read: jump_lock OR the pseudo-turnback B window (see turnback_b_pending). The chain owns the lock from the request to the first departure from B; this makes the B window
+    independent of anyone else lowering jump_lock (the time-rewind branch of the clock)."""
+    return bool(getattr(self, 'jump_lock', False)) or turnback_b_pending(self)
+
+
 def turnback_lifecycle_guard(self):
     """CH-11: nothing of the pseudo-turnback chain outlives its scoring session. Once per scoring tick; a scoring that is not active (soft-off, abort, finish, scenario reload) or a generation that is not the one
     of the records drops the chain, the fixed section, the settlement, the B watch and the landing watch. Returns True when something was dropped."""
@@ -1733,18 +1748,18 @@ def evaluate_arrival(self, current_time, arrival_target_loc=None):
         station_identity.note_missing(self, "P01", current_time, target_idx, "suppress_terminal_evaluation")
 
     is_end_sta_match = identity_ok and ((curr_sta_idx != -1 and curr_sta_idx == section_end_judge_index(self)) or (getattr(self, 'prev_term', 0) == 1))
-    is_scoring_end_station = is_end_sta_match and not getattr(self, 'jump_lock', False) and getattr(self, 'is_scoring_mode', False)
+    is_scoring_end_station = is_end_sta_match and not jump_locked(self) and getattr(self, 'is_scoring_mode', False)
 
     # Pseudo-turnback: the arrival at the A of a pair (StationIndex + PairSet only). Dormant (False, nothing changed) while no PairSet is published.
     popups_before = len(getattr(self, 'popups', []))
     # (PU-3 / PU-6: an arrival that is the landing of a Jump, or happens during one, is not a pair arrival)
     if identity_ok and turnback_other_arrival(self, curr_sta_idx):       # Stage TB-H: the train was driven from A to B by itself: the scoring is aborted, B is not scored as an ordinary arrival
         return
-    is_turnback_a = identity_ok and not getattr(self, 'jump_lock', False) and not getattr(self, 'is_official_jumping', False) and turnback_arrival_begin(self, current_time, curr_sta_idx, p_loc)
+    is_turnback_a = identity_ok and not jump_locked(self) and not getattr(self, 'is_official_jumping', False) and turnback_arrival_begin(self, current_time, curr_sta_idx, p_loc)
 
     is_zero_stop = False
     if not getattr(self, 'is_first_station', False) and getattr(self, 'has_departed', False) and not getattr(self, 'has_scored_stop_this_station', False):
-        if not getattr(self, 'jump_lock', False):
+        if not jump_locked(self):
             is_zero_stop = apply_stop_score(self, p_loc - self.bve_location, current_time)
         self.has_scored_stop_this_station = True
 
@@ -1756,7 +1771,7 @@ def evaluate_arrival(self, current_time, arrival_target_loc=None):
     b_rule_app = getattr(self, 'active_rule_basic_apply', '階段')
     b_rule_rel = getattr(self, 'active_rule_basic_release', '階段')
 
-    if b_rule_app != "OFF" and getattr(self, 'bb_is_in_zone', False) and not getattr(self, 'bb_evaluated', False) and not getattr(self, 'jump_lock', False):
+    if b_rule_app != "OFF" and getattr(self, 'bb_is_in_zone', False) and not getattr(self, 'bb_evaluated', False) and not jump_locked(self):
         if not getattr(self, 'bb_is_stable', False):
             self.bb_is_stable = True
             process_bb_transition(self, self.bb_current_notch)
@@ -1840,7 +1855,7 @@ def evaluate_arrival(self, current_time, arrival_target_loc=None):
         # =================================================================
 
     else:
-        if not getattr(self, 'jump_lock', False):
+        if not jump_locked(self):
             if not is_turnback_a:                       # the A of a pseudo-turnback pair has NO checkpoint (Owner OD-PR-1 beta): the score and the history stay, the restart point is B
                 create_save_data(self, p_loc)
             close_range_fix_previous_stop(self, p_loc)
@@ -1894,7 +1909,7 @@ def resolve_operational_stop_completion(latch, now_ms):
 
 def evaluate_departure(self, current_time):
     if getattr(self, 'is_scoring_finished', False): return
-    allow_score = not getattr(self, 'jump_lock', False) or getattr(self, 'is_official_retry', False)
+    allow_score = not jump_locked(self) or getattr(self, 'is_official_retry', False)
 
     p_loc = getattr(self, 'prev_next_loc', -1.0)
     # Phase SI-R5.2-C: 出発した駅 = target切替前に保持したprev_tgt_idx。位置から駅を探さない。範囲内で、その駅の位置がprev_next_locと0.01 m以内で一致する場合だけ使う(検証のみ)。
@@ -2045,7 +2060,7 @@ def update_basic_braking_first_stop(self):
 
     if not getattr(self, 'bb_is_in_zone', False) or self.bve_speed != 0.0:
         return
-    if getattr(self, 'is_official_jumping', False) or getattr(self, 'jump_lock', False):
+    if getattr(self, 'is_official_jumping', False) or jump_locked(self):
         return
     if getattr(self, 'is_stopped_out_of_range', False):
         return
@@ -2461,7 +2476,7 @@ def update_physics_and_scoring(self, current_time, dt):
         dist_to_stop = self.bve_next_loc - self.bve_location
         if (-self.bve_margin_f < dist_to_stop <= self.bve_margin_b):
             arrival_deferred = False
-            if not getattr(self, 'jump_lock', False) and not getattr(self, 'is_first_station', False):
+            if not jump_locked(self) and not getattr(self, 'is_first_station', False):
                 # Phase SI-R5.2-B 明示ゲート: 駅が確定しない間は時分採点・checkpoint作成・採点終了・latch・採点済み記録のいずれも行わない(レベル型: identityが戻れば次Tickで評価する)
                 arrival_deferred = not arrival_identity_ok
                 if arrival_deferred:
@@ -2548,7 +2563,7 @@ def update_physics_and_scoring(self, current_time, dt):
                 )
             ):
                 allow_score = (
-                    not getattr(self, 'jump_lock', False)
+                    not jump_locked(self)
                     or getattr(self, 'is_official_retry', False)
                 )
 

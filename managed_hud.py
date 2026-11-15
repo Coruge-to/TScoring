@@ -145,12 +145,13 @@ class Win32WindowApi(object):
 def hud_update_step(overlay):
     """The data part of Overlay.update_logic that the HUD content depends on, in the same order and with the same rules: the clock of the
     scoring bookkeeping, update_physics_and_scoring, repaint. No window search, no key hook, no key injection, no fast-forward release."""
-    from scoring_logic import reset_transient_scoring_state, update_physics_and_scoring
+    from scoring_logic import reset_transient_scoring_state, turnback_b_pending, update_physics_and_scoring
     current_time = overlay.bve_time_ms / 1000.0
     if overlay.last_update_time == 0.0 or current_time < overlay.last_update_time:
         dt = 0.0
         reset_transient_scoring_state(overlay)
-        overlay.jump_lock = False
+        if not turnback_b_pending(overlay):          # the pseudo-turnback chain owns jump_lock until B is established (backward Jump fix)
+            overlay.jump_lock = False
         overlay.ignore_next_pass_score = False
         overlay.last_update_time = current_time
     else:

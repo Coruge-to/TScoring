@@ -28,6 +28,7 @@ from scoring_logic import (
     close_range_fix_landing_stop,
     turnback_fix_section,
     turnback_machine_of,
+    turnback_b_pending,
     turnback_b_indexes,
     turnback_crossed_pairs,
     untimed_reason,
@@ -3077,7 +3078,9 @@ class Overlay(QWidget):
             reset_transient_scoring_state(self)
 
             # 時刻巻き戻り時に固有の同期状態
-            self.jump_lock = False
+            # the pseudo-turnback chain owns jump_lock from the Jump request until B is established (backward Jump fix): a rewind is the Jump's own effect there, not a reason to hand the landing to the ordinary arrival rules
+            if not turnback_b_pending(self):
+                self.jump_lock = False
             self.ignore_next_pass_score = False
 
             self.last_update_time = current_time
