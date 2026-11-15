@@ -76,7 +76,10 @@ class ProductPreflightUnit(unittest.TestCase):
         snap = Snapshot(args); snap.bve_pid += 1; cases.append((FakeReader(snap), "bve-pid-mismatch"))
         snap = Snapshot(args); snap.instance = uuid.uuid4().hex; cases.append((FakeReader(snap), "instance-mismatch"))
         snap = Snapshot(args); snap.instance_published = False; cases.append((FakeReader(snap), "instance-not-published"))
-        snap = Snapshot(args); snap.process_started = False; cases.append((FakeReader(snap), "process-not-started"))
+        # KF-FIX (on purpose): PID-D2 (830b5a8, 2026-10-13) changed the contract. The Caller publishes the App PID only after Process.Start, so a snapshot that already
+        # carries a non-zero App PID while PROCESS_STARTED is still false is a contradiction and is refused at once as `app-pid-before-process-started`; an App PID of 0 is
+        # waited for a bounded time (`process-started-timeout`, tests/test_app_directory_startup_convergence_pid_d2.py). This row used to expect the pre-PID-D2 code.
+        snap = Snapshot(args); snap.process_started = False; cases.append((FakeReader(snap), "app-pid-before-process-started"))
         snap = Snapshot(args, os.getpid() + 1000); cases.append((FakeReader(snap), "app-pid-mismatch"))
         snap = Snapshot(args); snap.withdrawing = True; cases.append((FakeReader(snap), "withdrawing"))
         snap = Snapshot(args); snap.closed = True; cases.append((FakeReader(snap), "closed"))

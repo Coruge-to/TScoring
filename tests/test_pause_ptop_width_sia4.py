@@ -42,14 +42,17 @@ class A_PauseKeepsTheScoring(ManagedCase):
         self.assertEqual(r.input.aborts, 0)
         self.assertEqual(r.events("hud-error"), [])
 
-    def test_the_input_is_released_at_once_and_stays_released_during_the_pause(self):
+    def test_the_keys_are_released_at_once_and_the_time_and_position_lock_is_kept_during_the_pause(self):
+        # KF-FIX (on purpose; the current formal contract, e485965 managed_input.release(release_window=False)): a pause does NOT end the scoring run, so the keys / hooks and an
+        # open TS Scoring menu are released at once, but the child controls of the "time and position" window stay locked (arbitrary BVE time / position changes remain blocked);
+        # the lock ends only with the run (Session OFF, a new generation, state loss, shutdown). This used to expect the window ENABLED during the pause.
         r, o = scoring_run(self)
         self.assertEqual(self.held(), ["f7", "f8", "p"])
-        self.assertFalse(self.gui.enabled)                                     # the "time and position" window is locked by the scoring
+        self.assertFalse(self.gui.enabled)                                     # the "time and position" controls are locked by the scoring
         r.publish(True, False)
         r.tick()                                                             # ONE tick later
         self.assertEqual(self.held(), [])
-        self.assertTrue(self.gui.enabled)
+        self.assertFalse(self.gui.enabled)                                     # ... and they STAY locked: the scoring session is kept through the pause
         self.kb.pressed.update({"f7", "p", "f8", "f1", "f11", "f12"})
         posted = list(self.api.posted)
         calls = len(self.gui.calls)
@@ -415,11 +418,31 @@ class D_Scope(unittest.TestCase):
             return f.read()
 
     def test_driving_off_is_reported_to_on_pause_and_not_to_on_inactive(self):
+        # KF-FIX (on purpose): the contract is unchanged (Driving OFF with the Session ON is a PAUSE and never ends the scoring session; Session OFF and the loss of the state block do), but
+        # the old text pin `self._input.on_inactive("state-lost")` did not survive the refactor of the fail-safe (managed_hud._enter_failsafe(reason, action_reason="state-lost") hands its
+        # `action_reason` to on_inactive). The contract is pinned by the AST, not by a spelling.
+        import ast
         text = self.read("managed_hud.py")
-        self.assertIn('self._input.on_pause("driving-off")', text)
-        self.assertNotIn('on_inactive("driving-off")', text)
-        self.assertIn('self._input.on_inactive("session-off")', text)
-        self.assertIn('self._input.on_inactive("state-lost")', text)
+        tree = ast.parse(text)
+
+        def input_calls(node):
+            """(method, first positional constant or the NAME of the argument) of every `self._input.<method>(...)` call under `node`."""
+            found = []
+            for call in ast.walk(node):
+                if isinstance(call, ast.Call) and isinstance(call.func, ast.Attribute) and isinstance(call.func.value, ast.Attribute) \
+                        and call.func.value.attr == "_input" and isinstance(call.func.value.value, ast.Name) and call.func.value.value.id == "self":
+                    arg = call.args[0] if call.args else None
+                    found.append((call.func.attr, arg.value if isinstance(arg, ast.Constant) else (("name:" + arg.id) if isinstance(arg, ast.Name) else None)))
+            return found
+
+        everything = input_calls(tree)
+        self.assertIn(("on_pause", "driving-off"), everything)               # Driving OFF alone = a pause
+        self.assertNotIn(("on_inactive", "driving-off"), everything)          # ... never the end of the scoring session
+        self.assertIn(("on_inactive", "session-off"), everything)             # Session OFF ends it
+        failsafe = next(n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == "_enter_failsafe")
+        self.assertIn(("on_inactive", "name:action_reason"), input_calls(failsafe))
+        defaults = {a.arg: d.value for a, d in zip(failsafe.args.args[-len(failsafe.args.defaults):], failsafe.args.defaults) if isinstance(d, ast.Constant)}
+        self.assertEqual(defaults.get("action_reason"), "state-lost")         # the loss of the state block (the default of the fail-safe) ends it as `state-lost`
 
     def test_the_waiting_branch_calls_nothing_of_the_kick_start_any_more(self):
         """Phase SI-A6: `_tick_waiting_kickstart` is gone; the WAITING branch of the controller's tick presses nothing (Phase PP-13: the recovery that watched there is gone too)."""

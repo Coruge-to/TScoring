@@ -468,11 +468,24 @@ class FakeGui:
         self.hwnd = hwnd
         self.foreground = hwnd
         self.diag = 0                       # the hwnd of the "time and position" window, 0 = none
-        self.enabled = True
+        self.enabled_by_hwnd = {}           # KF-FIX (on purpose): the window has three child controls diag+1..diag+3 (the product locks the CHILDREN, never the window: 7f8edc6 / e485965)
         self.calls = []
 
+    @property
+    def diag_children(self):
+        return (self.diag + 1, self.diag + 2, self.diag + 3) if self.diag else ()
+
+    @property
+    def enabled(self):                      # compatibility view: every child control is enabled
+        return all(self.enabled_by_hwnd.get(h, True) for h in self.diag_children)
+
     def IsWindow(self, h):
-        return h == self.hwnd
+        return h == self.hwnd or (bool(self.diag) and h in (self.diag,) + self.diag_children)
+
+    def EnumChildWindows(self, parent, callback, extra):
+        if self.diag and parent == self.diag:
+            for child in self.diag_children:
+                callback(child, extra)
 
     def GetForegroundWindow(self):
         return self.foreground
@@ -490,11 +503,11 @@ class FakeGui:
         return self.diag if title == "時刻と位置" else 0
 
     def IsWindowEnabled(self, h):
-        return self.enabled
+        return self.enabled_by_hwnd.get(h, True)
 
     def EnableWindow(self, h, flag):
         self.calls.append(("EnableWindow", h, bool(flag)))
-        self.enabled = bool(flag)
+        self.enabled_by_hwnd[h] = bool(flag)
 
     def GetCursorPos(self):
         return (0, 0)
@@ -745,28 +758,37 @@ class F_UpdateLogicCharacterization(unittest.TestCase):
         self.assertEqual(self.kb.active(), [])
 
     # -- the "time and position" window -----------------------------------------------------------------------------------------------------
-    def test_the_time_and_position_window_is_disabled_while_scoring_and_enabled_again_after(self):
+    # KF-FIX (on purpose; the current formal contract, Owner 2026-11-15 P-7; 7f8edc6 / e485965): the window ITSELF is never disabled (it can be closed), only its child controls are
+    # locked, only during an active scoring run, and an open menu alone locks nothing. The characterization of the older whole-window lock (EnableWindow(777, ...)) is retired.
+    def test_the_time_and_position_window_children_are_disabled_while_scoring_and_enabled_again_after(self):
         self.gui.diag = 777
         self.scoring(speed=0.0)
         self.tick()
-        self.assertIn(("EnableWindow", 777, False), self.gui.calls)
+        for child in (778, 779, 780):
+            self.assertIn(("EnableWindow", child, False), self.gui.calls)
+        self.assertNotIn(("EnableWindow", 777, False), self.gui.calls)       # the window itself stays usable
         self.gui.calls.clear()
         self.tick()
         self.assertEqual(self.gui.calls, [])                                # only a CHANGE is applied, never every frame
         self.o.is_scoring_finished = True
         self.tick()
-        self.assertEqual(self.gui.calls, [("EnableWindow", 777, True)])
+        self.assertEqual(self.gui.calls, [("EnableWindow", 778, True), ("EnableWindow", 779, True), ("EnableWindow", 780, True)])
 
     def test_the_window_is_left_alone_when_there_is_no_scoring_and_no_menu(self):
         self.gui.diag = 777
         self.tick()
         self.assertEqual(self.gui.calls, [])
 
-    def test_the_window_is_disabled_by_the_open_menu_too(self):
+    def test_the_window_is_not_disabled_by_the_open_menu_alone_but_the_children_are_during_a_scoring_run(self):
         self.gui.diag = 777
         self.o.menu_state = 1
         self.tick()
-        self.assertIn(("EnableWindow", 777, False), self.gui.calls)
+        self.assertEqual([c for c in self.gui.calls if c[0] == "EnableWindow"], [])      # a menu without a scoring run locks nothing
+        self.scoring(speed=0.0)
+        self.tick()
+        for child in (778, 779, 780):
+            self.assertIn(("EnableWindow", child, False), self.gui.calls)                # the same menu during a run: the children are locked
+        self.assertNotIn(("EnableWindow", 777, False), self.gui.calls)
 
     # -- the fast-forward release ------------------------------------------------------------------------------------------------------------
     def fast_forward(self, bve_ms=1000):

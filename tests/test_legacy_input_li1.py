@@ -154,7 +154,9 @@ class A_DisplayContract(unittest.TestCase):
                                    "holdn-missing", "hold-range", "pow-range", "brk-range", "pow-brk-both"})
 
     def test_the_wire_vocabulary_is_the_current_one(self):
-        self.assertEqual(tc.TOKEN_KEYS["handle"], ("REV", "POW", "BRK", "HTYPE", "ALLTXT"))
+        # KF-FIX (on purpose): the formal wire vocabulary of the `handle` item has nine keys since the Current-sender generic handle display extension (DREV / DPOW / DBRK / DALLTXT,
+        # telemetry_contract.py; parsed by main.read_udp_data). The Legacy sender still announces the first five only (the audit document says so); the Python vocabulary is the superset.
+        self.assertEqual(tc.TOKEN_KEYS["handle"], ("REV", "POW", "BRK", "HTYPE", "ALLTXT", "DREV", "DPOW", "DBRK", "DALLTXT"))
         self.assertEqual(tc.TOKEN_KEYS["bcp"], ("BCP",))
         self.assertEqual(tc.TOKEN_KEYS["bpp"], ("BPP",))
         self.assertIn("handle", tc.HUD_ITEM_REQUIRES["handle"])

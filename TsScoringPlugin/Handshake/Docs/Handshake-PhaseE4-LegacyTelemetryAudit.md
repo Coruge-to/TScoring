@@ -46,6 +46,10 @@ E4 は「いつHUDを出し、更新し、隠すか」（状態連動）を実�
 | `BRK`（テキスト：数値：最大） | 同上、EB色判定 | `Cab.BrakeTexts`＋`Handles.BrakeNotch` | 数値 OK、テキストと最大（`BrakeTexts.Length-1`）**NO**（`NotchInfo.EmergencyBrakeNotch` で近似できる可能性あり、未確認） | **NO**（テキスト） |
 | `HTYPE` | 1ハンドル／2ハンドル | `OneLeverCab` の型名 | `OneLeverCab`／`TwoLeverCab` は存在する | OK |
 | `ALLTXT` | ハンドル欄の幅、ブレーキ段のラベル | `Cab` の4つのテキスト配列 | 公開APIに無い | **NO** |
+| `DREV`（既定テキスト：数値） | ハンドル行（既定の表示文字列。Overlay は `default_rev_text` に保持。初期値は「切」） | Current 送信側の任意拡張（`Class1.cs` の `defaultRevText` と `Handles.ReverserPosition`） | Legacy の送信側は出さない（公開APIに既定テキストの取得元が無い） | **NO**（Legacy は送らない） |
+| `DPOW`（既定テキスト：数値） | 同上（`default_pow_text`。初期値は「N」） | 同上（`defaultPowText` と `Handles.PowerNotch`） | 同上 | **NO**（Legacy は送らない） |
+| `DBRK`（既定テキスト：数値：最大） | 同上（`default_brk_text`。初期値は「N」） | 同上（`defaultBrkText`、`Handles.BrakeNotch`、最大段） | 同上 | **NO**（Legacy は送らない） |
+| `DALLTXT` | ハンドル欄の幅の既定（`ALLTXT` と同じ4群の既定版） | 同上（`defaultAll*Texts` の4つの配列） | 同上 | **NO**（Legacy は送らない） |
 | `SIGLIMIT` | 制限行（信号） | `SectionManager.CurrentSectionSpeedLimit` | 同じ | OK |
 | `FWDSIGLIMIT`、`FWDSIGLOC` | 先行の信号制限 | `SectionManager.ForwardSectionSpeedLimit`、`Sections[i].Location` | 同じ | OK |
 | `TRAINLEN` | 停止距離の既定、制限の解除位置 | `SpeedLimitList.VehicleLength` | 無い。`VehicleDynamics.CarLength`＋`CarInfo.Count` から導出できる可能性（未確認） | 差 |

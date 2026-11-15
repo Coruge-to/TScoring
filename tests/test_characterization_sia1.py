@@ -793,17 +793,61 @@ class D_Windows(Base):
         self.tick(3)
         self.assertEqual(self.gui.mutating(), [])
 
-    def test_diag_during_the_scoring_it_is_disabled_once(self):
+    # KF-FIX (on purpose; the CURRENT formal contract of the "time and position" window, Owner 2026-11-15 P-7). Introduced by 7f8edc6 (2026-10-11 "the window can be closed
+    # while scoring") and e485965 ("controls only during an active scoring run"); these tests used to pin the older whole-window lock (EnableWindow(777, False), menu = lock).
+    #   * the WINDOW ITSELF is never disabled, moved, raised or lowered: the title bar and the close button stay usable (it can be closed at any time);
+    #   * only its child controls (the ones that could change the BVE time / position) are locked, and ONLY during an active scoring run (menu open or not);
+    #   * an open menu on its own locks nothing; when the run ends (finished / aborted) every control this process disabled is enabled again, one change = one call.
+    # The managed owner-PID rule (only the window of the BVE this Overlay is linked to) is pinned by tests/test_diag_window_pid_fix.py; the application quitting when the BVE
+    # window is gone by test_when_the_window_vanishes_after_it_was_found_the_application_quits below; the real Z order next to the BVE settings dialog by the desktop suite
+    # (tests/test_initial_defaults_ownership.py, OwnershipNative R2).
+    CHILDREN = (778, 779, 780)
+
+    def locked(self):
+        return [("EnableWindow", h, False) for h in self.CHILDREN]
+
+    def test_diag_during_the_scoring_its_child_controls_are_disabled_once_and_the_window_itself_never(self):
         self.gui.diag = 777
         self.scoring()
         self.tick(3)
-        self.assertEqual(self.gui.mutating(), [("EnableWindow", 777, False)])
+        self.assertEqual(self.gui.mutating(), self.locked())                 # once, in the order of the enumeration, nothing again on the next ticks
+        self.assertEqual(self.gui.diag_children, list(self.CHILDREN))
+        self.assertTrue(self.gui.enabled_by_hwnd[777], "the time and position window itself must stay enabled (it can be closed)")
+        self.assertFalse(any(c[0] == "EnableWindow" and c[1] == 777 for c in self.gui.calls))
 
-    def test_diag_with_the_menu_open_it_is_disabled_and_enabled_again_when_the_menu_closes(self):
+    def test_diag_the_lock_never_touches_the_z_order_the_foreground_or_the_style_of_the_window(self):
+        self.gui.diag = 777
+        self.scoring()
+        self.tick(3)
+        touched = {c[0] for c in self.gui.calls if len(c) > 1 and c[1] in (777,) + self.CHILDREN}
+        self.assertEqual(touched, {"EnableWindow"}, "the window lock may only call EnableWindow on child controls: %s" % sorted(touched))
+        for name in ("SetWindowPos", "SetForegroundWindow", "BringWindowToTop", "SetActiveWindow", "ShowWindow", "SetWindowLong", "SetParent", "DestroyWindow", "CloseWindow"):
+            self.assertNotIn(name, [c[0] for c in self.gui.calls if len(c) > 1 and c[1] in (777,) + self.CHILDREN], name)
+
+    def test_diag_an_open_menu_without_a_scoring_run_locks_nothing(self):
         self.gui.diag = 777
         self.o.menu_state = 1
+        self.tick(2)
+        self.assertEqual(self.gui.mutating(), [])
+        self.assertEqual(self.gui.enabled, True)
+        self.o.menu_state = 0
         self.tick()
+        self.assertEqual(self.gui.mutating(), [])
+        self.assertEqual(self.gui.enabled, True)
+
+    def test_diag_a_menu_during_the_scoring_keeps_the_children_locked_and_they_come_back_when_the_run_ends_even_with_the_menu_open(self):
+        self.gui.diag = 777
+        self.scoring()
+        self.o.menu_state = 1
+        self.tick(2)
+        self.assertEqual(self.gui.mutating(), self.locked())
+        self.assertTrue(self.gui.enabled_by_hwnd[777])
         self.assertEqual(self.gui.enabled, False)
+        self.o.is_scoring_finished = True                                    # the run ends while the menu is still open
+        self.gui.calls.clear()
+        self.tick()
+        self.assertEqual(self.gui.mutating(), [("EnableWindow", h, True) for h in self.CHILDREN])
+        self.assertEqual(self.gui.enabled, True)
         self.o.menu_state = 0
         self.tick()
         self.assertEqual(self.gui.enabled, True)
@@ -824,13 +868,14 @@ class D_Windows(Base):
         self.tick()
         self.assertEqual(self.gui.enabled, False)
 
-    def test_diag_a_window_that_appears_during_the_scoring_is_disabled_when_it_is_found(self):
+    def test_diag_a_window_that_appears_during_the_scoring_has_its_child_controls_disabled_when_it_is_found(self):
         self.scoring()
         self.tick(2)
         self.assertEqual(self.gui.mutating(), [])
         self.gui.diag = 777
         self.tick()
-        self.assertEqual(self.gui.mutating(), [("EnableWindow", 777, False)])
+        self.assertEqual(self.gui.mutating(), self.locked())
+        self.assertTrue(self.gui.enabled_by_hwnd[777])
 
     def test_CURRENT_diag_interrupting_the_scoring_re_enables_it_but_Python_exit_does_not(self):
         """CURRENT: only the tick logic re-enables the window; the manual mode has no clean-up at exit (Esc quits the application with the window

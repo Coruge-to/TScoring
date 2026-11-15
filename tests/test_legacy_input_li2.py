@@ -679,7 +679,8 @@ class G_StaticGuards(unittest.TestCase):
             self.assertIsNone(re.search(r"""['"]H[0-9]['"]|startswith\(['"]H['"]\)|HoldingSpeed""", src), name)
 
     def test_the_telemetry_vocabulary_is_unchanged(self):
-        self.assertEqual(tc.TOKEN_KEYS["handle"], ("REV", "POW", "BRK", "HTYPE", "ALLTXT"))
+        # KF-FIX (on purpose): nine keys since the Current-sender generic handle display extension (DREV / DPOW / DBRK / DALLTXT), see tests/test_legacy_input_li1.py
+        self.assertEqual(tc.TOKEN_KEYS["handle"], ("REV", "POW", "BRK", "HTYPE", "ALLTXT", "DREV", "DPOW", "DBRK", "DALLTXT"))
         self.assertEqual(tc.TOKEN_KEYS["bcp"], ("BCP",))
         self.assertEqual(tc.TOKEN_KEYS["bpp"], ("BPP",))
 
