@@ -35,6 +35,7 @@ for p in (REPO, HERE):
 import current_jump_client as cjc  # noqa: E402
 import d6_rig  # noqa: E402
 import dataplane_contract as contract  # noqa: E402
+import fixture_support as FX  # noqa: E402
 import ljx1_contract_regions as regions  # noqa: E402
 import managed_app_directory  # noqa: E402
 import managed_input  # noqa: E402
@@ -42,7 +43,10 @@ import telemetry_contract as tc  # noqa: E402
 import telemetry_dataplane_receiver as receiver_module  # noqa: E402
 
 SERVE = os.path.join(REPO, "TsScoringPlugin", "Handshake", "Tests", "Serve-LegacyJumpExecLJX1.ps1")
-DEFAULT_DLL = os.path.join(REPO, "TsScoringPlugin", "Handshake", "Telemetry", "Legacy", "out", "TScoring.TelemetryA.dll")
+# KF-FIX (Owner 2026-11-15, O-4): the product DLL comes from the explicit test fixture (tests/fixtures/legacy-telemetry-a/, placed from the formal build artifact and checked against the
+# Capability ledger by tests/fixture_support.py), NOT from the scratch build folder Telemetry/Legacy/out/ (where an arbitrary old DLL could sit). LEGACYJUMP_LJX1_PRODUCT_DLL still names
+# another DLL explicitly.
+DEFAULT_DLL = FX.FIXTURE_DLL
 PRODUCT_DLL = os.environ.get("LEGACYJUMP_LJX1_PRODUCT_DLL") or DEFAULT_DLL
 FIXED_PORTS = (54321, 54322)
 
@@ -688,6 +692,11 @@ class D_TheServedPlane(unittest.TestCase):
     APP_PID = 8888
     TEL_GEN = 5
     TEL_TOKEN = bytes(range(50, 66))
+
+    @classmethod
+    def setUpClass(cls):
+        if PRODUCT_DLL == DEFAULT_DLL:
+            FX.require_telemetry_a()          # PRECONDITION-MISSING (skip) in a development run / a [PRECONDITION] failure in the release gate; a wrong DLL is PRECONDITION-MISMATCH
 
     def setUp(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

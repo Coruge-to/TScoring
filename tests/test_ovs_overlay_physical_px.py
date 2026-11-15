@@ -291,6 +291,14 @@ class NormalMode(unittest.TestCase):
         self.assertEqual(self.run_follow(rects), [(328, 187, 1264, 681), (0, 0, 1920, 1080), (328, 187, 1264, 681), (0, 0, 3840, 2160)])
 
 
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
+from suite_markers import desktop_only  # noqa: E402
+
+
+# KF-FIX (Owner 2026-11-15, O-6): suite S2 (Windows real-desktop / DPI). The children run the REAL Qt platform of this desktop at a forced display scale and read real window
+# geometry (observed once: [443, 217, 1034, 621] != [0, 0, 1920, 1080], then PASS on re-run). Counted separately from the product failures of S1 (tests/suite_markers.py).
+@desktop_only("real Windows Qt platform, real window geometry and display scale of this desktop (OVS-1)")
 class RealWindowsQt(unittest.TestCase):
     """OVS-R2 / R3 / R4 / R6 / R7 / R8 / R11 / R12 / R13 / R16: a real main.Overlay at a forced display scale."""
 

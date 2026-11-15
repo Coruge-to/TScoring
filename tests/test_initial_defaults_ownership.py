@@ -195,6 +195,15 @@ class Product(object):
         return os.path.exists(os.path.join(self.profile, "Coruge-to", "TS Scoring", "initial-defaults.json"))
 
 
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
+from suite_markers import desktop_only  # noqa: E402
+
+
+# KF-FIX (Owner 2026-11-15, O-6): suite S2 (Windows real-desktop / Z-order). The z-order facts (R2: the window must not go behind the BVE settings dialog, ...) are read from REAL windows
+# of this desktop, so a window of another application or a moment of focus can change them (observed once: IO1-RED 19 not less than 17, then 3/3 PASS in fresh processes).
+# S2 is a formal quality gate of its own, counted separately from the product failures of S1 (tests/suite_markers.py).
+@desktop_only("real top-level windows, z-order and foreground of an interactive Windows desktop (IO-1 ownership)")
 @unittest.skipUnless(WINDOWS, "needs Windows")
 class OwnershipNative(unittest.TestCase):
     def setUp(self):

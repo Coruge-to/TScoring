@@ -14,7 +14,8 @@ and once the plane exists but the Python Reader is the old one the tests fail wi
 Environment (optional; they exist so that the S1 fixture check can run these tests against a synthetic reference outside the repository):
     LEGACYJUMP_2A_PYROOT       directory with current_jump_client.py / dataplane_contract.py / managed_app_directory.py
     LEGACYJUMP_2A_PRODUCT_DLL  the product Legacy telemetry DLL that holds the plane
-Unset: the repository root and Telemetry/Legacy/out/TScoring.TelemetryA.dll are used.
+Unset: the repository root and the explicit test fixture tests/fixtures/legacy-telemetry-a/TScoring.TelemetryA.dll are used (KF-FIX, 2026-11-15: NOT the scratch build folder
+Telemetry/Legacy/out/; the fixture is placed from the formal build artifact and checked against the Capability ledger, see tests/fixture_support.py).
 """
 import json
 import os
@@ -35,8 +36,11 @@ if ROOT not in sys.path:
 import current_jump_client  # noqa: E402
 import dataplane_contract as contract  # noqa: E402
 import managed_app_directory  # noqa: E402
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
+import fixture_support as FX  # noqa: E402
 
-DEFAULT_DLL = os.path.join(REPO, "TsScoringPlugin", "Handshake", "Telemetry", "Legacy", "out", "TScoring.TelemetryA.dll")
+DEFAULT_DLL = FX.FIXTURE_DLL
 PRODUCT_DLL = os.environ.get("LEGACYJUMP_2A_PRODUCT_DLL") or DEFAULT_DLL
 SERVE = os.path.join(REPO, "TsScoringPlugin", "Handshake", "Tests", "Serve-LegacyJumpPlane2A.ps1")
 STA = "JUMP_STA_TIME:1:36000"
@@ -155,6 +159,8 @@ class PlaneInterop2A(unittest.TestCase):
         if os.name != "nt":
             cls.skip_reason = "needs Windows named mappings"
             return
+        if PRODUCT_DLL == DEFAULT_DLL:
+            FX.require_telemetry_a()          # PRECONDITION-MISSING (skip) in a development run / a [PRECONDITION] failure in the release gate; a wrong DLL is PRECONDITION-MISMATCH
         if not os.path.exists(PRODUCT_DLL):
             cls.server = None
             cls.missing_dll = True
