@@ -15,27 +15,121 @@
     "note": "OD-X11 v2 (Owner 2026-11-15): the formal TelemetryA has the Legacy Jump execution ON. Jump OFF is a diagnostic / comparison build only and is never a formal candidate, deployed under the formal name or promoted."
   },
   "baseline": {
-    "sha256": "17CA7159C4C6F891CC4EF626047A44180F1001668393AAA70A6C2647C9185C17",
-    "sourceCommit": "b0a42d377b7b078f3b6910de8b5aa1005aa8e5c0",
-    "sizeBytes": 180736,
+    "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
+    "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+    "sizeBytes": 181248,
     "capabilities": {
-      "legacyJumpExec": false,
-      "executionCompiledIn": false,
-      "jumpCapabilityAdvertised": false,
-      "featureBits": 0,
-      "buildRole": "",
+      "legacyJumpExec": true,
+      "executionCompiledIn": true,
+      "jumpCapabilityAdvertised": true,
+      "featureBits": 7,
+      "buildRole": "Formal",
       "tokens": [
         "ACCELZ",
         "PTPAIR",
         "PseudoTurnbackPairCodec"
       ]
     },
-    "promotedAt": "2026-11-15 (debt A Global Final Close)",
-    "closeRef": "hud-semantics-fix-v1-20261114-1/global-final-close.md",
-    "contractCompliant": false,
-    "regression": "Jump OFF (built without /p:LegacyJumpExec=true); the 2026-11-10 baseline 9F0B0919 was Jump ON. Superseded by the first OD-X11 v2 formal promote."
+    "promotedAt": "2026-11-15T22:21:29",
+    "closeRef": "PROMOTED 2026-11-15: ACCEPTED=DEPLOYED=PROMOTED sha D6E6E324, source f42f0df on remote, formal live acceptance PASS (start/START Jump/forward+backward pseudo-turnback/backward Retry/normal exit, missing-jump 0, turnback-fail 0). 1 AppCrash BveTs.exe clr.dll 80131506 +0x2b7e58 at the first Current->Legacy handoff process (PID 19568) is classified non-blocking host-transition signature (dump comparison: no TScoring/BveEX plugin frames, TelemetryA not loaded, same signature in 4 dumps incl. 2 before this DLL)."
   },
-  "history": [],
+  "history": [
+    {
+      "stage": "build",
+      "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
+      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "formal build from remote-matched f42f0df, 2 clean roots",
+      "at": "2026-11-15T13:02:18Z"
+    },
+    {
+      "stage": "accept",
+      "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
+      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "PRE-DEPLOYMENT acceptance (Owner approval 2026-11-15 to deploy the formal candidate for live acceptance + guard build ACCEPT, 2 clean roots equal, sourceOnRemote=true). The LIVE acceptance entry is recorded separately after the final live smoke.",
+      "at": "2026-11-15T22:03:05"
+    },
+    {
+      "stage": "deploy",
+      "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
+      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "deployed to C:\\Users\\Public\\Documents\\BveEx\\Legacy\\Extensions\\TScoring.TelemetryA.dll ; old 17CA7159 backed up at C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\legacy-formal-artifact-capability-audit-v1-20261115\\formal-final-f42f0df\\backup\\TScoring.TelemetryA.dll.17CA7159 (emergency capability-losing rollback only)",
+      "at": "2026-11-15T22:03:16"
+    },
+    {
+      "stage": "accept",
+      "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
+      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "LIVE acceptance 2026-11-15 22:07-22:15, same SHA deployed, formal config (no diagnostics): scoring start (missing-jump 0), START Jump, forward turnback (+154.9 s), backward turnback (-4.2 s), backward Retry (-233.4 s), jump-complete/settled ok, scoring-abort only session-off at normal exit, turnback-fail 0. NOTE: 1 AppCrash BveTs.exe (BVE5 first-stage process PID 19568, 22:07:51, clr.dll 80131506) at the Legacy handoff before the Run; product WER 0",
+      "at": "2026-11-15T22:15:36"
+    },
+    {
+      "stage": "promote",
+      "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
+      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "PROMOTED 2026-11-15: ACCEPTED=DEPLOYED=PROMOTED sha D6E6E324, source f42f0df on remote, formal live acceptance PASS (start/START Jump/forward+backward pseudo-turnback/backward Retry/normal exit, missing-jump 0, turnback-fail 0). 1 AppCrash BveTs.exe clr.dll 80131506 +0x2b7e58 at the first Current->Legacy handoff process (PID 19568) is classified non-blocking host-transition signature (dump comparison: no TScoring/BveEX plugin frames, TelemetryA not loaded, same signature in 4 dumps incl. 2 before this DLL).",
+      "at": "2026-11-15T22:21:29"
+    }
+  ],
   "rollbackAssets": [
     {
       "sha256": "17CA7159C4C6F891CC4EF626047A44180F1001668393AAA70A6C2647C9185C17",
@@ -52,7 +146,11 @@
         ]
       },
       "path": "csender-range-v1-20261115/candidate/TScoring.TelemetryA.dll",
-      "note": "current baseline before OD-X11 v2; Jump OFF; kept as capability-regression evidence, guard RED input and rollback asset (a rollback to it loses the Jump capability of any v2 baseline: Owner approval id required)"
+      "note": "current baseline before OD-X11 v2; Jump OFF; kept as capability-regression evidence, guard RED input and rollback asset (a rollback to it loses the Jump capability of any v2 baseline: Owner approval id required)",
+      "role": "EMERGENCY CAPABILITY-LOSING ROLLBACK",
+      "requiresOwnerApprovalId": true,
+      "automaticSelection": false,
+      "backupPath": "C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\legacy-formal-artifact-capability-audit-v1-20261115\\formal-final-f42f0df\\backup\\TScoring.TelemetryA.dll.17CA7159"
     },
     {
       "sha256": "EDEB5766BEAF1C7E6F8974828001E7AFF885BB4C92092735B398DC891C89D640",

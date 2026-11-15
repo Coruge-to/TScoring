@@ -45,6 +45,102 @@ def formal_cap(sha=SHA_ON, **over):
     return cap
 
 
+# The ledger as committed with the OD-X11 v2 contract (f42f0df): no history, the Jump OFF 17CA7159 baseline. The stage tests run from this frozen
+# initial state, not from the live repository ledger, which moves on at every promote (the first promote of D6E6E324 on 2026-11-15).
+INITIAL_LEDGER = json.loads(r'''{
+  "schema": "ts-capability-ledger/1",
+  "component": "TScoring.TelemetryA",
+  "host": "Legacy",
+  "contract": {
+    "legacyJumpExec": true,
+    "buildRole": "Formal",
+    "jumpCapabilityAdvertised": true,
+    "minFeatureBits": 1,
+    "requiredTokens": [
+      "ACCELZ",
+      "PTPAIR",
+      "PseudoTurnbackPairCodec"
+    ],
+    "note": "OD-X11 v2 (Owner 2026-11-15): the formal TelemetryA has the Legacy Jump execution ON. Jump OFF is a diagnostic / comparison build only and is never a formal candidate, deployed under the formal name or promoted."
+  },
+  "baseline": {
+    "sha256": "17CA7159C4C6F891CC4EF626047A44180F1001668393AAA70A6C2647C9185C17",
+    "sourceCommit": "b0a42d377b7b078f3b6910de8b5aa1005aa8e5c0",
+    "sizeBytes": 180736,
+    "capabilities": {
+      "legacyJumpExec": false,
+      "executionCompiledIn": false,
+      "jumpCapabilityAdvertised": false,
+      "featureBits": 0,
+      "buildRole": "",
+      "tokens": [
+        "ACCELZ",
+        "PTPAIR",
+        "PseudoTurnbackPairCodec"
+      ]
+    },
+    "promotedAt": "2026-11-15 (debt A Global Final Close)",
+    "closeRef": "hud-semantics-fix-v1-20261114-1/global-final-close.md",
+    "contractCompliant": false,
+    "regression": "Jump OFF (built without /p:LegacyJumpExec=true); the 2026-11-10 baseline 9F0B0919 was Jump ON. Superseded by the first OD-X11 v2 formal promote."
+  },
+  "history": [],
+  "rollbackAssets": [
+    {
+      "sha256": "17CA7159C4C6F891CC4EF626047A44180F1001668393AAA70A6C2647C9185C17",
+      "capabilities": {
+        "legacyJumpExec": false,
+        "executionCompiledIn": false,
+        "jumpCapabilityAdvertised": false,
+        "featureBits": 0,
+        "buildRole": "",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "path": "csender-range-v1-20261115/candidate/TScoring.TelemetryA.dll",
+      "note": "current baseline before OD-X11 v2; Jump OFF; kept as capability-regression evidence, guard RED input and rollback asset (a rollback to it loses the Jump capability of any v2 baseline: Owner approval id required)"
+    },
+    {
+      "sha256": "EDEB5766BEAF1C7E6F8974828001E7AFF885BB4C92092735B398DC891C89D640",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "path": "csender-range-v1-20261115/candidate-ljx/TScoring.TelemetryA.dll",
+      "note": "acceptance build of b0a42d3 (Jump ON, no AssemblyMetadata); not a formal candidate under OD-X11 v2; kept as evidence"
+    },
+    {
+      "sha256": "B0640455305E2C99D0DB6D560E11570B5705B6A21434079079EF52A5C5540220",
+      "capabilities": {
+        "legacyJumpExec": false,
+        "executionCompiledIn": false,
+        "jumpCapabilityAdvertised": false,
+        "featureBits": 0,
+        "buildRole": "",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "path": "csender-range-v1-20261115/dll-baseline/TScoring.TelemetryA.dll",
+      "note": "PP-13 baseline (2026-11-14); Jump OFF; kept as capability-regression evidence"
+    }
+  ]
+}''')
+
+
 class Env(object):
     """A temporary directory with a ledger, a fake DLL file and its sidecar; the capability reader is injected (a dict by file name)."""
 
@@ -52,7 +148,7 @@ class Env(object):
         self.dir = tempfile.mkdtemp(prefix="ts-artifact-")
         test.addCleanup(shutil.rmtree, self.dir, True)
         self.ledger_path = os.path.join(self.dir, "ledger.json")
-        shutil.copy(G.DEFAULT_LEDGER, self.ledger_path)
+        G.write_json(self.ledger_path, json.loads(json.dumps(INITIAL_LEDGER)))
         self.caps = {}
 
     def dll(self, name="TScoring.TelemetryA.dll", cap=None, sidecar=True, sidecar_over=None):
@@ -374,10 +470,19 @@ class E_LedgerAndClose(unittest.TestCase):
         self.assertEqual(ledger["component"], "TScoring.TelemetryA")
         self.assertTrue(ledger["contract"]["legacyJumpExec"])
         self.assertEqual(ledger["contract"]["buildRole"], "Formal")
-        shas = [a["sha256"][:8] for a in ledger["rollbackAssets"]]
-        self.assertEqual(sorted(shas), ["17CA7159", "B0640455", "EDEB5766"])                  # kept as evidence / guard RED input / rollback assets, none deleted
-        self.assertFalse(ledger["baseline"]["contractCompliant"])
-        self.assertEqual(ledger["baseline"]["sha256"][:8], "17CA7159")
+        by_sha = {a["sha256"][:8]: a for a in ledger["rollbackAssets"]}
+        self.assertEqual(sorted(by_sha), ["17CA7159", "B0640455", "EDEB5766"])                # kept as evidence / guard RED input / rollback assets, none deleted
+        # since the first OD-X11 v2 promote (D6E6E324, 2026-11-15) the baseline is a Jump ON formal build and the Jump OFF 17CA7159 is an emergency,
+        # capability-losing rollback that needs an Owner approval id and is never selected automatically
+        base = ledger["baseline"]
+        self.assertEqual(base["sha256"][:8], "D6E6E324")
+        self.assertTrue(base["capabilities"]["legacyJumpExec"])
+        self.assertTrue(base["capabilities"]["executionCompiledIn"])
+        self.assertEqual(base["capabilities"]["featureBits"], 7)
+        self.assertEqual(base["capabilities"]["buildRole"], "Formal")
+        self.assertEqual([h["stage"] for h in ledger["history"] if h["sha256"][:8] == "D6E6E324"][-1], "promote")
+        self.assertTrue(by_sha["17CA7159"]["requiresOwnerApprovalId"])
+        self.assertFalse(by_sha["17CA7159"]["automaticSelection"])
 
     def test_the_close_script_is_read_only_and_checks_the_identities(self):
         text = read(os.path.join(TOOLS, "Test-ArtifactIdentity.ps1"))
