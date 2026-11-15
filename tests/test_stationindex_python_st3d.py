@@ -75,7 +75,7 @@ STALIST_FAR = ("STALIST:A=1=2000000000.0=-1=-1=-1=15000=0=0,B=1=1000.0=-1=-1=-1=
 FROZEN = {
     # Phase ST-3e0 changes both projects on purpose (exactly one Compile item of Shared\PackageContract.cs each; the blobs moved from defbe148... / 61092229...): their rows are gone; they are held by
     # tests/test_stationindex_package_st3e0.py (E0-25: each differs from the blob of 0b8e511 by that one item only)
-    "TsScoringPlugin/Handshake/Telemetry/Legacy/src/AssemblyInfo.cs": "b5de69b3ea512c05374408d85d8872abcfba2d32",
+    "TsScoringPlugin/Handshake/Telemetry/Legacy/src/AssemblyInfo.cs": "1043057942f8d382c756af6dfbf5a9d4b74ef82d",
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyApi.cs": "ad9e2548d2713a72e05ba1a52ffe2a696a0c3b77",       # 2026-11-08 (the pin moved, an intended change: formal LastStop BveG, CalcG / sway retired; was 0a9a9b33...)
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyDataPlaneSink.cs": "f5e11a9579ea5ba12544b9f00c0a48693f638819",
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyGroundLimits.cs": "b6cf818399ca8ed83499f2cbf1f40669b40c487f",

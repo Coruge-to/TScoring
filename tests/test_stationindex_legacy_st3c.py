@@ -67,7 +67,7 @@ UNTOUCHED = {
     # SI-R2.2-S2b (C3a) changed StationListIdentity.cs on purpose (the official next-station target: OfficialTargetReading / Station / Host / Reader / Wire, the shared reader core and wire helper of both senders; tests/test_official_target_wire_s2b.py / Handshake\Tests\Test-OfficialTargetWireS2B.ps1): the blob moved from bfa15b21... (the commit before S2b)
     "TsScoringPlugin/Handshake/Telemetry/Shared/StationListIdentity.cs": "b670065e031b77fe2fa2c820548a04bdc020f1ea",
     "TsScoringPlugin/Handshake/Telemetry/Shared/TelemetryDirectoryReader.cs": "cde81d8f5411df680cb17b10288a3c8d9b01f561",
-    "TsScoringPlugin/Handshake/Telemetry/Legacy/src/AssemblyInfo.cs": "b5de69b3ea512c05374408d85d8872abcfba2d32",
+    "TsScoringPlugin/Handshake/Telemetry/Legacy/src/AssemblyInfo.cs": "1043057942f8d382c756af6dfbf5a9d4b74ef82d",
     # SI-R2.2-S2b (C3a) changed LegacyTelemetryExtension.cs on purpose (the read only adapter ILegacyOfficialTargetApi.ReadOfficialTarget and the E-9 rule text of the header; tests/test_official_target_wire_s2b.py / Handshake\Tests\Test-OfficialTargetWireS2B.ps1): the blob moved from 12a0f84a... (the commit before S2b)
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyTelemetryExtension.cs": "de3bc22a4fff630b04cb7d183159d7c25a28245c",       # 2026-11-08 (the pin moved, an intended change: formal LastStop BveG, CalcG / sway retired; was 589e137f...)
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyJumpCommandQueue.cs": "c9517db9074f45ef447991cd52280ef512047070",

@@ -400,7 +400,8 @@ class F_Projects(unittest.TestCase):
         self.assertEqual([t for t in legacy if t[0].endswith("CurrentJumpEndpoint.cs")], [("..\\..\\..\\TsScoringPlugin\\CurrentJumpEndpoint.cs", "Shared\\CurrentJumpEndpoint.cs")])
         props = project_properties(LEGACY_CSPROJ)
         self.assertEqual(props["TargetFrameworkVersion"], [(None, "v4.8")])
-        self.assertEqual(props["DefineConstants"], [(None, "TRACE"), ("'$(LegacyJumpExec)' == 'true'", "$(DefineConstants);LEGACY_JUMP_EXEC")])
+        self.assertEqual(props["DefineConstants"], [(None, "TRACE"), ("'$(LegacyJumpExec)' == 'true'", "$(DefineConstants);LEGACY_JUMP_EXEC"),
+                                                       ("'$(LegacyJumpExec)' == 'false'", "$(DefineConstants);TSCORING_DIAGNOSTIC_JUMP_OFF")])      # OD-X11 v2 (on purpose; Owner 2026-11-15): Jump ON is the default, the diagnostic Jump OFF build adds its own symbol
         self.assertEqual(props["LangVersion"], [(None, "9.0")])
         self.assertEqual(props["TreatWarningsAsErrors"], [(None, "true")])
         self.assertNotIn("ProjectReference", read_text(LEGACY_CSPROJ))

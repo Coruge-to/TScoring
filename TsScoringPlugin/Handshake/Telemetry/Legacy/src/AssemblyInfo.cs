@@ -19,6 +19,18 @@ using System.Runtime.CompilerServices;
 // The offline tests (and nothing else) reach the internal core through this.
 [assembly: InternalsVisibleTo("TsScoringLegacyTelemetryTests")]
 
+// OD-X11 v2: the build contract of this DLL, recorded inside it (the build script / artifact guard compare it with the compiled-in flag and the sidecar; a mismatch fails the stage).
+#if LEGACY_JUMP_EXEC
+[assembly: AssemblyMetadata("TScoring.LegacyJumpExec", "true")]
+[assembly: AssemblyMetadata("TScoring.BuildRole", "Formal")]
+#elif TSCORING_DIAGNOSTIC_JUMP_OFF
+[assembly: AssemblyMetadata("TScoring.LegacyJumpExec", "false")]
+[assembly: AssemblyMetadata("TScoring.BuildRole", "DiagnosticJumpOff")]
+#else
+[assembly: AssemblyMetadata("TScoring.LegacyJumpExec", "false")]
+[assembly: AssemblyMetadata("TScoring.BuildRole", "Unspecified")]
+#endif
+
 [assembly: AssemblyVersion("0.14.0.0")]
 [assembly: AssemblyFileVersion("0.14.0.0")]
 [assembly: AssemblyInformationalVersion("0.14.0.0")]

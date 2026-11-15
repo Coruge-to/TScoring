@@ -7,7 +7,8 @@
 #   Golden   runs the scripted OFF session of the earlier phases and compares the SHA-256 of everything it sends and logs with -GoldenBaseline (the Stage 0 value)
 #   All      Static + Product + Golden
 # -Expect green (default): every result must be PASS.  -Expect red: the RED stage - the NEW results must be RED for a missing product element, the GUARD results must be PASS.
-# -CompiledIn: the DLL under test is the acceptance build (the LJX-1 compile symbol): LJX-04 / LJX-30 then expect the symbol compiled in.
+# -CompiledIn: DECLARES that the DLL under test is a Jump ON build. OD-X11 v2: the expectation is read FROM THE DLL (Tools\Read-TelemetryACapability.ps1); a declaration that differs from the DLL FAILS, and a DLL that is Jump OFF
+#   is no longer accepted silently (the 2026-11-13..15 regression passed with compiledIn=False).
 # Exit codes: 0 every result is as expected; 1 at least one unexpected result; 2 inconclusive (BVE or the managed application is running, no compiler, no DLL).
 #
 # No BVE, no AtsEX runtime. Named mappings and loopback sockets of synthetic, unused, odd and huge BVE PIDs only; the fixed UDP ports 54321 / 54322 are never bound and
@@ -146,7 +147,10 @@ function Run-Static {
         $define = [regex]::Match($proj, '<DefineConstants>([^<]*)</DefineConstants>')
         $defaultDefine = $define.Groups[1].Value
         $cond = $proj -match "\`$\(LegacyJumpExec\)'\s*==\s*'true'"
-        @{ Ok = ($flag.Success -and $defaultDefine -notmatch 'LEGACY_JUMP_EXEC' -and $cond); Detail = "#if LEGACY_JUMP_EXEC / #else false: $($flag.Success); default DefineConstants '$defaultDefine' has no symbol: $($defaultDefine -notmatch 'LEGACY_JUMP_EXEC'); the symbol is added only by /p:LegacyJumpExec=true: $cond" }
+        # OD-X11 v2 (Owner 2026-11-15): the DEFAULT is Jump ON; Jump OFF is a diagnostic build behind the guard target (all three conditions); the base DefineConstants still carries no symbol.
+        $defaultOn = $proj -match "<LegacyJumpExec Condition=`"'\`$\(LegacyJumpExec\)' == ''`">true</LegacyJumpExec>"
+        $guardOk = ($proj -match 'TSCORING-JUMP-VALUE') -and ($proj -match 'TSCORING-JUMPOFF-NOT-DIAGNOSTIC') -and ($proj -match 'TSCORING-JUMPOFF-FORMAL-OUTPUT')
+        @{ Ok = ($flag.Success -and $defaultDefine -notmatch 'LEGACY_JUMP_EXEC' -and $cond -and $defaultOn -and $guardOk); Detail = "#if LEGACY_JUMP_EXEC / #else false: $($flag.Success); base DefineConstants '$defaultDefine' has no symbol: $($defaultDefine -notmatch 'LEGACY_JUMP_EXEC'); the symbol is added by LegacyJumpExec=true: $cond; the default of LegacyJumpExec is true: $defaultOn; the Jump OFF guard (3 errors) is present: $guardOk" }
     }
     SCheck 'S05' {
         $missing = @($planeFiles | Where-Object { -not (Test-Path (Join-Path $ProductSrcDir $_)) })
@@ -319,11 +323,24 @@ function Save-RunResult([string]$name, $rr) {
     [IO.File]::WriteAllLines((Join-Path $LogDir ($name + '-results.tsv')), $tsv.ToArray(), (New-Object Text.UTF8Encoding($false)))
 }
 
+function Detect-CompiledIn([string]$dll) {
+    $reader = Join-Path $Root 'Tools\Read-TelemetryACapability.ps1'
+    if (-not (Test-Path $reader)) { return $null }
+    $out = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $reader -Dll $dll
+    $j = $out | Select-Object -Last 1 | ConvertFrom-Json
+    if (-not $j.ok) { return $null }
+    return [bool]$j.executionCompiledIn
+}
+
 function Run-Product {
     Write-Host '--- Product: the LJX-1 cases against the product DLL'
     if (-not (Test-Path $DllPath)) { Write-Host ('INCONCLUSIVE: product DLL absent: ' + $DllPath); $script:inconclusive = $true; return }
     $b = Build-Fixture $DllPath 'work-product'
-    $b.Type.GetField('ExpectCompiledIn').SetValue($null, [bool]$CompiledIn)
+    $detected = Detect-CompiledIn $DllPath
+    if ($null -eq $detected) { Report 'Product' 'compiledIn' 'GUARD' 'FAIL' 'the compiled-in flag could not be read from the DLL'; return }
+    if ($PSBoundParameters.ContainsKey('CompiledIn') -and ([bool]$CompiledIn -ne [bool]$detected)) { Report 'Product' 'compiledIn' 'GUARD' 'FAIL' ('declared compiledIn=' + [bool]$CompiledIn + ' but the DLL says ' + [bool]$detected); return }
+    Report 'Product' 'compiledIn' 'GUARD' $(if ($detected) { 'PASS' } else { 'FAIL' }) ('read from the DLL: compiledIn=' + [bool]$detected + ' (OD-X11 v2: the formal Legacy DLL has the Jump execution ON)')
+    $b.Type.GetField('ExpectCompiledIn').SetValue($null, [bool]$detected)
     $found = @($b.Type.GetMethod('DiscoverIds').Invoke($null, $null))
     Report 'Product' 'count' 'GUARD' $(if ($found.Count -eq 33) { 'PASS' } else { 'FAIL' }) ("discovered " + $found.Count + " case methods by reflection; the plan has 33 (LJX-01..32, LJX-99)")
     [string[]]$onlyIds = @($Only -split ',' | Where-Object { $_ })

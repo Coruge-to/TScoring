@@ -40,13 +40,27 @@
     <AtsExLegacyFolder>$(PUBLIC)\Documents\BveEx\Legacy\</AtsExLegacyFolder>
   </PropertyGroup>
   <!--
-    PHASE PID-D4 / LEGACY JUMP LJX-1 (the minimal execution slice): the build flag. The DEFAULT build does not define LEGACY_JUMP_EXEC: the Legacy Jump execution is OFF (the
-    Directory carries REQUEST_ID only, nothing is claimed or executed, the telemetry rows are the rows of the earlier build). Only the acceptance build is made with
-    /p:LegacyJumpExec=true; it defines LEGACY_JUMP_EXEC and is the only build that may be deployed for the live acceptance of LJX-1.
+    OD-X11 v2 (Owner 2026-11-15): the Legacy Jump execution is part of the formal product. LegacyJumpExec is TRUE by default (unset or true). The Jump OFF build is a DIAGNOSTIC / comparison build only and
+    needs ALL of: /p:LegacyJumpExec=false, /p:TScoringDiagnosticJumpOff=true and an OutputPath under a diag-jumpoff folder; anything else is an MSBuild error (TScoringJumpContractGuard). A Jump OFF build is never a
+    formal candidate: it is not built into a formal output folder, carries TScoring.BuildRole=DiagnosticJumpOff and is rejected by package\artifact_guard.py for every formal stage (deploy / promote / rollback).
+    History: LJX-1 (PID-D4) made the Jump execution a build flag (default OFF); the formal DLL baseline of 2026-11-10 was the acceptance build, later TelemetryA rebuilds without the flag regressed it silently.
   -->
+  <PropertyGroup>
+    <LegacyJumpExec Condition="'$(LegacyJumpExec)' == ''">true</LegacyJumpExec>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(LegacyJumpExec)' == 'true'">
     <DefineConstants>$(DefineConstants);LEGACY_JUMP_EXEC</DefineConstants>
+    <TScoringBuildRole>Formal</TScoringBuildRole>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(LegacyJumpExec)' == 'false'">
+    <DefineConstants>$(DefineConstants);TSCORING_DIAGNOSTIC_JUMP_OFF</DefineConstants>
+    <TScoringBuildRole>DiagnosticJumpOff</TScoringBuildRole>
+  </PropertyGroup>
+  <Target Name="TScoringJumpContractGuard" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(LegacyJumpExec)' != 'true' And '$(LegacyJumpExec)' != 'false'" Code="TSCORING-JUMP-VALUE" Text="LegacyJumpExec must be true or false (got '$(LegacyJumpExec)')." />
+    <Error Condition="'$(LegacyJumpExec)' == 'false' And '$(TScoringDiagnosticJumpOff)' != 'true'" Code="TSCORING-JUMPOFF-NOT-DIAGNOSTIC" Text="A Jump OFF build is diagnostic only: it needs /p:TScoringDiagnosticJumpOff=true (OD-X11 v2)." />
+    <Error Condition="'$(LegacyJumpExec)' == 'false' And !$(OutputPath.ToLowerInvariant().Contains('diag-jumpoff'))" Code="TSCORING-JUMPOFF-FORMAL-OUTPUT" Text="A Jump OFF build may only be written under a diag-jumpoff folder (OutputPath='$(OutputPath)')." />
+  </Target>
   <ItemGroup>
     <Reference Include="AtsEx.PluginHost">
       <HintPath>$(AtsExLegacyFolder)AtsEx.PluginHost.dll</HintPath>
