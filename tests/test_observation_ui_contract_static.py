@@ -55,12 +55,13 @@ EVENT_VOCABULARY = {
 }
 THREAD_SNAPSHOT = {"HandshakeControlPlane.cs": 1, "AppProcessManager.cs": 1, "BveWindowMessageObserver.cs": 1, "HandshakeSession.cs": 2, "LegacyJumpControlPlane.cs": 1}
 
-PROTECTED_DLLS = (
-    # (path, sha256 prefix, why)
-    (r"C:\Users\Public\Documents\BveEx\2.0\Extensions\TScoring.TelemetryB.dll", "C2111C91", "Current telemetry DLL: contains no ObservationLog"),   # public naming migration N5 (on purpose): new file name; the stale prefix 1C2D6896 (a known baseline failure) is re-pinned to the TScoring.TelemetryB build
-    (r"C:\Users\Public\Documents\BveEx\Legacy\Extensions\TScoring.TelemetryA.dll", "E40D271C", "Legacy telemetry DLL: contains no ObservationLog"),   # likewise (was B87C1AC9)
-    (r"C:\Users\Public\Documents\BveEx\2.0\Extensions\TSScoring.FirstChanceDiagnostic.dll", "04378DDC", "First-Chance diagnostic DLL: separate responsibility"),
-)
+# KF-FIX (Owner 2026-11-15, O-3): the fixed SHA-256 pins of the INSTALLED DLLs (PROTECTED_DLLS: TelemetryB C2111C91, TelemetryA E40D271C, FirstChanceDiagnostic 04378DDC) and
+# `test_guard_protected_dlls_are_byte_identical` are retired. They failed at every deployment (a known failure of the baseline) and so stopped guarding anything - the one test that
+# looked at the installed TelemetryA failed after the Jump OFF build was deployed and was counted as "known", which is how the Capability regression of 2026-11-13..15 went unseen.
+# Replaced IN THE SAME COMMIT by the ledger-driven guard tests/test_artifact_deployed_identity.py (package/artifact_guard.py + package/capabilities/TScoring.TelemetryA.json):
+# fixture / deployed SHA-256, executionCompiledIn, featureBits, LegacyJumpExec, BuildRole, formalCandidate, accepted = deployed = promoted identity and no loss of a capability of the
+# baseline. The property these pins were meant to protect - the telemetry DLLs carry no ObservationLog - is checked by content (not by a SHA) in
+# test_guard_only_the_three_dlls_carry_the_observation_log below. TelemetryB / BridgeA / BridgeB / InputDevice have no Capability ledger yet (separate Stage candidate).
 
 
 def _src(name):
@@ -375,18 +376,6 @@ class UiContractStatic(unittest.TestCase):
         listed = [f["path"] for f in manifest["files"]]
         for p in listed:
             self.assertFalse(re.search(r"Handshake/(Bridge|Caller|Shared/ObservationLog)", p.replace("\\", "/")), p)
-
-    def test_guard_protected_dlls_are_byte_identical(self):
-        checked = 0
-        for path, prefix, why in PROTECTED_DLLS:
-            if not os.path.exists(path):
-                continue
-            with open(path, "rb") as fh:
-                digest = hashlib.sha256(fh.read()).hexdigest().upper()
-            self.assertTrue(digest.startswith(prefix), why + ": " + path + " " + digest[:8])
-            checked += 1
-        if checked == 0:
-            self.skipTest("deployed DLLs not present on this machine")
 
     def test_guard_only_the_three_dlls_carry_the_observation_log(self):
         carriers = (

@@ -1605,7 +1605,8 @@ class I_DesktopLogAndStaticGuards(unittest.TestCase):
         # Phase ST-3e0 (on purpose, owner-approved G-CP-B): the Git-managed source package manifest is the one new file outside the C++ / launcher / DenGo files; it is allowed by its exact relative path only
         st3e0_source_manifest = "package/source-package-manifest.json"
         od_x11_capability_ledger = "package/capabilities/TScoring.TelemetryA.json"      # OD-X11 v2 (on purpose; Owner 2026-11-15): the Capability ledger of the formal TelemetryA, allowed by its exact relative path only (package/artifact_guard.py is a .py file)
-        changed = [l for l in out.splitlines() if l.strip() and not l.startswith("TsScoringPlugin/Handshake/Docs/") and l.strip() not in (st3e0_source_manifest, od_x11_capability_ledger)]
+        kf_fix_gitignore = ".gitignore"      # KF-FIX (on purpose; Owner 2026-11-15, O-4): the one line that keeps the explicit test fixture folder tests/fixtures/legacy-telemetry-a/ (a build artifact, never a source) out of Git
+        changed = [l for l in out.splitlines() if l.strip() and not l.startswith("TsScoringPlugin/Handshake/Docs/") and l.strip() not in (st3e0_source_manifest, od_x11_capability_ledger, kf_fix_gitignore)]
         self.assertEqual(changed, [])
 
     def test_no_legacy_or_atsex_branch_exists_in_the_python_production_code_that_si_a_added(self):

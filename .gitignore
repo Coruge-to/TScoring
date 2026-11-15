@@ -5,6 +5,9 @@ __pycache__/
 .venv/
 venv/
 
+# Test fixtures placed explicitly from the formal build artifact (KF-FIX): the DLL, its sidecar and manifest are never tracked (tests/fixture_support.py)
+tests/fixtures/legacy-telemetry-a/
+
 # UI
 *.log
 
