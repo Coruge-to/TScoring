@@ -3,7 +3,7 @@
 # (pid-stationindex-contract-gap-audit-v1); the Python half is tests\test_char_stop_door_arrival_st0.py, the source-shape half (Current Class1.cs cannot run offline)
 # is tests\test_char_stop_door_source_pins_st0.py. It pins what the DLL does TODAY and nothing else. Every check carries one of the five meanings
 # (the same words as the Python files): REQUIREMENT-BACKED / CURRENT-BEHAVIOR-ONLY / KNOWN-DEFECT-BEHAVIOR / CROSS-LAYER-DIFFERENCE / FUTURE-REPLACEMENT-TARGET.
-# NOTHING here approves a current behaviour as a requirement: 0.1 km/h, 300 ms, 100 m, the inclusive range bounds are pinned as they are.
+# NOTHING here approves a current behaviour as a requirement: 0.1 km/h, 300 ms, 100 m, the range bounds are pinned as they are (the overrun end became exclusive on purpose, 2026-11-15).
 #
 # HOW: exactly as Test-StationTimelineJF1.ps1: the BUILT Legacy telemetry DLL is loaded from memory and driven through a tiny public fixture class compiled here from a
 # here-string (the DLL grants its internals to an assembly named TsScoringLegacyTelemetryTests). The fixture differs only in that it can set the two margins per
@@ -153,17 +153,17 @@ try {
         $okSpeed = $true; for ($i = 0; $i -lt $r.Count; $i++) { if ($r[$i][1] -ne $expect[$i]) { $okSpeed = $false } }
         Check 'T14' 'CROSS-LAYER-DIFFERENCE' 'the sender calls |speed| < 0.1 km/h stopped (0.099 and -0.05 arrive, 0.1 and -0.1 do not); Python calls only exactly 0.0 stopped (see the Python file)' $okSpeed
 
-        # ---- T17 (Legacy): the author-defined range: -MarginMax <= (station - location) <= |MarginMin|, both bounds inclusive ---------------------------------------------------
+        # ---- T17 (Legacy): the author-defined range: -MarginMax < (station - location) <= |MarginMin|: the short end inclusive, the overrun end EXCLUSIVE (the BVE official half-open range, on purpose 2026-11-15) ---------------------------------------------------
         Write-Host '--- T17: the author-defined range'
         function Arrives([int]$door, [double]$loc, [double]$mmin, [double]$mmax) {
             $q = StopProbeOf $door $mmin $mmax
             $q.Step($loc, 0.0, $T + 1000, $true)
             return ($q.NextTime -eq $DEP)
         }
-        $okRange = (Arrives 0 995.0 5.0 5.0) -and (-not (Arrives 0 994.99 5.0 5.0)) -and (Arrives 0 1005.0 5.0 5.0) -and (-not (Arrives 0 1005.01 5.0 5.0))
-        Check 'T17' 'REQUIREMENT-BACKED' 'with 5 m / 5 m the operational stop arrives at exactly 5.0 m short and 5.0 m past and not at 5.01 m (both bounds inclusive)' $okRange
-        $okSides = (Arrives 0 996.0 4.0 9.0) -and (-not (Arrives 0 995.9 4.0 9.0)) -and (Arrives 0 1009.0 4.0 9.0) -and (-not (Arrives 0 1009.1 4.0 9.0))
-        Check 'T17' 'REQUIREMENT-BACKED' 'MarginMin is the SHORT side and MarginMax the PAST side: with 4 m / 9 m it arrives 4.0 m short and 9.0 m past, not 4.1 m short or 9.1 m past' $okSides
+        $okRange = (Arrives 0 995.0 5.0 5.0) -and (-not (Arrives 0 994.99 5.0 5.0)) -and (-not (Arrives 0 1005.0 5.0 5.0)) -and (Arrives 0 1004.99 5.0 5.0) -and (-not (Arrives 0 1005.01 5.0 5.0))
+        Check 'T17' 'REQUIREMENT-BACKED' 'with 5 m / 5 m the operational stop arrives at exactly 5.0 m short (inclusive) but NOT at exactly 5.0 m past (exclusive), and arrives at 4.99 m past (BVE official half-open range)' $okRange
+        $okSides = (Arrives 0 996.0 4.0 9.0) -and (-not (Arrives 0 995.9 4.0 9.0)) -and (Arrives 0 1008.9 4.0 9.0) -and (-not (Arrives 0 1009.0 4.0 9.0)) -and (-not (Arrives 0 1009.1 4.0 9.0))
+        Check 'T17' 'REQUIREMENT-BACKED' 'MarginMin is the SHORT side and MarginMax the PAST side: with 4 m / 9 m it arrives 4.0 m short and 8.9 m past, not 4.1 m short, not exactly 9.0 m past and not 9.1 m past' $okSides
         $okAbs = (Arrives 0 996.0 -4.0 9.0) -and (-not (Arrives 0 995.9 -4.0 9.0))
         Check 'T17' 'REQUIREMENT-BACKED' 'a NEGATIVE MarginMin is used as its absolute value (-4 m behaves as 4 m)' $okAbs
         $q = StopProbeOf 0 -3.5 4.25

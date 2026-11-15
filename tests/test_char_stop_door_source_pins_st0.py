@@ -179,10 +179,12 @@ class Pins(ShortCase):
         self.assertIn("(api.TryStations(out stations) && stations != null && stations.Count == stationCount)", self.lses)
         self.assertIn("catch { staList = null; }", self.lses)
 
-    @st0("T17", "CURRENT-BEHAVIOR-ONLY", items=(10, 14), note="the range test of the sender state machine: distToStop in [-MarginMax, MarginMin], both bounds inclusive, in Current and in Legacy")
-    def test_PIN_T17_the_sender_range_test_is_inclusive_on_both_sides(self):
-        self.assertIn("bool isInMargin = (distToStop >= -marginFront && distToStop <= marginBack);", self.cur)
-        self.assertIn("bool isInMargin = distToStop >= -marginFront && distToStop <= marginBack;", self.ltl)
+    @st0("T17", "CURRENT-BEHAVIOR-ONLY", items=(10, 14), note="the range test of the sender state machine: distToStop in (-MarginMax, MarginMin], the BVE official half-open range (Owner 2026-11-15, on purpose; was both bounds inclusive), in Current and in Legacy")
+    def test_PIN_T17_the_sender_range_test_is_half_open_like_the_official_one(self):
+        self.assertIn("bool isInMargin = (distToStop > -marginFront && distToStop <= marginBack);", self.cur)
+        self.assertIn("bool isInMargin = distToStop > -marginFront && distToStop <= marginBack;", self.ltl)
+        self.assertNotIn(">= -marginFront", self.cur)
+        self.assertNotIn(">= -marginFront", self.ltl)
 
     @st0("T17", "REQUIREMENT-BACKED", items=(10,), note="the Python range test is the same inequality on d = NEXTLOC - location, at every place it is used")
     def test_PIN_T17_python_uses_the_same_inequality_everywhere(self):

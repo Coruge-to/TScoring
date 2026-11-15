@@ -6,7 +6,7 @@ param(
 # The contract under test:
 #   * BVE supplies exactly 0.0 km/h while the train stands, so there is no noise band:  speed == 0.0 (+0.0 and -0.0) is STOPPED, speed != 0.0 (either sign) is MOVING;
 #     0.0001, -0.0001, 0.1, -0.1 and the smallest double are all moving; there is no intermediate state between 0.0 and 0.1 km/h;
-#   * the operational stop is MADE once: stopped (== 0.0) inside the author-defined range (MarginMin short side, MarginMax past side, both bounds inclusive) = the arrival candidate event;
+#   * the operational stop is MADE once: stopped (== 0.0) inside the author-defined range (MarginMin short side, MarginMax past side; short end inclusive, overrun end EXCLUSIVE: the BVE official half-open range since 2026-11-15, see Test-StopRangeHalfOpenSR1.ps1) = the arrival candidate event;
 #   * after it the target is switched to the next station by the first of (a) the scheduled departure time reached (the existing 300 ms hold) or (b) the vehicle moving (!= 0.0),
 #     AT ONCE (the same Tick); the position is not judged again;
 #   * a vehicle that never stopped inside the range keeps the target; a normal (door) stop, a pass station and the terminal keep their rules; arr / arrseq are not touched by the switch;
@@ -405,7 +405,7 @@ function Run-Suite([string]$kind) {
     $p.Step(1000.0, 5.0, ($DEP + 600000), $true)
     Check ($k + ' the terminal operational stop keeps the target B whatever the speed or the time') ($p.Target -eq 1)
 
-    # the range of the target station decides the stop (author-defined, both bounds inclusive, MarginMin short side / MarginMax past side)
+    # the range of the target station decides the stop (author-defined, short end inclusive, overrun end EXCLUSIVE: the BVE official half-open range since 2026-11-15, see Test-StopRangeHalfOpenSR1.ps1; MarginMin short side / MarginMax past side)
     $p = NewProbe $k 0 $false $false 4.0 9.0
     $p.Step(996.0, 0.0, ($T + 1000), $true)
     Check ($k + ' stopped 4.0 m short with MarginMin 4: the stop is made (arr = B)') (($p.ArrSeq -eq 1) -and ($p.ArrIdx -eq 1))
@@ -415,8 +415,11 @@ function Run-Suite([string]$kind) {
     $p.Step(995.9, 0.0001, ($T + 2000), $true)
     Check ($k + ' ... the target stays B') ($p.Target -eq 1)
     $p = NewProbe $k 0 $false $false 4.0 9.0
+    $p.Step(1008.9, 0.0, ($T + 1000), $true)
+    Check ($k + ' stopped 8.9 m past with MarginMax 9: the stop is made') ($p.ArrSeq -eq 1)
+    $p = NewProbe $k 0 $false $false 4.0 9.0
     $p.Step(1009.0, 0.0, ($T + 1000), $true)
-    Check ($k + ' stopped 9.0 m past with MarginMax 9: the stop is made') ($p.ArrSeq -eq 1)
+    Check ($k + ' stopped exactly 9.0 m past with MarginMax 9: the stop is NOT made (the overrun end is outside the BVE official range) and the target stays B') (($p.ArrSeq -eq 0) -and ($p.Target -eq 1))
 }
 
 try {

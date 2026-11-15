@@ -1249,7 +1249,7 @@ namespace TsScoringPlugin
                         else if (targetSt.DoorDir == 0)
                         {
                             double distToStop = nextStationLoc - location;
-                            bool isInMargin = (distToStop >= -marginFront && distToStop <= marginBack);
+                            bool isInMargin = (distToStop > -marginFront && distToStop <= marginBack);   // the BVE official stop range (BveTs.exe 5 and 6, raw doubles): v + margin1 <= loc < v + margin2, i.e. -marginFront < d <= marginBack; the overrun end d == -marginFront is OUT, the short end d == +marginBack is IN
                             // Time Fix B3: BVE supplies exactly 0.0 while the train stands, so there is no noise band: speed == 0.0 (+0.0 and -0.0) is STOPPED, any other speed (either sign) is MOVING.
                             bool isStopped = speed == 0.0;
                             int depTime = targetSt.DepTime > 0 ? targetSt.DepTime : targetSt.InterpolatedTime;

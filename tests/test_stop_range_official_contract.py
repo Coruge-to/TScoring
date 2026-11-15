@@ -38,6 +38,50 @@ class A_NoClosedOverrunEnd(unittest.TestCase):
             self.assertIsNone(re.search(r"-self\.bve_margin_f\s*\n\s*<=", code), name)
 
 
+class A2_CSenderParity(unittest.TestCase):
+    """The C# senders (Current Class1.cs, Legacy LegacyStationTimeline.cs) judge the SAME range as the Python side (Owner 2026-11-15): the comparison operators are read from the C# SOURCE TEXT and evaluated
+    on the boundary values; the result must equal the Python scoring range (apply_stop_score pays) and the re-stop range (turnback_train_state.in_range)."""
+    CS_PATTERNS = (("TsScoringPlugin/TsScoringPlugin/Class1.cs", r"bool isInMargin = \(distToStop (>=?) -marginFront && distToStop (<=?) marginBack\);"),
+                   ("TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyStationTimeline.cs", r"bool isInMargin = distToStop (>=?) -marginFront && distToStop (<=?) marginBack;"))
+
+    @staticmethod
+    def evaluate(lower_op, upper_op, d, mf, mb):
+        lower = d > -mf if lower_op == ">" else d >= -mf
+        upper = d <= mb if upper_op == "<=" else d < mb
+        return lower and upper
+
+    def boundary_values(self, mf, mb):
+        import math
+        out = []
+        for base in (mb, -mf):
+            out += [base, math.nextafter(base, math.inf), math.nextafter(base, -math.inf)]
+        return out + [0.0, 0.5 * mb, -0.5 * mf]
+
+    def test_the_c_sharp_operators_are_the_ones_of_the_python_scoring_and_restop_range(self):
+        for rel, pattern in self.CS_PATTERNS:
+            with open(os.path.join(ROOT, rel.replace("/", os.sep)), encoding="utf-8") as fh:
+                m = re.search(pattern, fh.read())
+            self.assertIsNotNone(m, rel)
+            lower_op, upper_op = m.group(1), m.group(2)
+            self.assertEqual((lower_op, upper_op), (">", "<="), rel)
+            for mf, mb in ((2.0, 2.0), (3.0, 2.0), (2.0, 3.0), (0.5, 0.5), (5.0, 5.0)):
+                for d in self.boundary_values(mf, mb):
+                    cs = self.evaluate(lower_op, upper_op, d, mf, mb)
+                    points = []
+                    original = S.add_score_popup
+                    S.add_score_popup = lambda self, add, *a, **k: points.append(add)
+                    try:
+                        stub = types.SimpleNamespace(is_scoring_mode=True, is_stopped_out_of_range=False, bve_margin_f=mf, bve_margin_b=mb)
+                        S.apply_stop_score(stub, d, 100.0)
+                    finally:
+                        S.add_score_popup = original
+                    # apply_stop_score pays only inside the stop range AND within 1 m (cm <= 100): compare on the range test itself through the re-stop helper (pure, no 1 m limit)
+                    restop = S.turnback_train_state(types.SimpleNamespace(bve_speed=0.0, bve_location=-d, turnback_machine=types.SimpleNamespace(stop_range=(0.0, mf, mb))))[1]      # a_position - position == d EXACTLY
+                    self.assertEqual(cs, restop, "%s d=%r mf=%r mb=%r" % (rel, d, mf, mb))
+                    if abs(d) <= 0.9 and mf <= 0.5 and mb <= 0.5:
+                        self.assertEqual(cs, bool(points), "scoring %s d=%r" % (rel, d))
+
+
 class B_Judgements(unittest.TestCase):
     def score_of(self, d, margin=0.5):
         points = []
