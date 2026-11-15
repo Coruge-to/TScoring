@@ -266,15 +266,11 @@ class SplitIsBehaviourPreserving(unittest.TestCase):
         self.assertGreater(trace[-1][2]["posted"], 5)                       # messages were posted to the BVE window
         self.assertGreater(trace[-1][2]["gui_calls"], 5)                     # window calls were made
 
-    def test_the_traces_are_identical_for_many_scripts(self):
-        for seed in range(1, 41):
-            old = run(self.baseline, seed)
-            new = run(self.main, seed)
-            self.assertEqual(len(old), len(new))
-            for i, (a, b) in enumerate(zip(old, new)):
-                if a != b:
-                    diff = [(n, x, y) for (n, x), (_n, y) in zip(a[1], b[1]) if x != y]
-                    self.fail("seed %d step %d: error %r vs %r; state diff %s; recorders %s vs %s" % (seed, i, a[0], b[0], diff[:5], a[2], b[2]))
+    # KF-FIX (Owner 2026-11-15, P-2) retired `test_the_traces_are_identical_for_many_scripts`: the trace equivalence of the OLD module (commit 9f25a26, the start of Phase SI-A) and the
+    # CURRENT main.py over 40 seeded scripts. The split of 2026-10-11 is finished; since then the Overlay legitimately gained state and behaviour, so the OLD module raises
+    # AttributeError ('bve_tgt_idx') on the rig while the current one runs. The behaviour of the CURRENT Overlay under scripted ticks is pinned by
+    # tests/test_characterization_sia1.py and by tests/test_managed_input_sia3.py / test_pause_ptop_width_sia4.py (the real Overlay with the real controllers).
+    # See the retired-test ledger of the KF-FIX Stage.
 
     def test_the_harness_sees_a_removed_part(self):
         """A vacuous comparison would pass anything: with the F8 suppression part removed from the new implementation the traces must differ."""
@@ -414,12 +410,12 @@ class SiAScopeOfMain(unittest.TestCase):
         cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "Overlay")
         return {n.name: (ast.dump(n), ast.get_source_segment(src, n)) for n in cls.body if isinstance(n, ast.FunctionDef)}, tree
 
-    def test_the_overlay_members_added_changed_and_removed(self):
-        mo, _ = self.members(self.old)
-        mn, _ = self.members(self.new)
-        self.assertEqual(set(mo) - set(mn), set())
-        self.assertEqual(set(mn) - set(mo), self.NEW_MEMBERS)
-        self.assertEqual({n for n in set(mo) & set(mn) if mo[n][0] != mn[n][0]}, self.CHANGED_MEMBERS)
+    # KF-FIX (Owner 2026-11-15, P-2) retired `test_the_overlay_members_added_changed_and_removed`, `test_the_module_level_changes` and `test_the_init_of_the_overlay_is_untouched`: the
+    # scope audit of Phase SI-A (what it added / changed / left untouched in main.py against commit 9f25a26, 2026-10-11). They required that main.py differs from that commit
+    # in EXACTLY the SI-A way for ever, which no later intended change (Jump, pseudo-turnback, overlay scaling, ...) can satisfy. Current detectors: the blob identity of main.py and of
+    # every runtime module in package/source-package-manifest.json (tests/test_stationindex_package_st3e0.py RED_E0_12 / RED_E0_13 / RED_E0_19, GUARD_E0_25: a change needs a reviewed
+    # manifest update), and the behaviour of the Overlay in tests/test_characterization_sia1.py and the managed rigs. NOTE: this is a whole-file control, not a per-member AST freeze;
+    # a per-member freeze is not a current contract. See the retired-test ledger of the KF-FIX Stage.
 
     def test_the_changed_members_removed_nothing_but_the_listed_lines(self):
         import difflib
@@ -431,23 +427,6 @@ class SiAScopeOfMain(unittest.TestCase):
             removed = {l[1:] for l in difflib.unified_diff(a, b, lineterm="", n=0) if l.startswith("-") and not l.startswith("---")}
             self.assertEqual(removed, allowed, name)
 
-    def test_the_module_level_changes(self):
-        import ast
-        _, to = self.members(self.old)
-        _, tn = self.members(self.new)
-        top_o = {getattr(n, "name", ast.dump(n)): ast.dump(n) for n in to.body}
-        top_n = {getattr(n, "name", ast.dump(n)): ast.dump(n) for n in tn.body}
-        self.assertEqual(set(top_o) - set(top_n), set())
-        self.assertEqual({k for k in set(top_n) - set(top_o)}, {"Import(names=[alias(name='managed_input')])", "Import(names=[alias(name='pause_recovery')])", "Import(names=[alias(name='utils')])"})
-        self.assertEqual({k for k in set(top_o) & set(top_n) if top_o[k] != top_n[k]}, {"Overlay", "_ManagedShutdownBridge", "_attach_managed_hud", "run_managed"})
-
-    def test_the_init_of_the_overlay_is_untouched(self):
-        mo, _ = self.members(self.old)
-        mn, _ = self.members(self.new)
-        self.assertEqual(mo["__init__"][0], mn["__init__"][0])
-        for name in ("paintEvent", "toggle_menu", "handle_menu_up", "handle_menu_down", "handle_menu_left", "handle_menu_right", "handle_menu_backspace",
-                     "handle_dropdown_enter", "find_bve_window", "_settle_jump_complete", "reset_telemetry_state"):
-            self.assertEqual(mo[name][0], mn[name][0], name)
 
 
 if __name__ == "__main__":

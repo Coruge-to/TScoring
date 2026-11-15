@@ -182,10 +182,10 @@ class C_EveryWriterOfTheDesktopDebugLog(unittest.TestCase):
                     out.append(node)
         return out
 
-    def test_the_call_sites_of_write_desktop_log_by_file(self):
-        counts = {name: len(self.calls(name, "write_desktop_log")) for name in PRODUCTION}
-        self.assertEqual({k: v for k, v in counts.items() if v}, {"main.py": 11, "scoring_logic.py": 22})
-        self.assertEqual(counts["managed_hud.py"] + counts["managed_mode.py"] + counts["managed_state.py"] + counts["hud_ui.py"], 0)
+    # KF-FIX (Owner 2026-11-15, P-2) retired `test_the_call_sites_of_write_desktop_log_by_file` (the SI-0 count of write_desktop_log call sites, main.py 11 / scoring_logic.py 22; it is
+    # 14 / 24 now). The same audit - every writer of the Desktop debug log and that the managed modules write nothing - is kept up to date by tests/test_managed_input_sia3.py
+    # I_DesktopLogAndStaticGuards.test_every_writer_of_the_log_is_behind_the_one_switch (counts 14 / 24, total 38, the only file openers) and
+    # test_a_whole_managed_scoring_session_writes_no_desktop_log. See the retired-test ledger of the KF-FIX Stage.
 
     def test_the_log_function_has_one_switch_and_swallows_every_error(self):
         """SI-0 recorded: unconditional, no switch. Phase SI-A (on purpose): ONE module switch, on by default (normal mode unchanged), switched off by managed

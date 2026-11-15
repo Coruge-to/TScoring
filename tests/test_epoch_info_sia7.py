@@ -345,12 +345,11 @@ class F_StaticGuards(unittest.TestCase):
         self.assertNotIn("keyboard.", segment)
         self.assertIn("pause-no-data", segment)
 
-    def test_the_other_modules_of_the_application_are_untouched_by_this_phase(self):
-        for name in ("managed_input.py", "managed_mode.py", "main.py", "scoring_logic.py", "telemetry_gate.py", "telemetry_contract.py", "hud_ui.py", "menu_ui.py"):
-            before = git_show(BEFORE_SIA7_COMMIT, name)
-            if before is None:
-                self.skipTest("git or the pre-SI-A7 commit is not available")
-            self.assertEqual(read(ROOT, name).replace("\r\n", "\n"), before.replace("\r\n", "\n"), name)
+    # KF-FIX (Owner 2026-11-15, P-2) retired `test_the_other_modules_of_the_application_are_untouched_by_this_phase` (managed_input / managed_mode / main / scoring_logic /
+    # telemetry_gate / telemetry_contract / hud_ui / menu_ui byte-identical to commit 42850d1b, the last commit before Phase SI-A7): a phase-scope audit of 2026-10-11 that every
+    # later intended change makes fail. Current detectors: tests/test_stationindex_package_st3e0.py C_Manifest RED_E0_12 / RED_E0_13 and D_Guard RED_E0_19 (every runtime Python
+    # module is pinned by blob identity in package/source-package-manifest.json; a change without a reviewed manifest update fails), F_NonRegression GUARD_E0_25, and
+    # test_managed_hud_e4 G test_scoring_and_ui_modules_are_unchanged_since_e3. See the retired-test ledger of the KF-FIX Stage.
 
     def test_the_state_reader_still_ignores_unknown_bits_it_does_not_understand(self):
         text = read(ROOT, "managed_state.py")
