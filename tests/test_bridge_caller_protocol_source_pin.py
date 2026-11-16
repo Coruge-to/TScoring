@@ -39,16 +39,16 @@ REQUIRED_KEYS = ("stage", "ownerContract", "files", "reason", "newSha", "tests",
 
 # The pinned sources at the formal tree f96a618 (taken 2026-11-16; unchanged by the KF-FIX commits).
 PINNED = {
-    "Bridge/Legacy/TSScoringPlugin.AtsExLegacy.Bridge.Prototype.csproj": "7F11C74FC6B4A3B397D4599153DCECE07935B1FFB21FFE5D6612E2A55040F6EB",
+    "Bridge/Legacy/TSScoringPlugin.AtsExLegacy.Bridge.Prototype.csproj": "6144755CA04E73BA78DB7DA711E58A89298988AB1C3AAA3928DCB0E71E3713AD",
     "Bridge/Legacy/src/AssemblyInfo.cs": "9DB7851B675A015624311E5181E54B5B81F454F68388AEC697FF1629DFC1FCB7",
-    "Bridge/Legacy/src/TsScoringLegacyBridge.cs": "402FB3EE9602194FCCF590BAAD4368C2B23C12EEF75E99D420C8C91C649C673F",
-    "Bridge/TSScoringPlugin.BveEx.Bridge.Prototype.csproj": "F2F849515A6437E0A273065C797B2FF5D7E8A559150600CACA40669C2589C0F6",
+    "Bridge/Legacy/src/TsScoringLegacyBridge.cs": "5BF912573EA5939B06A8481BE0E73B4B8D9CE5D70DDB7A847B2212FD8923C5D7",
+    "Bridge/TSScoringPlugin.BveEx.Bridge.Prototype.csproj": "85A97D6A0FBBB12EF99A5ECD359CA1CE65A9C8A6A5660991F9354B51A1B6816D",
     "Bridge/src/AssemblyInfo.cs": "C12250D0A9EB3CF044AB254F9A51576F34D2DDD9DAAA6EB13D4351AC91B63104",
     "Bridge/src/HandshakeControlPlane.cs": "0CB47394BC0A97CF8FA960BA7450DA5D2E2198EF499D2AD76102C3D953F196DE",
     "Bridge/src/ScenarioObserver.cs": "A0232B030E03B802180AF82FB7187F6B93A597B247D8C22E2D8E8B80B5168C00",
     "Bridge/src/ScenarioReadyPublisher.cs": "2E0C70038FC7E6A7C58927EBB13A6C02324A263121982CBD8CAE5BF93617C885",
     "Bridge/src/ScenarioReadyTracker.cs": "9C357AED54D4229E53597A16BC0944749D421A1AF8119DD90E1E33A59CCD59D1",
-    "Bridge/src/TsScoringBridgePrototype.cs": "A29D6824BB0237802F1D560D92B4DA3A179FEFB7BFD78BCF8A8A79A9BA7DDAD4",
+    "Bridge/src/TsScoringBridgePrototype.cs": "C24B511FBE64ED8C741B730AE144ED421EA48ED5F2C3549D0B83BB5C54C8F3CC",
     "Caller/TSScoringPlugin.Caller.InputDevice.csproj": "CEBE7CF0FD70F07CC9234DE40E8E2FFB1416C8B01A1A0E4199158A71634A393E",
     "Caller/src/AppController.cs": "28FE0F5B180F26184AF148E25C6693DCC206E3A7A1C49B9E9034396C7E1F36B6",
     "Caller/src/AppDirectoryPublisher.cs": "CB2DD29E86AFD4E55B938E56C95BB3DBE390E73D41DF35E324519D61987730D2",
@@ -81,7 +81,17 @@ PIN_UPDATES = [
         "liveRequired": False,
         "commit": "this commit (KF-FIX KF-09)",
     },
-]
+    {
+        "stage": "S05 fix (read-only Pause pulse: queue coalescing / generation ownership)",
+        "ownerContract": "Owner 2026-11-16, DQ-0..DQ-5: PAUSE READ-ONLY PULSE / QUEUE COALESCING / GENERATION OWNERSHIP DEFECT is fixed with the shared PausePulseGate (pending max 1, scenario epoch, 500 ms settle after ScenarioCreated, "
+                         "teardown / Dispose / formal-Tick suppression, running slot) in the Current Bridge and the Legacy Bridge (and Class1 / the Legacy Telemetry extension, outside this pin's scope); S05 itself stays HISTORICAL PRODUCT_SUSPECT / DIRECT CAUSATION UNPROVEN",
+        "files": ["Bridge/Legacy/TSScoringPlugin.AtsExLegacy.Bridge.Prototype.csproj", "Bridge/Legacy/src/TsScoringLegacyBridge.cs", "Bridge/TSScoringPlugin.BveEx.Bridge.Prototype.csproj", "Bridge/src/TsScoringBridgePrototype.cs"],
+        "reason": "the two Bridge adapters ask the gate before every Post, enter the pulse body only through the gate and feed it the scenario events; the two Bridge projects compile the shared Telemetry/Shared/PausePulseGate.cs",
+        "newSha": {"Bridge/Legacy/TSScoringPlugin.AtsExLegacy.Bridge.Prototype.csproj": "6144755CA04E73BA78DB7DA711E58A89298988AB1C3AAA3928DCB0E71E3713AD", "Bridge/Legacy/src/TsScoringLegacyBridge.cs": "5BF912573EA5939B06A8481BE0E73B4B8D9CE5D70DDB7A847B2212FD8923C5D7", "Bridge/TSScoringPlugin.BveEx.Bridge.Prototype.csproj": "85A97D6A0FBBB12EF99A5ECD359CA1CE65A9C8A6A5660991F9354B51A1B6816D", "Bridge/src/TsScoringBridgePrototype.cs": "C24B511FBE64ED8C741B730AE144ED421EA48ED5F2C3549D0B83BB5C54C8F3CC"},
+        "tests": ["Handshake/Tests/Test-PausePulseGateS05.ps1", "Handshake/Tests/Test-PausePulseContractS05.ps1", "Handshake/Tools/Invoke-PausePulseSiteMutationS05.ps1", "Handshake/Tools/Verify-PausePulsePP13.ps1"],
+        "liveRequired": True,
+        "commit": "this commit (S05 fix)",
+    },]
 
 
 def clean(data):

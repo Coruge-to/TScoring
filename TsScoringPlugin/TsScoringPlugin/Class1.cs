@@ -56,6 +56,9 @@ namespace TsScoringPlugin
         private System.Threading.Timer pulseTimer;
         private bool pulseDisposed;
         private bool pulseRunning;
+        // S05 fix: the shared gate owns pending (max 1), the scenario epoch, the 500 ms settle after ScenarioCreated, teardown / Dispose / formal-Tick suppression and the running slot.
+        private TSScoringPlugin.Pulse.PausePulseGate pulseGate = new TSScoringPlugin.Pulse.PausePulseGate();
+        private bool pulseEventsSubscribed;
         private DateTime pulseLastSend = DateTime.MinValue;
         private double lastLocationSample = double.NaN;
 
@@ -210,6 +213,12 @@ namespace TsScoringPlugin
                 pulseContext = System.Threading.SynchronizationContext.Current;
                 if (pulseContext != null)
                 {
+                    // S05 fix: the generation events feed the gate BEFORE the timer exists. Without the events the gate would never be read-ready, so no timer is started (fail closed).
+                    BveHacker.ScenarioOpened += OnPulseScenarioOpened;
+                    BveHacker.ScenarioClosed += OnPulseScenarioClosed;
+                    BveHacker.ScenarioCreated += OnPulseScenarioCreated;
+                    pulseEventsSubscribed = true;
+                    try { if (BveHacker.IsScenarioCreated) pulseGate.OnScenarioCreated(); } catch { }      // the host may already report a created scenario: start the settle window now
                     pulseTimer = new System.Threading.Timer(PulseTimerCallback, null, 1000, PausePulseIntervalMs);
                 }
             }
@@ -261,7 +270,19 @@ namespace TsScoringPlugin
             }
             catch { }
             pulseDisposed = true;
+            try { pulseGate.Dispose(); } catch { }
             try { if (pulseTimer != null) { pulseTimer.Dispose(); pulseTimer = null; } } catch { }
+            try
+            {
+                if (pulseEventsSubscribed)
+                {
+                    pulseEventsSubscribed = false;
+                    BveHacker.ScenarioOpened -= OnPulseScenarioOpened;
+                    BveHacker.ScenarioClosed -= OnPulseScenarioClosed;
+                    BveHacker.ScenarioCreated -= OnPulseScenarioCreated;
+                }
+            }
+            catch { }
             try { if (router != null) router.Close(); } catch { }
             transport.Client = null;
             try { if (udpClient != null) { udpClient.Close(); udpClient = null; } } catch { }
@@ -510,22 +531,35 @@ namespace TsScoringPlugin
 
         private bool firstTickNoted;
 
+        private void OnPulseScenarioOpened(ScenarioOpenedEventArgs e) { try { pulseGate.OnScenarioOpenedOrClosed(); } catch { } }
+        private void OnPulseScenarioClosed(EventArgs e) { try { pulseGate.OnScenarioOpenedOrClosed(); } catch { } }
+        private void OnPulseScenarioCreated(ScenarioCreatedEventArgs e) { try { pulseGate.OnScenarioCreated(); } catch { } }
+
         private void PulseTimerCallback(object state)
         {
             try
             {
                 System.Threading.SynchronizationContext ctx = pulseContext;
                 if (ctx == null || pulseDisposed) return;
-                if ((DateTime.Now - lastTickTime).TotalMilliseconds <= PausePulseGapMs) return;      // BVE ticks: nothing to do (read on the timer thread: a plain DateTime)
-                ctx.Post(delegate (object o) { PausePulse(); }, null);
+                int requestEpoch;
+                if (!pulseGate.TryRequest(out requestEpoch)) return;      // S05 fix: pending max 1, no request while torn down / settling / right after a formal Tick
+                try
+                {
+                    ctx.Post(delegate (object o) { PausePulse(requestEpoch); }, null);
+                }
+                catch
+                {
+                    pulseGate.CancelRequest();
+                }
             }
             catch { }
         }
 
         /// <summary>Phase PP-7: on the host's UI thread (the Tick thread). Never throws.</summary>
-        private void PausePulse()
+        private void PausePulse(int requestEpoch)
         {
-            if (pulseDisposed || pulseRunning) return;
+            if (!pulseGate.TryEnter(requestEpoch)) return;      // S05 fix: stale epoch / not read-ready / Dispose / formal Tick: the BVE body is not entered (also consumes the pending request)
+            if (pulseDisposed || pulseRunning) { pulseGate.Complete(); return; }
             pulseRunning = true;
             try
             {
@@ -536,11 +570,11 @@ namespace TsScoringPlugin
                 pulseCount++; if (pulseCount > 1) { pulseTotalUs += us; if (us > pulseMaxUs) pulseMaxUs = us; }   // the first pulse (JIT) is not counted
                 if (pulseCount % 500 == 0)
                 {
-                    try { if (diagnostics != null) diagnostics.Write("event=pause-pulse-stats n=" + pulseCount + " avgUs=" + (pulseTotalUs / (pulseCount - 1)) + " maxUs=" + pulseMaxUs); } catch { }
+                    try { if (diagnostics != null) diagnostics.Write("event=pause-pulse-stats n=" + pulseCount + " avgUs=" + (pulseTotalUs / (pulseCount - 1)) + " maxUs=" + pulseMaxUs + " " + pulseGate.StatsText()); } catch { }
                 }
             }
             catch { }
-            finally { pulseRunning = false; }
+            finally { pulseRunning = false; pulseGate.Complete(); }
         }
 
         public override void Tick(TimeSpan elapsed)
@@ -554,6 +588,7 @@ namespace TsScoringPlugin
             {
                 lastPulseSent = null;
                 lastTickTime = DateTime.Now;
+                pulseGate.NoteTick();
                 if (!firstTickNoted)
                 {
                     firstTickNoted = true;

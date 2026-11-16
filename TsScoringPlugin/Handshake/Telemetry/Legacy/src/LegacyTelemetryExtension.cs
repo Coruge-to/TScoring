@@ -88,6 +88,8 @@ namespace TSScoringPlugin.Telemetry
         private System.Threading.SynchronizationContext pulseContext;
         private System.Threading.Timer pulseTimer;
         private bool pulseRunning;
+        // S05 fix: the shared gate owns pending (max 1), the scenario epoch, the 500 ms settle after ScenarioCreated, teardown / Dispose / formal-Tick suppression and the running slot.
+        private TSScoringPlugin.Pulse.PausePulseGate pulseGate = new TSScoringPlugin.Pulse.PausePulseGate();
 
         public TsScoringLegacyTelemetryExtension(PluginBuilder builder)
             : base(builder)
@@ -148,6 +150,7 @@ namespace TSScoringPlugin.Telemetry
                 hacker.ScenarioClosed += OnScenarioClosed;
                 hacker.ScenarioCreated += OnScenarioCreated;
                 subscribed = true;
+                try { if (api.IsScenarioCreated()) { pulseGate.OnScenarioCreated(); } } catch { }      // already created at construction: the settle window starts now
             }
             catch
             {
@@ -204,7 +207,16 @@ namespace TSScoringPlugin.Telemetry
             {
                 System.Threading.SynchronizationContext ctx = pulseContext;
                 if (ctx == null || disposedFlag) return;
-                ctx.Post(delegate (object o) { Pulse(); }, null);
+                int requestEpoch;
+                if (!pulseGate.TryRequest(out requestEpoch)) return;      // S05 fix: no request right after a formal Tick, while torn down / settling; pending max 1
+                try
+                {
+                    ctx.Post(delegate (object o) { Pulse(requestEpoch); }, null);
+                }
+                catch
+                {
+                    pulseGate.CancelRequest();
+                }
             }
             catch
             {
@@ -212,17 +224,19 @@ namespace TSScoringPlugin.Telemetry
         }
 
         /// <summary>Phase PP-11: on the host's UI thread. Never throws.</summary>
-        private void Pulse()
+        private void Pulse(int requestEpoch)
         {
-            if (disposedFlag || pulseRunning) return;
+            if (!pulseGate.TryEnter(requestEpoch)) return;      // S05 fix: stale epoch / not read-ready / Dispose / formal Tick: session.OnPulse (the BVE read) is not reached (also consumes the pending request)
+            if (disposedFlag || pulseRunning) { pulseGate.Complete(); return; }
             pulseRunning = true;
             try { session.OnPulse(); }
             catch { }
-            finally { pulseRunning = false; }
+            finally { pulseRunning = false; pulseGate.Complete(); }
         }
 
         public override TickResult Tick(TimeSpan elapsed)
         {
+            try { pulseGate.NoteTick(); } catch { }
             try
             {
                 // LJX-1 (acceptance build only): claim, execute and read back BEFORE the session writes the row of this Tick; the completion follows AFTER it
@@ -272,6 +286,7 @@ namespace TSScoringPlugin.Telemetry
         public override void Dispose()
         {
             disposedFlag = true;
+            try { pulseGate.Dispose(); } catch { }
             try { if (pulseTimer != null) { pulseTimer.Dispose(); pulseTimer = null; } } catch { }
             try
             {
@@ -341,18 +356,21 @@ namespace TSScoringPlugin.Telemetry
         {
             bool reload = false;
             try { reload = e.IsReload; } catch { }
+            try { pulseGate.OnScenarioOpenedOrClosed(); } catch { }
             try { session.OnScenarioOpened(reload); } catch { }
             try { if (jump != null) { jump.NoteScenarioBoundary(); } } catch { }
         }
 
         private void OnScenarioClosed(EventArgs e)
         {
+            try { pulseGate.OnScenarioOpenedOrClosed(); } catch { }
             try { session.OnScenarioClosed(); } catch { }
             try { if (jump != null) { jump.NoteScenarioBoundary(); } } catch { }
         }
 
         private void OnScenarioCreated(ScenarioCreatedEventArgs e)
         {
+            try { pulseGate.OnScenarioCreated(); } catch { }
             try { session.OnScenarioCreated(); } catch { }
             try { if (jump != null) { jump.NoteScenarioBoundary(); } } catch { }
         }

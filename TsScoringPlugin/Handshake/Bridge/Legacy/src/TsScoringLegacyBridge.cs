@@ -68,6 +68,8 @@ namespace TSScoringPlugin.Handshake
         private long lastTickTicks;
         private volatile bool pulseDisposed;
         private bool pulseRunning;
+        // S05 fix: the shared gate owns pending (max 1), the scenario epoch, the 500 ms settle after ScenarioCreated, teardown / Dispose / formal-Tick suppression and the running slot.
+        private TSScoringPlugin.Pulse.PausePulseGate pulseGate = new TSScoringPlugin.Pulse.PausePulseGate();
         private System.Threading.SynchronizationContext pulseContext;
         private System.Threading.Timer pulseTimer;
 
@@ -91,6 +93,7 @@ namespace TSScoringPlugin.Handshake
             try
             {
                 lastTickTicks = DateTime.UtcNow.Ticks;
+                try { if (hacker != null && ReadIsCreatedValue() == 1) { pulseGate.OnScenarioCreated(); } } catch { }      // already created at construction: the settle window starts now
                 pulseContext = System.Threading.SynchronizationContext.Current;
                 if (pulseContext != null)
                 {
@@ -111,16 +114,26 @@ namespace TSScoringPlugin.Handshake
                 System.Threading.SynchronizationContext ctx = pulseContext;
                 if (ctx == null || pulseDisposed) return;
                 if ((DateTime.UtcNow.Ticks - System.Threading.Interlocked.Read(ref lastTickTicks)) <= PulseGapMs * 10000L) return;
-                ctx.Post(delegate (object o) { Pulse(); }, null);
+                int requestEpoch;
+                if (!pulseGate.TryRequest(out requestEpoch)) return;      // S05 fix: pending max 1, no request while torn down / settling / right after a formal Tick
+                try
+                {
+                    ctx.Post(delegate (object o) { Pulse(requestEpoch); }, null);
+                }
+                catch
+                {
+                    pulseGate.CancelRequest();
+                }
             }
             catch
             {
             }
         }
 
-        private void Pulse()
+        private void Pulse(int requestEpoch)
         {
-            if (pulseDisposed || pulseRunning) return;
+            if (!pulseGate.TryEnter(requestEpoch)) return;      // S05 fix: stale epoch / not read-ready / Dispose / formal Tick: tracker.OnPulse (the BVE read) is not reached (also consumes the pending request)
+            if (pulseDisposed || pulseRunning) { pulseGate.Complete(); return; }
             pulseRunning = true;
             try
             {
@@ -134,12 +147,14 @@ namespace TSScoringPlugin.Handshake
             finally
             {
                 pulseRunning = false;
+                pulseGate.Complete();
             }
         }
 
         public override TickResult Tick(TimeSpan elapsed)
         {
             System.Threading.Interlocked.Exchange(ref lastTickTicks, DateTime.UtcNow.Ticks);
+            try { pulseGate.NoteTick(); } catch { }
             try
             {
                 if (!firstTickSeen)
@@ -183,6 +198,7 @@ namespace TSScoringPlugin.Handshake
         {
             Obs("AB", "BRIDGE_DISPOSE_BEGIN", "sinceCtorBeginMs=" + SinceLoadMs() + " ready=" + ReadyFlag() + " availablePublished=" + AvailableFlag());
             pulseDisposed = true;
+            try { pulseGate.Dispose(); } catch { }
             try { if (pulseTimer != null) { pulseTimer.Dispose(); pulseTimer = null; } } catch { }
             try { UnsubscribeObservers(); } catch { }
             try { if (observer != null) { observer.OnDispose(); } } catch { }
@@ -440,12 +456,14 @@ namespace TSScoringPlugin.Handshake
         {
             bool reload = false;
             try { reload = e.IsReload; } catch { }
+            try { pulseGate.OnScenarioOpenedOrClosed(); } catch { }
             try { ScenarioReadyTracker t = tracker; if (t != null) { t.OnScenarioOpened(); } } catch { }
             try { if (observer != null) { observer.OnScenarioOpened(reload); } } catch { }
         }
 
         private void OnHackerScenarioClosed(EventArgs e)
         {
+            try { pulseGate.OnScenarioOpenedOrClosed(); } catch { }
             try { ScenarioReadyTracker t = tracker; if (t != null) { t.OnScenarioClosed(); } } catch { }
             try { if (observer != null) { observer.OnScenarioClosed(); } } catch { }
         }
@@ -457,6 +475,7 @@ namespace TSScoringPlugin.Handshake
 
         private void OnHackerScenarioCreated(ScenarioCreatedEventArgs e)
         {
+            try { pulseGate.OnScenarioCreated(); } catch { }
             try { ScenarioReadyTracker t = tracker; if (t != null) { t.OnScenarioCreated(); } } catch { }
             try { if (observer != null) { observer.OnScenarioCreated(); } } catch { }
         }

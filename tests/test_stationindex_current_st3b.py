@@ -391,6 +391,7 @@ class F_Projects(unittest.TestCase):
         ("..\\Shared\\PackageContract.cs", "Shared\\PackageContract.cs"),                                    # Phase ST-3e0 (pin moved): the package contract (TSJUMP2, constants only) is the one more link
         ("..\\Shared\\PseudoTurnbackQualifier.cs", "Shared\\PseudoTurnbackQualifier.cs"),                    # Stage TB-E (pin moved, an intended change): the qualifier moved from PseudoTurnbackStaging to Shared and is linked
         ("..\\Shared\\PseudoTurnbackPairCodec.cs", "Shared\\PseudoTurnbackPairCodec.cs"),   # Stage TB-E (pin moved, an intended change): the PTPAIR codec, the same move and link
+        ("..\\Shared\\PausePulseGate.cs", "Shared\\PausePulseGate.cs"),                                     # S05 fix (pin moved, an intended change; Owner 2026-11-16): the shared Pause pulse gate (pure C#, no BVE type)
         ], key=lambda t: t[0])   # Legacy sway source lookup (pin moved, an intended change): the Legacy-only finder of the figure object   # Shadow sway diagnostics (pin moved, an intended change): the shared read-only reflection reader of the sway figure
 
     @red("G-PC-1", "legacy-jumpwire-link-missing")

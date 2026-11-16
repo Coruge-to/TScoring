@@ -80,6 +80,9 @@
     <Compile Include="..\..\Shared\ObservationLog.cs">
       <Link>Shared\ObservationLog.cs</Link>
     </Compile>
+    <Compile Include="..\..\Telemetry\Shared\PausePulseGate.cs">
+      <Link>Shared\PausePulseGate.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
