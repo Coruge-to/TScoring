@@ -551,6 +551,9 @@ class FakeTime:
     def time(self):
         return self.now
 
+    def monotonic(self):                                                    # F11 / F12 serialisation (on purpose; Owner 2026-11-16): the F11 / F12 gate reads the monotonic clock
+        return self.now
+
     def sleep(self, s):
         self.now += s
 
@@ -624,6 +627,7 @@ class F_UpdateLogicCharacterization(unittest.TestCase):
         o.was_bve_found = True
         o.menu_state = 0
         o.bve_actual_state = "RUNNING"
+        o.F11_COOLDOWN_S = 0.0                                              # F11 / F12 serialisation (on purpose; Owner 2026-11-16): these tests press F11 / F12 back to back with no time passing; the gate has its own tests
 
     def tearDown(self):
         m = self.main

@@ -364,6 +364,7 @@ class D_F11AndF12(unittest.TestCase):
         self.o.was_bve_found = True
         self.o.menu_state = 0
         self.o.bve_actual_state = "RUNNING"
+        self.o.F11_COOLDOWN_S = 0.0                                          # F11 / F12 serialisation (on purpose; Owner 2026-11-16): these tests press F11 twice back to back with no time passing; the gate has its own tests (tests/test_f11_serialisation.py)
 
     def tearDown(self):
         for n, v in self.saved.items():

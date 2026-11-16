@@ -994,8 +994,9 @@ class D_Windows(Base):
         self.assertTrue(self.o.is_borderless_fullscreen)
 
     def test_CURRENT_F11_twice_before_the_OS_finished_maximizing_queues_two_fullscreen_requests_and_never_restores(self):
-        """CURRENT: the toggle looks at is_borderless_fullscreen, which only the deferred call sets. A second press inside that window repeats the
-        maximize request instead of undoing it. The user ends up fullscreen after two presses."""
+        """WITHOUT the gate (cooldown 0, as in this rig): the toggle looks at is_borderless_fullscreen, which only the deferred call sets. A second press inside that window repeats the
+        maximize request instead of undoing it. The user ends up fullscreen after two presses. F11 / F12 serialisation (on purpose; Owner 2026-11-16): in the product the gate is on (F11_COOLDOWN_S 0.8 s) and the second press is ignored,
+        see tests/test_f11_serialisation.py."""
         self.tap("f11")
         self.tap("f11")
         self.assertEqual(len(R.FakeQTimer.pending), 2)

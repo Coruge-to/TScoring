@@ -2355,12 +2355,32 @@ class Overlay(QWidget):
             return False
         return overlay_transform.is_native_fullscreen(style, exstyle)
 
+    F11_COOLDOWN_S = 0.8                # F11 / F12 serialisation (on purpose; Owner 2026-11-16): the next F11 / F12 is ignored for this long after one was carried out
+    _f11_busy_until = 0.0
+    _f11_ignored = 0
+
+    def _f11_gate(self, key):
+        """F11 / F12 serialisation (on purpose; Owner 2026-11-16): a window state change of BVE (style, maximise, size; BVE's D3D device is reset by it) is carried out ONE AT A TIME. A key that comes while the previous one is still being absorbed is ignored
+        (live 22:54:47: F11 pressed repeatedly gave on / off / on / on; the overlapping changes put the WinForms of the BVE window into a size-change recursion of about 7400 levels and BVE died of a stack overflow). The gate is shared by F11 and F12 (they share
+        is_borderless_fullscreen). One line `window-fullscreen-ignored` for the first ignored key of a burst, then at the 10th and the 100th. Returns True when the change may be carried out."""
+        now = time.monotonic()
+        if now < self._f11_busy_until:
+            self._f11_ignored += 1
+            if self._f11_ignored in (1, 10, 100):
+                self._emit_input_event("window-fullscreen-ignored", key=key, n=self._f11_ignored)
+            return False
+        self._f11_ignored = 0
+        self._f11_busy_until = now + self.F11_COOLDOWN_S
+        return True
+
     # 非同期処理によりボーダーレス全画面表示を切り替える
     def toggle_borderless_fullscreen(self):
         if not self.bve_hwnd or not win32gui.IsWindow(self.bve_hwnd):
             return
         if self._bve_in_native_fullscreen():
             write_desktop_log("[WINDOW] BVEの公式フルスクリーン中のため F11 は無視します")
+            return
+        if not self._f11_gate("f11"):
             return
 
         if not self.is_borderless_fullscreen:
@@ -3059,6 +3079,8 @@ class Overlay(QWidget):
         if self.bve_hwnd and self._bve_in_native_fullscreen():
             write_desktop_log("[WINDOW] BVEの公式フルスクリーン中のため F12 は無視します")
         elif self.bve_hwnd:
+            if not self._f11_gate("f12"):
+                return
             # WS_OVERLAPPEDWINDOW はタイトルバー、枠、システムメニュー、最小化・最大化ボタンのセット
             standard_style = win32con.WS_OVERLAPPEDWINDOW | win32con.WS_VISIBLE
             win32gui.SetWindowLong(self.bve_hwnd, win32con.GWL_STYLE, standard_style)
