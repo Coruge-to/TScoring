@@ -113,8 +113,8 @@ class A_Switch(uc.UserCase):
     def test_a_hidden_overlay_is_click_through_again(self):
         self.overlay.menu_state = 1
         self.pump(2)
-        self.publish(True, False, 1)                                                  # Driving OFF (a pause): the HUD is hidden
-        self.pump(40)  # OFS-1 (on purpose): a driving-off hides the HUD only after HIDE_GRACE_S (0.5 s); 40 Ticks of 20 ms = 0.8 s
+        self.publish(False, False, 1)                                                 # Session OFF (the driving screen is gone): the HUD is hidden
+        self.pump(40)  # HUD visibility rule (on purpose; Owner 2026-11-16): only the end of the Session hides the HUD (a driving-off does not)
         self.assertFalse(self.overlay.visible)
         self.assertFalse(self.overlay.ownership)
         self.assertEqual(self.overlay.ownership_calls, [True, False])
@@ -152,8 +152,8 @@ class A_Switch(uc.UserCase):
         self.overlay.menu_state = 11
         self.pump(2)
         self.assertEqual(self.api.front, self.overlay.hwnd)
-        self.publish(True, False, 1)                                                  # Driving OFF: the Overlay is hidden while it is in front
-        self.pump(40)  # OFS-1 (on purpose): a driving-off hides the HUD only after HIDE_GRACE_S (0.5 s); 40 Ticks of 20 ms = 0.8 s
+        self.publish(False, False, 1)                                                 # Session OFF: the Overlay is hidden while it is in front
+        self.pump(40)  # HUD visibility rule (on purpose; Owner 2026-11-16): only the end of the Session hides the HUD (a driving-off does not)
         self.assertFalse(self.overlay.visible)
         self.assertEqual(self.api.front, self.api.hwnd)
 

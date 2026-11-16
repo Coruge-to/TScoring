@@ -139,14 +139,14 @@ class HUD_R5_R9_IdleContractIsKept(Case):
         self.assertEqual(len(self.steps), 0)
         self.assertEqual(self.overlay.shows, 0)
 
-    def test_r9_ofs1_grace_ends_in_100(self):
+    def test_r9_a_driving_off_keeps_the_hud_and_slows_the_timer_to_the_idle_rate(self):
+        # HUD visibility rule (on purpose; Owner 2026-11-16) (replaces the OFS-1 grace period): driving off, session on: the HUD stays (frozen) and the state block is watched at the idle rate
         self.build(0, True)
         self.pump(5)
-        self.publish(True, False, 1)                       # driving off, session on: the grace period
+        self.publish(True, False, 1)
         self.pump(5)
-        self.assertEqual(self.interval(), ACTIVE, "inside the grace the HUD is not hidden and the timer is not slowed")
-        self.pump(40)                                      # 40 x 20 ms > HIDE_GRACE_S
         self.assertEqual(self.interval(), IDLE)
+        self.assertTrue(self.overlay.visible)
 
     def test_r9_back_to_driving_inside_the_grace_stays_16(self):
         self.build(0, True)

@@ -463,8 +463,8 @@ class F2_ReShowGeometry(e4.ControllerCase):
         self.hud.start()
         self.publish(True, True, 1)
         self.pump(2)
-        self.publish(True, False, 1)
-        self.pump(40)                                                                    # longer than HIDE_GRACE_S: really hidden
+        self.publish(False, False, 1)                                                    # HUD visibility rule (on purpose; Owner 2026-11-16): the end of the Session hides the HUD (a driving-off does not)
+        self.pump(40)
         self.assertFalse(self.overlay.visible)
         self.publish(True, True, 1)
         self.pump(1)

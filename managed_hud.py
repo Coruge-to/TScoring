@@ -6,9 +6,11 @@ the process (never rebuilt per ScenarioGeneration, per Pause or per soft OFF).
 
     mode ACTIVE   (Session ON and Driving ON)   the Overlay is linked to THIS BVE process's window, shown, kept on its client area and updated -
                                                 (Phase L3: only once real telemetry of the current ScenarioGeneration has been received; until then it stays hidden)
-    mode WAITING  (Session ON, Driving OFF)     soft OFF / Pause: the Overlay is hidden, nothing is updated, nothing is destroyed; resumes by itself.
+    mode WAITING  (Session ON, Driving OFF)     no Tick (the scenario selection screen loading, a long stall) or the first moments of a load: the HUD belongs to the driving
+                                                screen, so it is NOT hidden and not updated either - it keeps the last values (frozen), keeps following the BVE window, and is
+                                                shown as soon as the first telemetry of the generation has arrived; resumes updating by itself when the Tick is back.
                                                 (Phase SI-A4: the scoring session is KEPT - only the input is released.)
-    mode HIDDEN   (Session OFF / Closed / no block)  hard OFF: the same, until the next Session ON
+    mode HIDDEN   (Session OFF / Closed / no block)  hard OFF (the driving screen is gone): the Overlay is hidden, nothing is updated, until the next Session ON
 
 What it deliberately does NOT do: end the process (Esc, the loss of the BVE window, a state change: the lifetime of the process belongs to the Stop
 event) and update notices.
@@ -45,13 +47,13 @@ import telemetry_gate
 from managed_mode import describe_exception
 
 ACTIVE_INTERVAL_MS = 16          # the interval the Overlay's own timer has always used
-IDLE_INTERVAL_MS = 100           # while nothing is shown: only the state block is looked at
+IDLE_INTERVAL_MS = 30            # while nothing is shown, and while no Tick comes: the state block is looked at (and the HUD follows the BVE window); was 100 ms (HUD visibility rule (on purpose; Owner 2026-11-16): a load shows the HUD at most one poll after Session ON)
 WINDOW_SEARCH_INTERVAL_S = 0.5   # EnumWindows is not run more often than this while no BVE window is linked
 MAX_HUD_ERROR_LINES = 5
 MAX_ZORDER_LINES = 5             # hud-zorder-set / hud-zorder-error lines; further ones are only counted
 MAX_ZORDER_WALK = 64             # Phase OFS-1: at most this many windows above the HUD are looked at when it is placed in the topmost band
 ZKEEP_RETRY_S = 1.0              # Phase OFS-1: pause before a failed topmost-band Z call is tried again
-HIDE_GRACE_S = 0.5               # Phase OFS-1: how long a `driving-off` (Caller soft OFF) may last before the HUD is hidden
+# (Phase OFS-1's HIDE_GRACE_S is gone: a driving-off never hides the HUD any more, see _on_change)
 FOREGROUND_TRIES = 30            # Phase UI-ALT-F4: ticks (about half a second) an operation screen tries to take the foreground; afterwards it only waits for the user's click
 HUD_FOREGROUND_RETRIES = 5       # Phase UI-ALT-F4: consecutive failures to hand the foreground back to BVE while the HUD is click-through
 MAX_RECONCILES_PER_GENERATION = 3   # Phase UI-ALT-F4: the shown flag is re-aligned with the real Overlay at most this often per ScenarioGeneration
@@ -194,8 +196,6 @@ class ManagedHudController(object):
         self._geom = None
         self._next_search = 0.0
         self._zkeep_retry_at = 0.0      # Phase OFS-1: earliest time of the next topmost-band keep step after a failure
-        self._hide_due = None           # Phase OFS-1: when a pending `driving-off` hide is carried out (None: no grace period running)
-        self.hide_graces = 0            # Phase OFS-1: driving-off periods that ended before the HUD had to be hidden
         self._wait_logged = False
         self._shutdown = False
         self._error_lines = 0
@@ -386,7 +386,6 @@ class ManagedHudController(object):
             change = self.gate.apply(snapshot)
             if change is not None:
                 self._on_change(change)
-            self._settle_hide_grace()
             self._note_epoch(snapshot)
             if self.gate.mode == managed_state.MODE_ACTIVE:
                 # Phase HUD-TIMER: ACTIVE and the directory is ready (a waiting directory returned above and slowed the timer to IDLE_INTERVAL_MS): the HUD updates
@@ -394,6 +393,8 @@ class ManagedHudController(object):
                 # the timer stayed at 100 ms (about 9 Hz) for the life of the process. Idempotent; a real IDLE / the OFS-1 grace never reach this line.
                 self._set_interval(ACTIVE_INTERVAL_MS)
                 self._tick_active()
+            elif self.gate.mode == managed_state.MODE_WAITING:
+                self._tick_waiting()
         except Exception as e:
             self._on_error(e)
 
@@ -435,30 +436,14 @@ class ManagedHudController(object):
             if c.previous_mode == managed_state.MODE_ACTIVE:
                 self.update_waits += 1
                 self._emit("hud-update-wait", reason="driving-off" if c.session else "session-off")
-            if c.session and c.previous_mode == managed_state.MODE_ACTIVE and not c.generation_changed and self._shown:
-                # Phase OFS-1 (Owner: the HUD "blinks violently" for a moment when the display scale is changed): BVE stops its frames for about 2 s while it re-creates
-                # its Direct3D device, the Caller's soft OFF ("tick-stale", 2000 ms) comes at the very end of that stall and the Tick is back 30-80 ms later, so the HUD
-                # was hidden and shown again within a few frames. The HUD is NOT hidden at once: it stays (frozen) for HIDE_GRACE_S and is hidden only when the driving
-                # state has not come back by then. The pause of the scoring input above is not delayed.
-                self._hide_due = self._clock() + HIDE_GRACE_S
+            if c.mode == managed_state.MODE_WAITING:
+                # HUD visibility rule (on purpose; Owner 2026-11-16): the HUD belongs to the driving screen (Session ON). A Tick that stops (the scenario selection screen loading takes BVE's UI thread for
+                # about 5 s, a display scale change about 2 s) leaves the HUD as it is: the last values, frozen. Only the end of the Session hides it. The pause of the scoring
+                # input above is not delayed (the input follows Driving, the HUD follows Session). The timer is the idle one: the state block is watched, nothing is updated.
+                self._set_interval(IDLE_INTERVAL_MS)
             else:
                 self._set_interval(IDLE_INTERVAL_MS)
-                self._hide("driving-off" if c.session else "session-off")
-
-    def _settle_hide_grace(self):
-        """Phase OFS-1: the end of the grace period of a `driving-off` (see _on_change). Back to driving within the period: the HUD was never hidden (one capped
-        line says so). Still not driving when it ends: the HUD is hidden now, exactly as it was before, only HIDE_GRACE_S later."""
-        if self._hide_due is None:
-            return
-        if self.gate.mode == managed_state.MODE_ACTIVE:
-            self._hide_due = None
-            self.hide_graces += 1
-            self._emit_capped("hud-hide-grace", result="recovered", n=self.hide_graces)
-            return
-        if self._clock() >= self._hide_due:
-            self._hide_due = None
-            self._set_interval(IDLE_INTERVAL_MS)
-            self._hide("driving-off")
+                self._hide("session-off")
 
     def _note_epoch(self, snapshot):
         """Phase SI-A7 (M1a): the Ready epoch of the Bridge, DIAGNOSTIC ONLY. One `epoch-info` line whenever (supported, tick seen, epoch number) differs from the last one
@@ -518,6 +503,15 @@ class ManagedHudController(object):
             if self._input is not None:
                 self._tick_waiting_input()
             return
+        self._present_hud()
+        if self._update_step is not None:
+            self._update_step(overlay)
+            self.updates += 1
+        self._sync_input_mode()
+
+    def _present_hud(self):
+        """The window work of a visible HUD, shared by the ACTIVE and the WAITING tick: the HUD item report, the link to the BVE window, its place and size, show, owner and Z order."""
+        overlay, api = self._overlay, self._api
         self._report_items()
         linked = self._ensure_window()
         if linked:
@@ -543,9 +537,19 @@ class ManagedHudController(object):
             except Exception:
                 self._unlink("bve-window-error")
                 linked = False
-        if self._update_step is not None:
+
+    def _tick_waiting(self):
+        """HUD visibility rule (on purpose; Owner 2026-11-16): Session ON, Driving OFF. The HUD of the driving screen stays (frozen: no update step, so nothing of the scoring side or the popups moves) and keeps following the
+        BVE window (moved, minimized, the Z order). It is shown here as soon as the first telemetry of this generation has arrived (the first picture is one update step), without
+        waiting for the Caller's Driving ON. Without telemetry of this generation it is hidden, as in the ACTIVE tick."""
+        overlay = self._overlay
+        if self._telemetry is not None and not self._telemetry.ready:
+            self._hide("telemetry-wait")
+            return
+        if not self._shown and self._update_step is not None:
             self._update_step(overlay)
             self.updates += 1
+        self._present_hud()
         self._sync_input_mode()
 
     def _reconcile_shown(self):
@@ -817,7 +821,6 @@ class ManagedHudController(object):
         return True
 
     def _hide(self, reason):
-        self._hide_due = None                            # a hide of any reason ends a pending grace period
         if not self._shown:
             return
         if self._operation:

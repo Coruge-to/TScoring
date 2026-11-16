@@ -1394,7 +1394,8 @@ class M_TheProductionWiringInARealProcess(unittest.TestCase):
         self.assertGreaterEqual(pump.count("event=hud-show"), 1, "\n".join(pump.lines))
         self.assertGreaterEqual(pump.count("event=telemetry-first"), 1)
         b.publish(driving=False)                                              # soft OFF
-        self.assertTrue(E4.wait_until(lambda: pump.count("event=hud-hide") >= 1, 5))
+        time.sleep(0.6)
+        self.assertEqual(pump.count("event=hud-hide"), 0)                     # HUD visibility rule (on purpose; Owner 2026-11-16): the HUD of the driving screen stays
         b.publish(driving=True)                                               # soft ON: the same process, the same Overlay
         self.assertTrue(E4.wait_until(lambda: pump.count("event=hud-update-start") >= 2, 5))
         b.publish(session=False)                                              # scenario ended

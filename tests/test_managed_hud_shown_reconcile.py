@@ -76,10 +76,10 @@ class A_Reconcile(uc.UserCase):
         self.assertEqual(self.hud.reconciles, 0)
 
     def test_red11_inactive_modes_do_not_reconcile(self):
-        for session, driving in ((True, False), (False, False)):
+        for session, driving in ((False, False),):                          # HUD visibility rule (on purpose; Owner 2026-11-16): a driving-off with the session on keeps (and may reconcile) the HUD; only the hidden mode is inactive
             self.setUp()
             self.publish(session, driving, 1)
-            self.pump(40)  # OFS-1 (on purpose): a driving-off hides the HUD only after HIDE_GRACE_S (0.5 s); 40 Ticks of 20 ms = 0.8 s
+            self.pump(40)
             self.assertFalse(self.hud.shown)
             shows = self.overlay.shows
             self.pump(20)

@@ -585,12 +585,76 @@ class C_Controller(unittest.TestCase):
         self.feed(legacy_line(10))
         self.pump(3)
         self.publish(True, False, 1)
-        self.pump(40)  # OFS-1 (on purpose): a driving-off hides the HUD only after HIDE_GRACE_S (0.5 s); 40 Ticks of 20 ms = 0.8 s
-        self.assertFalse(self.overlay.visible)
+        self.pump(40)
+        self.assertTrue(self.overlay.visible)                                    # HUD visibility rule (on purpose; Owner 2026-11-16): a driving-off keeps the HUD of the driving screen (frozen)
         self.publish(True, True, 1)
         self.pump(3)
         self.assertTrue(self.overlay.visible)
-        self.assertEqual((self.overlay.shows, self.overlay.hides), (2, 1))
+        self.assertEqual((self.overlay.shows, self.overlay.hides), (1, 0))
+
+    # ---- HUD visibility rule (on purpose; Owner 2026-11-16): the HUD belongs to the driving screen = Session ON (the Caller's Driving only says that Ticks come) ----
+    def test_waiting_session_on_with_telemetry_shows_the_hud_without_the_drivings_on(self):
+        self.hud.start()
+        self.publish(True, False, 1)                                     # the first moments of a load: Session ON, the Caller still waits for its post-ready Tick
+        self.pump(3)
+        self.assertFalse(self.overlay.visible)                           # no telemetry of this generation yet
+        self.assertTrue(self.feed(legacy_line(10)))
+        self.pump(2)
+        self.assertTrue(self.overlay.visible)
+        self.assertEqual((self.overlay.shows, len(self.steps)), (1, 1))  # the first picture is ONE update step
+        self.assertEqual(self.hud.mode, "waiting")
+        self.publish(True, True, 1)                                      # the Caller's Driving ON: nothing is shown again
+        self.pump(3)
+        self.assertEqual((self.overlay.shows, self.overlay.hides), (1, 0))
+
+    def test_waiting_session_on_without_telemetry_shows_nothing(self):
+        self.hud.start()
+        self.publish(True, False, 1)
+        self.pump(50)
+        self.assertFalse(self.overlay.visible)
+        self.assertEqual((self.overlay.shows, len(self.steps)), (0, 0))
+
+    def test_the_waiting_hud_is_frozen_and_updates_again_when_the_tick_is_back(self):
+        self.hud.start()
+        self.publish(True, True, 1)
+        self.pump(2)
+        self.feed(legacy_line(10))
+        self.pump(3)
+        self.publish(True, False, 1)                                     # no Tick (the scenario selection screen loads)
+        self.pump(2)
+        frozen = len(self.steps)
+        self.pump(500)                                                   # 10 s
+        self.assertEqual(len(self.steps), frozen)                        # nothing moves
+        self.assertTrue(self.overlay.visible)                            # and nothing hides
+        self.publish(True, True, 1)
+        self.pump(3)
+        self.assertGreater(len(self.steps), frozen)                      # updating resumes by itself
+
+    def test_a_new_generation_in_the_waiting_mode_hides_the_old_hud_until_its_telemetry(self):
+        self.hud.start()
+        self.publish(True, True, 1)
+        self.pump(2)
+        self.feed(legacy_line(10))
+        self.pump(3)
+        self.assertTrue(self.overlay.visible)
+        self.publish(True, False, 2)                                     # the scenario was replaced between two readings; the Caller's Driving is not back yet
+        self.pump(3)
+        self.assertFalse(self.overlay.visible)                           # the old scenario's HUD is not kept
+        self.assertTrue(self.feed(legacy_line(11)))
+        self.pump(2)
+        self.assertTrue(self.overlay.visible)                            # the new one is shown by its first telemetry
+
+    def test_the_end_of_the_session_hides_a_waiting_hud(self):
+        self.hud.start()
+        self.publish(True, False, 1)
+        self.pump(2)                                                     # the generation is taken over before its telemetry is accepted
+        self.assertTrue(self.feed(legacy_line(10)))
+        self.pump(3)
+        self.assertTrue(self.overlay.visible)
+        self.publish(False, False, 1)
+        self.pump(3)
+        self.assertFalse(self.overlay.visible)
+        self.assertEqual(self.overlay.hides, 1)
 
     def test_telemetry_that_stops_does_not_hide_the_hud(self):
         self.hud.start()

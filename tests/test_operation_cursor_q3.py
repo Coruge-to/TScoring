@@ -300,12 +300,12 @@ class A_Controller(QtCase):
 
     # -- 12 the HUD goes away while an operation screen is open ----------------------------------------------------------------------------
     def test_red_12_input_device_off_session_end_and_pause_leave_no_override(self):
-        for session, driving in ((True, False), (False, False)):
+        for session, driving in ((False, False),):                              # HUD visibility rule (on purpose; Owner 2026-11-16): a driving-off (pause / stall) keeps the HUD and its operation screen; only the Session OFF (scenario end) hides it
             self.setUp()
             self.show_state(RESULT)
             self.assert_arrow_override("before the HUD goes away")
-            self.publish(session, driving, 1)                                          # Driving OFF (pause) / Session OFF (Input Device soft OFF, scenario end)
-            self.pump(40)  # OFS-1 (on purpose): a driving-off hides the HUD only after HIDE_GRACE_S (0.5 s); 40 Ticks of 20 ms = 0.8 s
+            self.publish(session, driving, 1)                                          # Session OFF (Input Device soft OFF, scenario end)
+            self.pump(40)
             self.assertFalse(self.overlay.visible)
             self.assert_stack(1, 1, "session=%s driving=%s" % (session, driving))
             self.assert_no_override("session=%s driving=%s" % (session, driving))

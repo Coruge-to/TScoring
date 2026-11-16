@@ -715,11 +715,12 @@ class E_Controller(ControllerCase):
         self.assertEqual(len(self.log.events("hud-update-start")), 1)
         self.assertEqual(len(self.log.events("hud-show")), 1)
 
-    def test_session_on_alone_waits_and_shows_nothing(self):
+    def test_session_on_alone_shows_the_hud_of_the_driving_screen_without_updating_it(self):
+        # HUD visibility rule (on purpose; Owner 2026-11-16): the HUD belongs to the driving screen (Session ON); without telemetry gate in this case it is shown at once, one update step makes the first picture, nothing moves after it
         self.hud.start()
         self.publish(True, False, 1)
         self.pump(20)
-        self.assertEqual((self.hud.mode, self.overlay.visible, len(self.steps)), (ms.MODE_WAITING, False, 0))
+        self.assertEqual((self.hud.mode, self.overlay.visible, len(self.steps), self.overlay.shows), (ms.MODE_WAITING, True, 1, 1))
 
     def test_driving_off_waits_without_destroying_and_resumes_on_the_same_overlay(self):
         self.hud.start()
@@ -727,17 +728,16 @@ class E_Controller(ControllerCase):
         self.pump(5)
         self.publish(True, False, 1)                                             # soft OFF
         self.pump(30)
-        self.assertEqual((self.hud.mode, self.overlay.visible, self.overlay.hides), (ms.MODE_WAITING, False, 1))
+        self.assertEqual((self.hud.mode, self.overlay.visible, self.overlay.hides), (ms.MODE_WAITING, True, 0))        # HUD visibility rule (on purpose; Owner 2026-11-16): the HUD stays (frozen)
         steps_in_wait = len(self.steps)
         self.pump(30)
         self.assertEqual(len(self.steps), steps_in_wait)                         # updates stopped while waiting
         self.assertFalse(self.overlay.closed)
         self.publish(True, True, 1)                                              # soft ON again, same generation
         self.pump(5)
-        self.assertEqual((self.hud.mode, self.overlay.visible, self.overlay.shows), (ms.MODE_ACTIVE, True, 2))
+        self.assertEqual((self.hud.mode, self.overlay.visible, self.overlay.shows), (ms.MODE_ACTIVE, True, 1))        # never hidden, so never shown again
         self.assertEqual(FakeOverlay.created, 1)
-        # same overlay, same BVE window: the owner is released before the second show and set again right after it (the log's hud-owner-set n=2)
-        self.assertEqual(self.api.owner_calls, [(1000, 5000), (1000, 0), (1000, 5000)])
+        self.assertEqual(self.api.owner_calls, [(1000, 5000)])                  # the one link to the BVE window of the first show
         self.assertEqual(self.hud.link_count, 1)
         self.assertEqual(self.timer.starts, 0)                                   # the controller never starts / creates a timer
 
@@ -757,13 +757,14 @@ class E_Controller(ControllerCase):
         self.publish(True, True, 1)
         self.pump(2)
         self.publish(True, False, 1)
-        self.pump(2 + int(mh.HIDE_GRACE_S / 0.02) + 2)                           # OFS-1 (on purpose): a driving-off hides the HUD only after HIDE_GRACE_S
-        self.assertIn("reason=driving-off", self.log.events("hud-hide")[0])
+        self.pump(200)                                                           # HUD visibility rule (on purpose; Owner 2026-11-16): a soft OFF of any length is no hide
+        self.assertEqual(self.log.events("hud-hide"), [])
+        self.assertIn("reason=driving-off", self.log.events("hud-update-wait")[0])
         self.publish(True, True, 1)
         self.pump(2)
         self.publish(False, False, 1)
         self.pump(2)
-        self.assertIn("reason=session-off", self.log.events("hud-hide")[1])
+        self.assertIn("reason=session-off", self.log.events("hud-hide")[0])
 
     def test_reload_new_generation_reappears_on_the_same_overlay_and_python(self):
         self.hud.start()
@@ -810,13 +811,12 @@ class E_Controller(ControllerCase):
         self.hud.start()
         self.publish(True, True, 5)
         self.pump(2)
-        grace_ticks = int(mh.HIDE_GRACE_S / 0.02) + 2
         for _ in range(5):                                                       # tick-stale soft OFF / ON in the SAME generation, Session stays ON
             self.publish(True, False, 5)
-            self.pump(grace_ticks)                                               # OFS-1 (on purpose): longer than HIDE_GRACE_S, so the HUD really is hidden
+            self.pump(40)                                                        # HUD visibility rule (on purpose; Owner 2026-11-16): however long the soft OFF, the HUD stays
             self.publish(True, True, 5)
             self.pump(2)
-        self.assertEqual((self.overlay.shows, self.overlay.hides, FakeOverlay.created, self.hud.link_count), (6, 5, 1, 1))
+        self.assertEqual((self.overlay.shows, self.overlay.hides, FakeOverlay.created, self.hud.link_count), (1, 0, 1, 1))
         self.assertFalse(self.overlay.closed)
 
     def test_ofs1_a_short_soft_off_never_hides_the_hud(self):
@@ -832,21 +832,22 @@ class E_Controller(ControllerCase):
             self.pump(2)
         self.assertEqual((self.overlay.shows, self.overlay.hides, FakeOverlay.created), (1, 0, 1))
         self.assertTrue(self.overlay.visible)
-        self.assertEqual(self.hud.hide_graces, 5)
         self.assertEqual(len(self.log.events("hud-hide")), 0)
 
-    def test_ofs1_the_hud_is_hidden_when_the_soft_off_outlasts_the_grace_period(self):
+    def test_a_soft_off_of_any_length_never_hides_the_hud_and_the_idle_polling_takes_over(self):
+        # HUD visibility rule (on purpose; Owner 2026-11-16) (replaces the OFS-1 grace period): the HUD belongs to the driving screen, so only the end of the Session hides it
         self.hud.start()
         self.publish(True, True, 5)
         self.pump(2)
         self.publish(True, False, 5)
-        self.pump(int(mh.HIDE_GRACE_S / 0.02) - 3)
-        self.assertTrue(self.overlay.visible)                                    # still inside the grace period
-        self.pump(8)
-        self.assertFalse(self.overlay.visible)
-        self.assertEqual(self.overlay.hides, 1)
-        self.assertIn("reason=driving-off", self.log.events("hud-hide")[0])
-        self.assertEqual(self.timer.intervals[-1], mh.IDLE_INTERVAL_MS)          # and the slow idle polling resumes
+        self.pump(2000)                                                          # 40 s of the fake clock without a Tick
+        self.assertTrue(self.overlay.visible)
+        self.assertEqual((self.overlay.shows, self.overlay.hides), (1, 0))
+        self.assertEqual(self.log.events("hud-hide"), [])
+        self.assertEqual(self.timer.intervals[-1], mh.IDLE_INTERVAL_MS)          # the state block is watched at the idle rate, nothing is updated
+        updates = len(self.steps)
+        self.pump(100)
+        self.assertEqual(len(self.steps), updates)
 
     def test_ofs1_the_scoring_pause_is_not_delayed_by_the_grace_period(self):
         paused = []
@@ -886,7 +887,7 @@ class E_Controller(ControllerCase):
             self.publish(True, g % 2 == 0, g)
         self.publish(True, False, 7)
         self.pump(2)
-        self.assertEqual((self.hud.mode, self.overlay.visible), (ms.MODE_WAITING, False))
+        self.assertEqual((self.hud.mode, self.overlay.visible), (ms.MODE_WAITING, True))                       # HUD visibility rule (on purpose; Owner 2026-11-16): Session ON keeps the HUD
         self.assertGreater(self.hud.gate.skipped_changes, 0)
         self.assertTrue(any("coalesced=" in line for line in self.log.events("state")))
 
@@ -1104,7 +1105,7 @@ class E_Controller(ControllerCase):
         self.source.raise_on_read = OSError("x")
         self.pump(3)
         self.assertEqual(self.hud.failsafe, "read-OSError")
-        self.assertEqual((self.overlay.shows, self.overlay.hides), (0, 0))
+        self.assertEqual((self.overlay.shows, self.overlay.hides), (1, 1))      # HUD visibility rule (on purpose; Owner 2026-11-16): the waiting state shows the HUD; the failsafe hides it once
         self.assertEqual(len(self.log.events("state-lost")), 1)
 
     def test_failsafe_still_ends_cleanly_on_stop(self):
@@ -1200,18 +1201,19 @@ class I_ZOrder(ControllerCase):
         self.assertEqual(self.api.z_calls, [])
         self.assertEqual(self.api.z_queries, queries)
 
-    def test_soft_off_and_on_finalises_once_for_the_reshow(self):
+    def test_a_soft_off_and_on_neither_hides_nor_reorders_the_hud(self):
+        # HUD visibility rule (on purpose; Owner 2026-11-16): a soft OFF no longer hides the HUD, so there is no re-show and nothing of the Z order is done again
         self.activate([SELECT, 5000])
         self.publish(True, False, 1)
-        self.pump(40)                                                          # OFS-1 (on purpose): longer than HIDE_GRACE_S, so the HUD is really hidden
+        self.pump(40)
         self.api.z_calls.clear()
         queries = self.api.z_queries
         self.publish(True, True, 1)
         self.pump(100)
         self.assertEqual(self.api.z, [SELECT, HUD, 5000])
-        self.assertEqual(self.api.z_calls, [(HUD, SELECT)])
-        self.assertEqual(self.api.z_queries, queries + 1)
-        self.assertEqual(self.overlay.shows, 2)
+        self.assertEqual(self.api.z_calls, [])
+        self.assertEqual(self.api.z_queries, queries)
+        self.assertEqual((self.overlay.shows, self.overlay.hides), (1, 0))
 
     def test_reload_finalises_once_for_the_reshow(self):
         self.activate([SELECT, 5000])
@@ -1239,8 +1241,8 @@ class I_ZOrder(ControllerCase):
 
     def test_reshow_releases_owner_before_show_then_restores_and_orders(self):
         self.activate([SELECT, 5000])
-        self.publish(True, False, 1)
-        self.pump(40)                                                          # OFS-1 (on purpose): longer than HIDE_GRACE_S
+        self.publish(False, False, 1)                                          # HUD visibility rule (on purpose; Owner 2026-11-16): the end of the Session hides the HUD (a soft OFF does not)
+        self.pump(40)
         self.api.owner_calls.clear()
         self.publish(True, True, 1)
         self.pump(3)
@@ -1500,17 +1502,19 @@ class F_RealProcess(unittest.TestCase):
         b.publish(session=True, driving=True, generation=1)
         self.assertTrue(wait_until(lambda: pump.count("[OVERLAY] show") == 1, 5), "HUD was not shown")
         b.publish(driving=False)                                                  # soft OFF
-        self.assertTrue(wait_until(lambda: pump.count("[OVERLAY] hide") == 1, 5))
+        time.sleep(0.6)
+        self.assertEqual(pump.count("[OVERLAY] hide"), 0)                         # HUD visibility rule (on purpose; Owner 2026-11-16): the HUD of the driving screen stays
         b.publish(driving=True)                                                   # soft ON again
-        self.assertTrue(wait_until(lambda: pump.count("[OVERLAY] show") == 2, 5))
+        time.sleep(0.4)
+        self.assertEqual(pump.count("[OVERLAY] show"), 1)                         # never hidden, so not shown again
         b.publish(session=False)                                                  # scenario closed
-        self.assertTrue(wait_until(lambda: pump.count("[OVERLAY] hide") == 2, 5))
+        self.assertTrue(wait_until(lambda: pump.count("[OVERLAY] hide") == 1, 5))
         self.assertIsNone(p.poll())                                               # Python is still alive: no Stop was sent
         self.assertTrue(self.owner.ready())
         b.publish(session=True, driving=True, generation=2)                       # reload
-        self.assertTrue(wait_until(lambda: pump.count("[OVERLAY] show") == 3, 5))
+        self.assertTrue(wait_until(lambda: pump.count("[OVERLAY] show") == 2, 5))
         b.publish(session=False, driving=False, closed=True)                      # Caller Dispose: withdrawn + Closed, then Stop
-        self.assertTrue(wait_until(lambda: pump.count("[OVERLAY] hide") == 3, 5))
+        self.assertTrue(wait_until(lambda: pump.count("[OVERLAY] hide") == 2, 5))
         started = time.monotonic()
         self.owner.sync.set_event(self.owner.stop)
         code = p.wait(5)
@@ -1520,8 +1524,8 @@ class F_RealProcess(unittest.TestCase):
         text = "\n".join(pump.lines)
         self.assertIn("overlays=1", text)                                         # ONE overlay for the whole life of the process
         self.assertNotIn("overlays=2", text)
-        self.assertEqual(text.count("event=hud-show"), 3)
-        self.assertEqual(text.count("event=hud-hide"), 3)                         # soft OFF, session OFF, closed (the shutdown hide finds it hidden)
+        self.assertEqual(text.count("event=hud-show"), 2)
+        self.assertEqual(text.count("event=hud-hide"), 2)                         # session OFF, closed (a soft OFF is no hide; the shutdown hide finds it hidden)
         self.assertIn("event=hud-summary", text)
         self.assertIn("event=exit", text)
         self.assertFalse(self.owner.ready())

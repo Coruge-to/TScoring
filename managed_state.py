@@ -31,8 +31,8 @@ no Supported bit) is "no information" - never an error, never a loss of the bloc
 
 HUD gate (HudGate, pure):
     Session ON  and Driving ON   -> MODE_ACTIVE   (the HUD is shown and updated)
-    Session ON  and Driving OFF  -> MODE_WAITING  (soft OFF: the Overlay is kept, the HUD is hidden and not updated)
-    Session OFF (or Closed, or no readable block) -> MODE_HIDDEN (hard OFF: the Overlay is kept, the HUD is hidden and not updated)
+    Session ON  and Driving OFF  -> MODE_WAITING  (no Tick: the HUD of the driving screen is kept as it is - frozen, not updated; shown once the first telemetry of the generation is there)
+    Session OFF (or Closed, or no readable block) -> MODE_HIDDEN (hard OFF, the driving screen is gone: the Overlay is kept, the HUD is hidden and not updated)
 """
 import ctypes
 import struct
