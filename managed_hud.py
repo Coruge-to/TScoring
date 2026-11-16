@@ -198,6 +198,7 @@ class ManagedHudController(object):
         self._next_search = 0.0
         self._zkeep_retry_at = 0.0      # Phase OFS-1: earliest time of the next topmost-band keep step after a failure
         self._wait_logged = False
+        self._z_resume = False          # HUD Z order on resume (on purpose; Owner 2026-11-16): the Tick came back after a stop (WAITING -> ACTIVE): the HUD's place in the Z order is finalised ONCE (the scenario selection window of BVE may have come back over / under it while BVE did not respond)
         self._warmed = False            # HUD warm-up (on purpose; Owner 2026-11-16): the first-use costs (the key listener, the native window, the first paint at the BVE window's size) were paid while the HUD was still hidden
         self._warm_tries = 0
         self._next_warm_search = 0.0
@@ -436,6 +437,8 @@ class ManagedHudController(object):
             if c.previous_mode != managed_state.MODE_ACTIVE:
                 self.update_starts += 1
                 self._geom = None            # a resumed HUD takes the BVE window's current place again
+                if c.previous_mode == managed_state.MODE_WAITING:
+                    self._z_resume = True    # HUD Z order on resume (on purpose; Owner 2026-11-16): live (22:18:34 and 19:39): after a scenario list load BVE answers again and the HUD lay OVER the list window until the list was clicked
                 self._emit("hud-update-start", gen=c.generation)
                 self._set_interval(ACTIVE_INTERVAL_MS)
         else:
@@ -579,6 +582,10 @@ class ManagedHudController(object):
                         self._ensure_z_order()
                     elif api.is_topmost(self._hwnd):
                         self._keep_in_topmost_band()          # Phase OFS-1: BVE re-creates its D3D proxy window on a display scale / mode change: over the HUD
+                    if self._z_resume:
+                        self._z_resume = False                 # once per resume (never polled): the rule of the first show - directly above the BVE window, below every window that lies over it
+                        if not shown_now:
+                            self._ensure_z_order()
             except Exception:
                 self._unlink("bve-window-error")
                 linked = False
