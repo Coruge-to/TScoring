@@ -6,9 +6,9 @@ the process (never rebuilt per ScenarioGeneration, per Pause or per soft OFF).
 
     mode ACTIVE   (Session ON and Driving ON)   the Overlay is linked to THIS BVE process's window, shown, kept on its client area and updated -
                                                 (Phase L3: only once real telemetry of the current ScenarioGeneration has been received; until then it stays hidden)
-    mode WAITING  (Session ON, Driving OFF)     no Tick (the scenario selection screen loading, a long stall) or the first moments of a load: the HUD belongs to the driving
-                                                screen, so it is NOT hidden and not updated either - it keeps the last values (frozen), keeps following the BVE window, and is
-                                                shown as soon as the first telemetry of the generation has arrived; resumes updating by itself when the Tick is back.
+    mode WAITING  (Session ON, Driving OFF)     no Tick (the scenario selection screen loading, a long stall): the HUD belongs to the driving screen, so it is NOT hidden
+                                                and not updated either - it keeps the last values (frozen) and keeps following the BVE window; resumes updating by itself when the Tick
+                                                is back. A generation's FIRST show waits for the Driving ON (the first Tick after the ready level: BVE has drawn its first frame).
                                                 (Phase SI-A4: the scoring session is KEPT - only the input is released.)
     mode HIDDEN   (Session OFF / Closed / no block)  hard OFF (the driving screen is gone): the Overlay is hidden, nothing is updated, until the next Session ON
 
@@ -197,6 +197,7 @@ class ManagedHudController(object):
         self._next_search = 0.0
         self._zkeep_retry_at = 0.0      # Phase OFS-1: earliest time of the next topmost-band keep step after a failure
         self._wait_logged = False
+        self._driving_seen = False      # HUD first-show rule (on purpose; Owner 2026-11-16: the HUD must not come before the driving screen): the Driving was ON in this generation (the driving screen has been drawn); the HUD of a WAITING state is shown / kept only then
         self._shutdown = False
         self._error_lines = 0
         self._items_reported = None     # the HUD items the sender cannot provide, as last reported (None = not yet)
@@ -399,6 +400,10 @@ class ManagedHudController(object):
             self._on_error(e)
 
     def _on_change(self, c):
+        if c.generation_changed or (c.session_changed and not c.session):
+            self._driving_seen = False                   # a new scenario instance / the end of the Session: the next show waits for its Driving ON again
+        if c.mode == managed_state.MODE_ACTIVE:
+            self._driving_seen = True
         fields = dict(session=int(c.session), driving=int(c.driving), gen=c.generation, mode=c.mode, was=c.previous_mode)
         if c.generation_changed:
             fields["prev_gen"] = c.previous_generation
@@ -540,14 +545,16 @@ class ManagedHudController(object):
 
     def _tick_waiting(self):
         """HUD visibility rule (on purpose; Owner 2026-11-16): Session ON, Driving OFF. The HUD of the driving screen stays (frozen: no update step, so nothing of the scoring side or the popups moves) and keeps following the
-        BVE window (moved, minimized, the Z order). It is shown here as soon as the first telemetry of this generation has arrived (the first picture is one update step), without
-        waiting for the Caller's Driving ON. Without telemetry of this generation it is hidden, as in the ACTIVE tick."""
+        BVE window (moved, minimized, the Z order). The FIRST show of a generation is never made here: it waits for the Driving ON (BVE has drawn its first frame).
+        Without telemetry of this generation it is hidden, as in the ACTIVE tick."""
         overlay = self._overlay
+        if not self._shown and not self._driving_seen:
+            return                                       # the driving screen is not there yet (BVE draws its first frame): the first show is the ACTIVE tick's
         if self._telemetry is not None and not self._telemetry.ready:
             self._hide("telemetry-wait")
             return
         if not self._shown and self._update_step is not None:
-            self._update_step(overlay)
+            self._update_step(overlay)                   # a HUD that has to come back in the waiting mode (minimize / restore): one picture
             self.updates += 1
         self._present_hud()
         self._sync_input_mode()

@@ -254,7 +254,7 @@ class B_PtoPWhileDrivingIsOff(ManagedCase):
         r.send("STATUS:LOADED:PAUSED")
         r.tick(10)
         self.assertEqual(len(self.posted_keys(R.KEY_P)), 0)
-        self.assertTrue(r.hud.shown)                                                   # HUD visibility rule (on purpose; Owner 2026-11-16): Session ON and telemetry: the HUD is shown without the Caller's Driving
+        self.assertFalse(r.hud.shown)                                                  # HUD first-show rule (on purpose; Owner 2026-11-16: the HUD must not come before the driving screen): the first show waits for the Driving ON
 
     def test_driving_turning_on_in_between_changes_nothing(self):
         r, o = self.r, self.o
@@ -303,14 +303,14 @@ class B_PtoPWhileDrivingIsOff(ManagedCase):
         self.assertEqual(self.posted_keys(R.KEY_P), [])
         self.assertEqual(self.win.searches, searches)
 
-    def test_no_f8_is_posted_and_the_hud_of_the_driving_screen_is_shown_once(self):
-        # HUD visibility rule (on purpose; Owner 2026-11-16): the HUD follows the Session (the first telemetry shows it); nothing is posted to BVE
+    def test_the_hud_is_never_shown_and_no_f8_is_posted(self):
+        # HUD first-show rule (on purpose; Owner 2026-11-16: the HUD must not come before the driving screen): without the Driving ON the HUD is not shown; nothing is posted to BVE
         r = self.r
         self.paused_load()
         r.send("STATUS:LOADED:RUNNING", self.MR.STALIST, self.MR.tele(1, time_ms=36000500))
         r.tick(3)
         self.assertEqual(self.posted_keys(R.KEY_F8), [])
-        self.assertEqual(len(r.events("hud-show")), 1)
+        self.assertEqual(r.events("hud-show"), [])
 
     def test_a_session_off_between_what_used_to_be_the_halves_changes_nothing(self):
         r, o = self.r, self.o

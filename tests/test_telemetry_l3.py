@@ -593,19 +593,16 @@ class C_Controller(unittest.TestCase):
         self.assertEqual((self.overlay.shows, self.overlay.hides), (1, 0))
 
     # ---- HUD visibility rule (on purpose; Owner 2026-11-16): the HUD belongs to the driving screen = Session ON (the Caller's Driving only says that Ticks come) ----
-    def test_waiting_session_on_with_telemetry_shows_the_hud_without_the_drivings_on(self):
+    def test_the_first_show_of_a_generation_waits_for_the_drivings_on_even_with_telemetry(self):
         self.hud.start()
-        self.publish(True, False, 1)                                     # the first moments of a load: Session ON, the Caller still waits for its post-ready Tick
+        self.publish(True, False, 1)                                     # the first moments of a load: Session ON, the Caller still waits for its post-ready Tick (BVE draws its first frame)
         self.pump(3)
-        self.assertFalse(self.overlay.visible)                           # no telemetry of this generation yet
         self.assertTrue(self.feed(legacy_line(10)))
-        self.pump(2)
-        self.assertTrue(self.overlay.visible)
-        self.assertEqual((self.overlay.shows, len(self.steps)), (1, 1))  # the first picture is ONE update step
-        self.assertEqual(self.hud.mode, "waiting")
-        self.publish(True, True, 1)                                      # the Caller's Driving ON: nothing is shown again
+        self.pump(20)
+        self.assertEqual((self.overlay.visible, self.overlay.shows, len(self.steps)), (False, 0, 0))     # HUD first-show rule (on purpose; Owner 2026-11-16)
+        self.publish(True, True, 1)                                      # the Driving ON: the driving screen is there
         self.pump(3)
-        self.assertEqual((self.overlay.shows, self.overlay.hides), (1, 0))
+        self.assertEqual((self.overlay.visible, self.overlay.shows), (True, 1))
 
     def test_waiting_session_on_without_telemetry_shows_nothing(self):
         self.hud.start()
@@ -641,14 +638,19 @@ class C_Controller(unittest.TestCase):
         self.pump(3)
         self.assertFalse(self.overlay.visible)                           # the old scenario's HUD is not kept
         self.assertTrue(self.feed(legacy_line(11)))
-        self.pump(2)
-        self.assertTrue(self.overlay.visible)                            # the new one is shown by its first telemetry
+        self.pump(20)
+        self.assertFalse(self.overlay.visible)                           # the new one waits for its Driving ON
+        self.publish(True, True, 2)
+        self.pump(3)
+        self.assertTrue(self.overlay.visible)
 
     def test_the_end_of_the_session_hides_a_waiting_hud(self):
         self.hud.start()
-        self.publish(True, False, 1)
+        self.publish(True, True, 1)
         self.pump(2)                                                     # the generation is taken over before its telemetry is accepted
         self.assertTrue(self.feed(legacy_line(10)))
+        self.pump(3)
+        self.publish(True, False, 1)
         self.pump(3)
         self.assertTrue(self.overlay.visible)
         self.publish(False, False, 1)

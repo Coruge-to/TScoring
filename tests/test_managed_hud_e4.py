@@ -715,12 +715,12 @@ class E_Controller(ControllerCase):
         self.assertEqual(len(self.log.events("hud-update-start")), 1)
         self.assertEqual(len(self.log.events("hud-show")), 1)
 
-    def test_session_on_alone_shows_the_hud_of_the_driving_screen_without_updating_it(self):
-        # HUD visibility rule (on purpose; Owner 2026-11-16): the HUD belongs to the driving screen (Session ON); without telemetry gate in this case it is shown at once, one update step makes the first picture, nothing moves after it
+    def test_session_on_alone_does_not_show_the_hud_before_the_driving_on(self):
+        # HUD first-show rule (on purpose; Owner 2026-11-16: the HUD must not come before the driving screen): the HUD of a generation is first shown at its Driving ON (BVE has drawn the first frame), never by Session ON alone
         self.hud.start()
         self.publish(True, False, 1)
         self.pump(20)
-        self.assertEqual((self.hud.mode, self.overlay.visible, len(self.steps), self.overlay.shows), (ms.MODE_WAITING, True, 1, 1))
+        self.assertEqual((self.hud.mode, self.overlay.visible, len(self.steps), self.overlay.shows), (ms.MODE_WAITING, False, 0, 0))
 
     def test_driving_off_waits_without_destroying_and_resumes_on_the_same_overlay(self):
         self.hud.start()
@@ -1105,7 +1105,7 @@ class E_Controller(ControllerCase):
         self.source.raise_on_read = OSError("x")
         self.pump(3)
         self.assertEqual(self.hud.failsafe, "read-OSError")
-        self.assertEqual((self.overlay.shows, self.overlay.hides), (1, 1))      # HUD visibility rule (on purpose; Owner 2026-11-16): the waiting state shows the HUD; the failsafe hides it once
+        self.assertEqual((self.overlay.shows, self.overlay.hides), (0, 0))      # HUD first-show rule (on purpose; Owner 2026-11-16: the HUD must not come before the driving screen): the waiting state of a new generation shows nothing, so there is nothing to hide twice
         self.assertEqual(len(self.log.events("state-lost")), 1)
 
     def test_failsafe_still_ends_cleanly_on_stop(self):
