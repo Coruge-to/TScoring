@@ -282,8 +282,8 @@ try {
 
         # 3. soft OFF (Legacy selection screen pattern): hidden, then back with the same data
         MakeStale $s 2500; Step $s
-        $hid = WaitFor { Step $s; -not (OverlayVisible) } 6000
-        Check 'T05 soft OFF (Driving OFF): the HUD is hidden, the window and the process stay' ($hid -and [WinEnum]::Exists($h1) -and (PidAlive $app) -and ([int](Mg $m 'StopSignalCount') -eq 0))
+        $hid = WaitFor { Step $s; -not (OverlayVisible) } 1500          # HUD visibility rule (on purpose; Owner 2026-11-16) : the HUD belongs to the driving screen (Session ON), so a Driving OFF (no Tick) does NOT hide it
+        Check 'T05 soft OFF (Driving OFF, Session ON): the HUD stays visible (frozen), the window and the process stay' ((-not $hid) -and (OverlayVisible) -and [WinEnum]::Exists($h1) -and (PidAlive $app) -and ([int](Mg $m 'StopSignalCount') -eq 0))
         $shown = $false
         $sw = [Diagnostics.Stopwatch]::StartNew()
         while ($sw.ElapsedMilliseconds -lt 8000 -and -not $shown) { Tick $s; Step $s; $lh.Run(1, 16); Start-Sleep -Milliseconds 16; $shown = OverlayVisible }

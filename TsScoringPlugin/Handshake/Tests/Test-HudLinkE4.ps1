@@ -634,8 +634,8 @@ if ($qtOk -and (-not $mainRunning) -and (Test-Path $mainPy) -and (Test-Path $bve
     $stillOne = ((Overlay).Count -eq 1) -and (OverlayVisible)
     Check 'I02 the HUD stays visible while the state is unchanged (no flicker: still one Overlay window, same handle)' ($stillOne -and ((Overlay)[0] -eq $h1))
     MakeStale $s 2500; Step $s
-    $hid = WaitFor { -not (OverlayVisible) } 6000
-    Check 'I03 soft OFF (Driving OFF, Session ON): the HUD is hidden but its window is NOT destroyed (same handle still exists); the application process keeps running' ($hid -and [WinEnum]::Exists($h1) -and (PidAlive $app) -and ([int](Mg $m 'StopSignalCount') -eq 0))
+    $hid = WaitFor { -not (OverlayVisible) } 1500          # HUD visibility rule (on purpose; Owner 2026-11-16) : a Driving OFF does not hide the HUD of the driving screen
+    Check 'I03 soft OFF (Driving OFF, Session ON): the HUD STAYS visible (frozen) on the same window handle; the application process keeps running' ((-not $hid) -and (OverlayVisible) -and [WinEnum]::Exists($h1) -and (PidAlive $app) -and ([int](Mg $m 'StopSignalCount') -eq 0))
     Tick $s; Step $s
     $shown2 = WaitFor { OverlayVisible } 6000
     Check 'I04 Driving ON again: the SAME Overlay window handle is shown again (nothing re-created), still one Overlay window' ($shown2 -and ((Overlay).Count -eq 1) -and ((Overlay)[0] -eq $h1))
@@ -659,7 +659,7 @@ if ($qtOk -and (-not $mainRunning) -and (Test-Path $mainPy) -and (Test-Path $bve
     Check ('I08 Dispose: the state is withdrawn, the HUD window is gone, the application leaves with exit code 0 in ' + $endMs + ' ms, no Kill, no residual process') (([int](Mg $m 'ExitCode') -eq 0) -and (-not (Mg $m 'Killed')) -and (-not (PidAlive $app)) -and (-not [WinEnum]::Exists($h1)) -and ((EventLines $m.Sink 'APP_STATE_CLOSED').Count -eq 1) -and ((Names $m.Sink).IndexOf('APP_STATE_CLOSED') -lt (Names $m.Sink).IndexOf('APP_STOP_SIGNALLED')))
     $shows = ([regex]::Matches($stderrText, 'event=hud-show')).Count
     $hides = ([regex]::Matches($stderrText, 'event=hud-hide')).Count
-    Check ('I09 the application reported the HUD changes on stderr (state-change lines only, no path): hud-show=' + $shows + ' hud-hide=' + $hides + ' update-start>=3, one hud-summary, one exit line, lines=' + $el.Count + ' (<=200, none dropped)') (($shows -ge 5) -and ($hides -ge 5) -and ([regex]::Matches($stderrText, 'event=hud-update-start')).Count -ge 3 -and ([regex]::Matches($stderrText, 'event=hud-summary')).Count -eq 1 -and ([regex]::Matches($stderrText, 'event=exit ')).Count -eq 1 -and ($el.Count -le 200) -and ($stderrText -notmatch '[A-Za-z]:\\') -and ((EventLines $m.Sink 'APP_STREAMS')[0] -match 'stderrDropped=0'))
+    Check ('I09 the application reported the HUD changes on stderr (state-change lines only, no path; HUD visibility rule 2026-11-16: only a Session OFF hides, so the three soft OFF rounds add none): hud-show>=2 hud-hide>=2 are ' + $shows + ' / ' + $hides + ', update-start>=3, one hud-summary, one exit line, lines=' + $el.Count + ' (<=200, none dropped)') (($shows -ge 2) -and ($hides -ge 2) -and ([regex]::Matches($stderrText, 'event=hud-update-start')).Count -ge 3 -and ([regex]::Matches($stderrText, 'event=hud-summary')).Count -eq 1 -and ([regex]::Matches($stderrText, 'event=exit ')).Count -eq 1 -and ($el.Count -le 200) -and ($stderrText -notmatch '[A-Za-z]:\\') -and ((EventLines $m.Sink 'APP_STREAMS')[0] -match 'stderrDropped=0'))
     $portAfter = @([Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties().GetActiveUdpListeners() | Where-Object { $_.Port -eq $script:telPort }).Count -gt 0
     Check 'I10 after Dispose the application''s Directory port is released and the stand-in BVE window is untouched (still alive)' (($script:telPort -gt 0) -and (-not $portAfter) -and (PidAlive $bvePid))
     try { $telUdp.Close() } catch { }
