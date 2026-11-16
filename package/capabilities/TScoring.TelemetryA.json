@@ -15,9 +15,9 @@
     "note": "OD-X11 v2 (Owner 2026-11-15): the formal TelemetryA has the Legacy Jump execution ON. Jump OFF is a diagnostic / comparison build only and is never a formal candidate, deployed under the formal name or promoted."
   },
   "baseline": {
-    "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
-    "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
-    "sizeBytes": 181248,
+    "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
+    "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+    "sizeBytes": 184320,
     "capabilities": {
       "legacyJumpExec": true,
       "executionCompiledIn": true,
@@ -30,8 +30,8 @@
         "PseudoTurnbackPairCodec"
       ]
     },
-    "promotedAt": "2026-11-15T22:21:29",
-    "closeRef": "PROMOTED 2026-11-15: ACCEPTED=DEPLOYED=PROMOTED sha D6E6E324, source f42f0df on remote, formal live acceptance PASS (start/START Jump/forward+backward pseudo-turnback/backward Retry/normal exit, missing-jump 0, turnback-fail 0). 1 AppCrash BveTs.exe clr.dll 80131506 +0x2b7e58 at the first Current->Legacy handoff process (PID 19568) is classified non-blocking host-transition signature (dump comparison: no TScoring/BveEX plugin frames, TelemetryA not loaded, same signature in 4 dumps incl. 2 before this DLL)."
+    "promotedAt": "2026-11-16T03:52:18Z",
+    "closeRef": "PROMOTED 2026-11-16: ACCEPTED=DEPLOYED=PROMOTED sha BEAE0167, source b408bf5 on remote (tree ad76a963), S05 pulse gate fix; formal live acceptance PASS (Current x10 + Legacy x10 Pause-F5, see the accept entry). Known host signatures S01/S02/S04 recorded separately; 1 UNRESOLVED host signature nvd3dumx (no TScoring frame) recorded in the handoff 08-live-stop-report; Owner ruled resume. Companion baselines (no ledger): TelemetryB 7977259D, BridgeB E35A19BF, BridgeA FE6EEA1B. Rollback asset: D6E6E324 (previous baseline, handoff backup-old)."
   },
   "history": [
     {
@@ -128,6 +128,103 @@
       },
       "evidence": "PROMOTED 2026-11-15: ACCEPTED=DEPLOYED=PROMOTED sha D6E6E324, source f42f0df on remote, formal live acceptance PASS (start/START Jump/forward+backward pseudo-turnback/backward Retry/normal exit, missing-jump 0, turnback-fail 0). 1 AppCrash BveTs.exe clr.dll 80131506 +0x2b7e58 at the first Current->Legacy handoff process (PID 19568) is classified non-blocking host-transition signature (dump comparison: no TScoring/BveEX plugin frames, TelemetryA not loaded, same signature in 4 dumps incl. 2 before this DLL).",
       "at": "2026-11-15T22:21:29"
+    },
+    {
+      "stage": "build",
+      "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
+      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "formal build of b408bf5 (on remote, remote-verified local=remote 0/0), 2 clean roots matched, Jump ON, featureBits 7; build-report in out-ta; S05 pulse gate fix",
+      "at": "2026-11-16T02:55:15Z"
+    },
+    {
+      "stage": "accept",
+      "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
+      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "PRE-DEPLOYMENT acceptance 2026-11-16 (Owner PF-2): deterministic fixture + gate mutation + full regression PASS on identical source tree ad76a963; live acceptance pending. Rollback asset = D6E6E324 backup in deploy folder backup-old",
+      "at": "2026-11-16T02:56:29Z",
+      "ownerApproval": "Owner-PF-2-20261116"
+    },
+    {
+      "stage": "deploy",
+      "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
+      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "deployed to C:\\Users\\Public\\Documents\\BveEx\\Legacy\\Extensions at 2026-11-16T02:57:18Z with BridgeA FE6EEA1B (pair); Current pair TelemetryB 7977259D + BridgeB E35A19BF deployed same session; File.Replace from staging outside Extensions; residue 0; InputDevice and launcher.json unchanged",
+      "at": "2026-11-16T02:57:18Z"
+    },
+    {
+      "stage": "accept",
+      "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
+      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "LIVE acceptance 2026-11-16 (Owner PF-2/PF-3/PF-9/PF-10, OSK-driven): S05 pulse gate fix, deployed Current+Legacy pairs of b408bf5. Current Pause-F5 x10 (V-A x7, V-B x1, V-C x1 + one aborted V-B attempt by tool timing) and Legacy Pause-F5 x10 (V-A x7, V-B x1, V-C x1 + one aborted V-A attempt by logger-dropped lines): ScenarioReady re-established tick-less (tickInGen=0 or Caller SCN_READY_ON before first formal Tick), formal Tick resumed, TickSeen illegal updates 0, Jump execution 0, missing-jump 0, turnback-fail 0, pulse exceptions 0; Class1 gate stats req=enter+stale+tick (backlog 0, reent 0, expired 0). WER/dump: S01 x1 (Legacy entry process, known), S02 x1 (BVE6 exit, known), S04 x1 (BVE5 exit, known), 1 new UNRESOLVED host signature BveTs nvd3dumx.dll 0xC0000005 +0x32A442 while running (no TScoring frame, pulse idle, no GPU TDR; Owner ruled resume), no python/TScoring WER. Normal exit TEL_DISPOSE/TEL_FINAL ok. S05 stays HISTORICAL PRODUCT_SUSPECT / DIRECT CAUSATION UNPROVEN.",
+      "at": "2026-11-16T03:52:09Z",
+      "ownerApproval": "Owner-PF-3-20261116"
+    },
+    {
+      "stage": "promote",
+      "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
+      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "PROMOTED 2026-11-16: ACCEPTED=DEPLOYED=PROMOTED sha BEAE0167, source b408bf5 on remote (tree ad76a963), S05 pulse gate fix; formal live acceptance PASS (Current x10 + Legacy x10 Pause-F5, see the accept entry). Known host signatures S01/S02/S04 recorded separately; 1 UNRESOLVED host signature nvd3dumx (no TScoring frame) recorded in the handoff 08-live-stop-report; Owner ruled resume. Companion baselines (no ledger): TelemetryB 7977259D, BridgeB E35A19BF, BridgeA FE6EEA1B. Rollback asset: D6E6E324 (previous baseline, handoff backup-old).",
+      "at": "2026-11-16T03:52:18Z"
     }
   ],
   "rollbackAssets": [
@@ -185,6 +282,23 @@
       },
       "path": "csender-range-v1-20261115/dll-baseline/TScoring.TelemetryA.dll",
       "note": "PP-13 baseline (2026-11-14); Jump OFF; kept as capability-regression evidence"
+    },
+    {
+      "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "path": "C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\s05-pulse-deploy-live-v1-20261116-20261116-115544\\backup-old\\TScoring.TelemetryA.dll",
+      "note": "previous formal baseline D6E6E324 (source f42f0df, Jump ON, featureBits 7): ordinary rollback target of the S05 pulse gate promote (no capability loss); backup copy in the deploy folder backup-old with SHA ledger"
     }
   ]
 }

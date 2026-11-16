@@ -471,16 +471,18 @@ class E_LedgerAndClose(unittest.TestCase):
         self.assertTrue(ledger["contract"]["legacyJumpExec"])
         self.assertEqual(ledger["contract"]["buildRole"], "Formal")
         by_sha = {a["sha256"][:8]: a for a in ledger["rollbackAssets"]}
-        self.assertEqual(sorted(by_sha), ["17CA7159", "B0640455", "EDEB5766"])                # kept as evidence / guard RED input / rollback assets, none deleted
+        self.assertEqual(sorted(by_sha), ["17CA7159", "B0640455", "D6E6E324", "EDEB5766"])    # kept as evidence / guard RED input / rollback assets, none deleted (D6E6E324 = the previous baseline, an ordinary rollback target)
         # since the first OD-X11 v2 promote (D6E6E324, 2026-11-15) the baseline is a Jump ON formal build and the Jump OFF 17CA7159 is an emergency,
         # capability-losing rollback that needs an Owner approval id and is never selected automatically
+        # S05 pulse gate fix (on purpose; Owner 2026-11-16): the baseline moved on to BEAE0167 (source b408bf5), promoted after the formal live acceptance
         base = ledger["baseline"]
-        self.assertEqual(base["sha256"][:8], "D6E6E324")
+        self.assertEqual(base["sha256"][:8], "BEAE0167")
         self.assertTrue(base["capabilities"]["legacyJumpExec"])
         self.assertTrue(base["capabilities"]["executionCompiledIn"])
         self.assertEqual(base["capabilities"]["featureBits"], 7)
         self.assertEqual(base["capabilities"]["buildRole"], "Formal")
-        self.assertEqual([h["stage"] for h in ledger["history"] if h["sha256"][:8] == "D6E6E324"][-1], "promote")
+        self.assertEqual([h["stage"] for h in ledger["history"] if h["sha256"][:8] == "BEAE0167"][-1], "promote")
+        self.assertEqual([h["stage"] for h in ledger["history"] if h["sha256"][:8] == "D6E6E324"][-1], "promote")           # the previous baseline's own promote stays in the history
         self.assertTrue(by_sha["17CA7159"]["requiresOwnerApprovalId"])
         self.assertFalse(by_sha["17CA7159"]["automaticSelection"])
 
