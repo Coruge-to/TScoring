@@ -3,7 +3,7 @@ import datetime
 from collections import deque
 import os
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QFontMetrics, QPainterPath, QPen
+from PyQt6.QtGui import QColor, QFontMetrics, QPainterPath, QPen, QTransform
 from config import *
 
 # ★ ネットワークファイル用のログ関数
@@ -72,7 +72,85 @@ def draw_text_with_outline(painter, text, font, text_color, outline_color, x, y,
     painter.drawText(int(x), int(y), text_str)
 
 # ★【高品質版】パス・ストローク描画（HUDのデカ文字用・Wordと同じ美しい縁取り）
-def draw_text_with_stroke(painter, text, font, text_color, outline_color, x, y, align="left", stroke_width=OUTLINE_WIDTH):
+_GLYPH_TUNE_CACHE = {}
+
+
+def glyph_tune_of(font):
+    """Case C2 (HUD UI, Owner 2026-11-16): the two glyphs of the HUD font that look off inside the monospaced cell, measured from the font itself (the real Windows platform differs from offscreen):
+    the decimal point sits left of the cell centre of the digits (dot_dx: shift to the right that puts its ink centre on the ink centre of the digit 0), and the slash is taller than k / h (slash_scale and
+    slash_dy: shrink about the glyph origin so its height equals the height of k, bottom on the bottom of k)."""
+    key = (font.family(), font.pointSizeF(), font.pixelSize(), font.weight(), int(font.hintingPreference().value))
+    tune = _GLYPH_TUNE_CACHE.get(key)
+    if tune is None:
+        fm = QFontMetrics(font)
+        zero, dot, k, slash = fm.tightBoundingRect("0"), fm.tightBoundingRect("."), fm.tightBoundingRect("k"), fm.tightBoundingRect("/")
+        dot_dx = (zero.x() + zero.width() / 2.0) - (dot.x() + dot.width() / 2.0)
+        slash_h, k_h = float(slash.height()), float(k.height())
+        scale = k_h / slash_h if slash_h > 0 and k_h > 0 else 1.0
+        scale = min(1.0, scale)
+        slash_cx = slash.x() + slash.width() / 2.0
+        tune = {"dot_dx": dot_dx, "slash_scale": scale, "slash_tx": slash_cx - scale * slash_cx, "slash_ty": (k.y() + k.height()) - scale * (slash.y() + slash.height())}
+        _GLYPH_TUNE_CACHE[key] = tune
+    return tune
+
+
+def tuned_text_path(font, fm, text_str, x, y):
+    """The path of text_str at (x, y) with the decimal point centred in its cell and the slash scaled to the height of k (glyph_tune_of). The cell of every character is its own advance (the HUD font is monospaced)."""
+    tune = glyph_tune_of(font)
+    path = QPainterPath()
+    run_start = 0
+    for i, ch in enumerate(text_str):
+        if ch not in "./":
+            continue
+        if i > run_start:
+            path.addText(x + fm.horizontalAdvance(text_str[:run_start]), y, font, text_str[run_start:i])
+        cell_x = x + fm.horizontalAdvance(text_str[:i])
+        if ch == ".":
+            path.addText(cell_x + tune["dot_dx"], y, font, ".")
+        else:
+            glyph = QPainterPath()
+            glyph.addText(0, 0, font, "/")
+            path.addPath(QTransform(tune["slash_scale"], 0, 0, tune["slash_scale"], cell_x + tune["slash_tx"], y + tune["slash_ty"]).map(glyph))
+        run_start = i + 1
+    if run_start < len(text_str):
+        path.addText(x + fm.horizontalAdvance(text_str[:run_start]), y, font, text_str[run_start:])
+    return path
+
+
+# Case C3-d (Owner 2026-11-16): the kerning of the brake text of the handle row also works INSIDE a text. main.KERNING_OFFSETS (the glyphs with a blank on their RIGHT side) used to cut the blank only at the END of a text;
+# now the degree sign and the full-width closing bracket are cut wherever they stand, and the full-width opening bracket (the blank on its LEFT side, the mirror of the closing one) is cut by the same amount.
+KERN_LEFT_OFFSETS = {"（": 28, "(": 3}     # "(" half-width opening parenthesis: blank 7 px on its left, 3 px are cut (Owner 2026-11-16)
+KERN_MID_CHARS = ("°", "）", ")")
+
+
+def kerned_text_layout(text, fm, right_offsets):
+    """(x of every character from the left end of the text, width of the text) when the text needs the inner kerning, else None (the caller keeps the old end-of-text rule: kerned_text_width / get_text_offset).
+    A glyph moves left by its own left cut; the next glyph starts after the advance minus both cuts; a right cut (right_offsets) counts at the end of the text and, for KERN_MID_CHARS, anywhere."""
+    s = str(text)
+    if not (any(c in KERN_MID_CHARS for c in s[:-1]) or any(c in KERN_LEFT_OFFSETS for c in s)):
+        return None
+    positions, x, last = [], 0, len(s) - 1
+    for i, ch in enumerate(s):
+        left_cut = KERN_LEFT_OFFSETS.get(ch, 0)
+        right_cut = right_offsets.get(ch, 0) if (i == last or ch in KERN_MID_CHARS) else 0
+        positions.append(x - left_cut)
+        x += fm.horizontalAdvance(ch) - left_cut - right_cut
+    return positions, x
+
+
+def kerned_text_width(text, fm, right_offsets):
+    """The width of a brake text of the handle row: the kerned layout when it applies, else the advance minus the end-of-text cut (the rule before this change)."""
+    layout = kerned_text_layout(text, fm, right_offsets)
+    if layout is not None:
+        return layout[1]
+    width = fm.horizontalAdvance(text)
+    for suffix, offset in right_offsets.items():
+        if str(text).endswith(suffix):
+            return width - offset
+    return width
+
+
+def draw_text_with_stroke(painter, text, font, text_color, outline_color, x, y, align="left", stroke_width=OUTLINE_WIDTH, tune_glyphs=False, kern_positions=None):
     path = QPainterPath()
     fm = QFontMetrics(font)
     text_str = str(text)
@@ -82,8 +160,14 @@ def draw_text_with_stroke(painter, text, font, text_color, outline_color, x, y, 
     elif align == "center":
         x -= fm.horizontalAdvance(text_str) / 2
         
-    path.addText(x, y, font, text_str)
-    
+    if kern_positions is not None:
+        for ch, offset_x in zip(text_str, kern_positions):
+            path.addText(x + offset_x, y, font, ch)
+    elif tune_glyphs:
+        path = tuned_text_path(font, fm, text_str, x, y)
+    else:
+        path.addText(x, y, font, text_str)
+
     if isinstance(outline_color, tuple):
         pen_color = QColor(*outline_color)
     else:

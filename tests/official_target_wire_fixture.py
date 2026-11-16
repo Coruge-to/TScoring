@@ -423,7 +423,13 @@ class Scene(object):
     def render(self):
         self._drawn.clear()
         self.o.grab()
-        self.texts = list(self._drawn)
+        # HUD distance case C (on purpose; Owner 2026-11-16): the km unit of the remaining distance is drawn as its own small text right after the digits; the fixture reads the logical display text again
+        self.texts = []
+        for t in self._drawn:
+            if t == "km" and self.texts and re.match(r"^-?\d+(?:\.\d+)?$", self.texts[-1]):
+                self.texts[-1] += " km"
+            else:
+                self.texts.append(t)
         dist = next((i for i, t in enumerate(self.texts) if DIST_RE.match(t)), None)
         tl = next((t for t in self.texts if TIMELEFT_RE.match(t)), None)
         self.hud = {"dist": self.texts[dist] if dist is not None else None, "time_left": tl, "label": self.texts[dist - 1] if dist else None}

@@ -614,7 +614,14 @@ class Env(unittest.TestCase):
                 painter.end()
         finally:
             hud_ui.draw_text_with_stroke = original
-        return [t for t in out if re.match(r"^(\d+|---) km/h$", t[0])]
+        # HUD UI rework (on purpose; Owner 2026-11-16, case C3-d): the unit km/h is drawn as its own small text right after the digits; read the number and the unit back as one text
+        merged = []
+        for t in out:
+            if t[0] == "km/h" and merged and re.match(r"^(\d+|---)$", merged[-1][0]):
+                merged[-1] = (merged[-1][0] + " km/h", merged[-1][1])
+            else:
+                merged.append(t)
+        return [t for t in merged if re.match(r"^(\d+|---) km/h$", t[0])]
 
     def test_red_40_the_default_is_on_and_the_baseline_blink_numbers(self):
         self.assertIn("limit_advance", self.o.disp_settings, "ENV-RED: the key limit_advance exists in disp_settings")

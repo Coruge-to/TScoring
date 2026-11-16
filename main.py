@@ -75,7 +75,8 @@ import utils
 KERNING_OFFSETS = {
     "メ": 12,
     "°": 35,
-    "）" : 28
+    "）" : 28,
+    ")": 3     # half-width closing parenthesis (blank 7 px on its right; 3 px are cut, 4 stay): trimmed at the end of a text and inside it (Owner 2026-11-16)
 }
 
 def _hud_target_property(name):
@@ -1109,12 +1110,8 @@ class Overlay(QWidget):
                             def get_adjusted_max_w(text_list, apply_offset=False):
                                 adjusted_widths = []
                                 for s in text_list:
-                                    w = fm_local.horizontalAdvance(s)
-                                    if apply_offset:
-                                        for suffix, offset in KERNING_OFFSETS.items():
-                                            if s.endswith(suffix):
-                                                w -= offset
-                                                break
+                                    # inner kerning of the brake text (utils.kerned_text_width; Owner 2026-11-16): the same rule as the drawing of the handle row
+                                    w = utils.kerned_text_width(s, fm_local, KERNING_OFFSETS) if apply_offset else fm_local.horizontalAdvance(s)
                                     adjusted_widths.append(w)
                                 return max(adjusted_widths + [40]) if adjusted_widths else 40
 
@@ -1136,12 +1133,7 @@ class Overlay(QWidget):
                             def get_default_max_w(text_list, apply_offset=False):
                                 adjusted_widths = []
                                 for text_item in text_list:
-                                    width = fm_local.horizontalAdvance(text_item)
-                                    if apply_offset:
-                                        for suffix, offset in KERNING_OFFSETS.items():
-                                            if text_item.endswith(suffix):
-                                                width -= offset
-                                                break
+                                    width = utils.kerned_text_width(text_item, fm_local, KERNING_OFFSETS) if apply_offset else fm_local.horizontalAdvance(text_item)
                                     adjusted_widths.append(width)
                                 return max(adjusted_widths + [40]) if adjusted_widths else 40
 

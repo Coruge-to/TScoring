@@ -2,7 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor, QFontMetrics, QPainterPath, QPen, QLinearGradient, QFont
 from config import *
 from scoring_logic import rollback_message_visible
-from utils import draw_text_with_stroke, get_outline_color
+from utils import draw_text_with_stroke, get_outline_color, kerned_text_layout
 
 def hud_item_available(overlay, key):
     """Can the sender provide the data of this HUD item? (telemetry_contract AVAIL; a sender without AVAIL provides everything.)"""
@@ -196,7 +196,17 @@ def draw_hud(self, painter, logical_width):
     
     def draw_row_local(label_text, label_color, value_text, value_color, y, show_label=True, show_value=True):
         fm = QFontMetrics(self.font_ui)
-        value_width = fm.horizontalAdvance(value_text) if value_text else 0
+        unit_text, unit_font, unit_slot_w = None, None, 0
+        if value_text and value_text.endswith(" km/h"):
+            unit_text, value_text = "km/h", value_text[:-len(" km/h")]
+            unit_slot_w = fm.horizontalAdvance(" km/h") - fm.horizontalAdvance("0")
+        elif value_text and value_text.endswith(" km"):
+            unit_text, value_text = "km", value_text[:-len(" km")]
+            unit_slot_w = fm.horizontalAdvance(" m")
+        if unit_text:
+            unit_font = QFont(self.font_ui)
+            unit_font.setPointSize(DIST_KM_UNIT_POINT_SIZE)
+        value_width = (fm.horizontalAdvance(value_text) if value_text else 0) + unit_slot_w
         padding_x = 15
         if label_text: bg_x = pos_x_label - padding_x
         else: bg_x = pos_x_right - value_width - padding_x
@@ -213,7 +223,9 @@ def draw_hud(self, painter, logical_width):
         painter.setBrush(gradient)
         painter.drawRect(int(bg_x), int(bg_y), int(bg_w), int(bg_h))
         if label_text and show_label: draw_text_with_stroke(painter, label_text, self.font_ui, label_color, get_outline_color(label_color), pos_x_label, y, "left")
-        if value_text and show_value: draw_text_with_stroke(painter, value_text, self.font_ui, value_color, get_outline_color(value_color), pos_x_right, y, "right")
+        # Case C2 (Owner 2026-11-16): the decimal point is centred in its cell and the slash of km/h is as tall as the k (utils.glyph_tune_of); the value rows only (the labels and the menus are untouched)
+        if value_text and show_value: draw_text_with_stroke(painter, value_text, self.font_ui, value_color, get_outline_color(value_color), pos_x_right - unit_slot_w, y, "right", tune_glyphs=True)
+        if unit_text and show_value: draw_text_with_stroke(painter, unit_text, unit_font, value_color, get_outline_color(value_color), pos_x_right, y, "right", tune_glyphs=True)
 
     if hud_item_visible(self, "time"):
         s = self.bve_time_ms // 1000
@@ -287,7 +299,7 @@ def draw_hud(self, painter, logical_width):
             abs_d = abs(d) 
             if abs_d >= 99999.5: d_str = f"{abs_d/1000.0:.2f} km"
             elif abs_d >= 9999.95: d_str = f"{abs_d/1000.0:.3f} km"
-            elif abs_d >= 4.95: d_str = f"{abs_d:.1f} m"
+            elif abs_d >= 9.995: d_str = f"{abs_d:.1f} m"     # case C1 (Owner 2026-11-16): two decimals below 10 m (9.99 m -> 10.0 m, never 10.00 m; the old edge was 4.95 m)
             else: d_str = f"{abs_d:.2f} m"
             if d < 0 and d_str.split(" ", 1)[0].strip("0.") != "": d_str = "-" + d_str   # HUD-2: the sign follows the SAME rounded text it signs (a negative that rounds to 0.00 shows no sign; one that rounds to 0.01 or more always does)
 
@@ -334,7 +346,7 @@ def draw_hud(self, painter, logical_width):
 
         author_total_text_w = self.max_rev_w + gap + max(self.max_pow_w, self.max_brk_w) if self.is_single_handle else self.max_rev_w + gap + self.max_pow_w + gap + self.max_brk_w
         author_scale_ratio = min(1.0, LABEL_WIDTH / author_total_text_w) if author_total_text_w > 0 else 1.0
-        use_default_handle_text = author_scale_ratio < 0.75 and getattr(self, "default_handle_text_available", False)
+        use_default_handle_text = author_scale_ratio < HANDLE_DEFAULT_TEXT_RATIO and getattr(self, "default_handle_text_available", False)
 
         if use_default_handle_text:
             display_rev_text = self.default_rev_text
@@ -381,13 +393,21 @@ def draw_hud(self, painter, logical_width):
             handle_color = pow_color if self.bve_pow_notch != 0 else (brk_color if self.bve_brk_notch > 0 else COLOR_N)
             
             me_offset = get_text_offset(handle_text) if self.bve_brk_notch > 0 else 0
-            draw_text_with_stroke(painter, handle_text, self.font_ui, handle_color, get_outline_color(handle_color), 0 + me_offset, offset_to_top, "right")
+            me_layout = kerned_text_layout(handle_text, fm, KERNING_OFFSETS) if self.bve_brk_notch > 0 else None
+            if me_layout is not None:      # inner kerning of the brake text (utils.kerned_text_layout): drawn glyph by glyph from the left end -width
+                draw_text_with_stroke(painter, handle_text, self.font_ui, handle_color, get_outline_color(handle_color), -me_layout[1], offset_to_top, "left", kern_positions=me_layout[0])
+            else:
+                draw_text_with_stroke(painter, handle_text, self.font_ui, handle_color, get_outline_color(handle_color), 0 + me_offset, offset_to_top, "right")
         else:
             draw_text_with_stroke(painter, display_rev_text, self.font_ui, rev_color, get_outline_color(rev_color), -display_max_brk_w - gap - display_max_pow_w - gap, offset_to_top, "right")
             draw_text_with_stroke(painter, display_pow_text, self.font_ui, pow_color, get_outline_color(pow_color), -display_max_brk_w - gap, offset_to_top, "right")
             
             brk_offset = get_text_offset(display_brk_text)
-            draw_text_with_stroke(painter, display_brk_text, self.font_ui, brk_color, get_outline_color(brk_color), 0 + brk_offset, offset_to_top, "right")
+            brk_layout = kerned_text_layout(display_brk_text, fm, KERNING_OFFSETS)
+            if brk_layout is not None:     # inner kerning of the brake text (utils.kerned_text_layout): drawn glyph by glyph from the left end -width
+                draw_text_with_stroke(painter, display_brk_text, self.font_ui, brk_color, get_outline_color(brk_color), -brk_layout[1], offset_to_top, "left", kern_positions=brk_layout[0])
+            else:
+                draw_text_with_stroke(painter, display_brk_text, self.font_ui, brk_color, get_outline_color(brk_color), 0 + brk_offset, offset_to_top, "right")
         
         painter.restore()
         ui_y += scaled_bg_h + (ui_step - bg_h_local)

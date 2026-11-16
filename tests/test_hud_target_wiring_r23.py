@@ -40,7 +40,8 @@ PINNED_BLOBS = {
     # Stage TB-E (an intended change, not a drift) changed telemetry_contract.py on purpose (the word PTPAIR in TOKEN_KEYS["station"], the receiver key of the pseudo-turnback pairs; the OFFTGT supply is untouched; tests/test_pt_tbe_receiver.py): the blob moved from 0cc2ef6a...
     # Stage ENV-1 (the pin moved, an intended change): HUD_ITEM_REQUIRES gained the entry limit_advance (the same limit tokens as limit); the OFFTGT supply and every token / wire part are untouched (tests/test_env_settings_layout.py)
     "telemetry_contract.py": "03349ae0578527222b039981b3ff603e15b406bd",       # 2026-11-08 (the pin moved, an intended change: formal LastStop BveG, CalcG / sway retired; was b9b8d7d8...)
-    "network.py": "04d32aa0342fa17db3723ca1c7af3a66373d3474",       # 2026-11-08 (the pin moved, an intended change, was c3e39424...): the CALCG part of the (unused) network receiver is retired
+    "network.py": "f107156fb9fea8ea3e652281b17574be6ec206b9",       # HUD UI rework (on purpose; Owner 2026-11-16, case C3-d): the brake text widths of the (unused) network receiver use utils.kerned_text_width; was 04d32aa0...
+    #        # 2026-11-08 (the pin moved, an intended change, was c3e39424...): the CALCG part of the (unused) network receiver is retired
 }
 FIELDS = H.HudTarget._fields
 STATE_ATTRS = ("_hud_target", "_hud_freeze")
@@ -415,7 +416,7 @@ class B_Overlay(unittest.TestCase):
                 drawn.clear()
                 self.step(sc, own=bve, loc=loc, official=official)
                 self.assertEqual(colour_of(text), [want], "BVE owner, %s" % text)
-            for loc, text, want in ((998.0, "2.00 m", config.COLOR_N), (1003.0, "-3.00 m", config.COLOR_N), (1006.0, "-6.0 m", config.COLOR_B_EMG)):
+            for loc, text, want in ((998.0, "2.00 m", config.COLOR_N), (1003.0, "-3.00 m", config.COLOR_N), (1006.0, "-6.00 m", config.COLOR_B_EMG)):    # case C1 (on purpose; Owner 2026-11-16): two decimals below 10 m
                 drawn.clear()
                 self.step(sc, own={"mode": True, "finished": False}, loc=loc, official=official)       # the machine target (NEXTLOC 1000) and its 5 m margins, whatever the official margins say
                 self.assertEqual(colour_of(text), [want], "scoring owner, %s" % text)

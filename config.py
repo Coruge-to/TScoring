@@ -43,7 +43,9 @@ MARGIN_TOP_BIG = 122
 MARGIN_TOP_NORMAL = 294   
 MARGIN_RIGHT = 50         
 MARGIN_TOP_UI = 100       
-LABEL_WIDTH = 380         
+LABEL_WIDTH = 364
+DIST_KM_UNIT_POINT_SIZE = 28   # HUD remaining distance: the "km" unit is drawn at this size (about 40 pt x 0.7: the 'k' height matches the 'm' height at FONT_SIZE_UI), so "-999.99 km" fits the label+value width like "-9999.9 m"
+HANDLE_DEFAULT_TEXT_RATIO = 0.74   # handle row: the author's text is replaced by the default text when LABEL_WIDTH / (width of the author's text) is below this ratio. It was 0.75 at LABEL_WIDTH 380 (author text kept up to 506 px); at LABEL_WIDTH 364 the value 0.74 keeps it up to 491 px (case C3-d, Owner 2026-11-16)
 
 VISIBLE_LIST_COUNT = 5 # ★ 駅リストの表示件数を5件に統一
 

@@ -1783,11 +1783,18 @@ class G_RealOverlayAndScoringLifecycle(unittest.TestCase):
         self.assertEqual(sorted(out.split()), ["config.py", "network.py"])
         old_net = _git("show", E3_COMMIT + ":network.py")
         retired = "                    elif part.startswith(\"CALCG:\"): self.bve_calc_g = float(part.split(':')[1])\n"
-        self.assertEqual(old_net.replace("\r\n", "\n").replace(retired, ""), open(os.path.join(ROOT, "network.py"), encoding="utf-8").read().replace("\r\n", "\n"))
+        # HUD UI rework (on purpose; Owner 2026-11-16, case C3-d): the brake text widths of the (unused) network receiver go through utils.kerned_text_width; the old inline end-of-text loop is put back before the comparison
+        now_net = open(os.path.join(ROOT, "network.py"), encoding="utf-8").read().replace("\r\n", "\n")
+        now_net = now_net.replace('                            from utils import kerned_text_width\n', "").replace('                                    w = kerned_text_width(s, fm, KERNING_OFFSETS) if apply_offset else fm.horizontalAdvance(s)\n                                    adjusted_widths.append(w)\n', '                                    w = fm.horizontalAdvance(s)\n                                    if apply_offset:\n                                        for suffix, offset in KERNING_OFFSETS.items():\n                                            if s.endswith(suffix):\n                                                w -= offset\n                                                break\n                                    adjusted_widths.append(w)\n')
+        self.assertEqual(old_net.replace("\r\n", "\n").replace(retired, ""), now_net)
         old_cfg = ast.parse(_git("show", E3_COMMIT + ":config.py").replace("\r\n", "\n"))
         now_cfg = ast.parse(open(os.path.join(ROOT, "config.py"), encoding="utf-8").read().replace("\r\n", "\n"))
-        added = {"STANDARD_GRAVITY_MPS2", "STOP_JERK_WINDOW_SECONDS", "STOP_JERK_FIRST_BOUNDARY_G", "STOP_JERK_SECOND_BOUNDARY_G"}
+        # HUD distance case C (on purpose; Owner 2026-11-16): DIST_KM_UNIT_POINT_SIZE is ADDED (the size of the km unit of the remaining distance; nothing is changed or removed)
+        added = {"STANDARD_GRAVITY_MPS2", "STOP_JERK_WINDOW_SECONDS", "STOP_JERK_FIRST_BOUNDARY_G", "STOP_JERK_SECOND_BOUNDARY_G", "DIST_KM_UNIT_POINT_SIZE", "HANDLE_DEFAULT_TEXT_RATIO"}
         now_cfg.body = [n for n in now_cfg.body if not (isinstance(n, ast.Assign) and any(getattr(x, "id", None) in added for x in n.targets))]
+        # HUD UI rework (on purpose; Owner 2026-11-16, case C3-d): LABEL_WIDTH 380 -> 364 (the km / km/h units are small); every other constant is unchanged
+        for tree in (old_cfg, now_cfg):
+            tree.body = [n for n in tree.body if not (isinstance(n, ast.Assign) and any(getattr(x, "id", None) == "LABEL_WIDTH" for x in n.targets))]
         self.assertEqual(ast.dump(old_cfg), ast.dump(now_cfg))
         # Phase SI-A (on purpose): scoring_logic.py and utils.py carry exactly ONE change since E3 - the switch of the Desktop debug log (no score, no rule, no constant)
         old_scoring, old_utils, old_menu = _git("show", E3_COMMIT + ":scoring_logic.py"), _git("show", E3_COMMIT + ":utils.py"), _git("show", E3_COMMIT + ":menu_ui.py")
@@ -1852,7 +1859,12 @@ class G_RealOverlayAndScoringLifecycle(unittest.TestCase):
                   "set_rollback_message", "clear_rollback_message", "rollback_message_visible", "Import(names=[alias(name='time')])",
                   "Assign(targets=[Name(id='ROLLBACK_MESSAGE_SECONDS', ctx=Store())], value=Constant(value=5.0))",
                   "Assign(targets=[Name(id='rollback_clock', ctx=Store())], value=Attribute(value=Name(id='time', ctx=Load()), attr='monotonic', ctx=Load()))"}),
-                ("utils.py", old_utils, {"write_desktop_log"}, {"set_desktop_log_enabled", "desktop_log_enabled", "desktop_log_requested"}),
+                # HUD UI rework (on purpose; Owner 2026-11-16, case C3-d): utils.py gains the glyph tune (glyph_tune_of / tuned_text_path: the decimal point centred, the slash as tall as k) and the inner kerning of the brake text (kerned_text_layout / kerned_text_width
+                # and the two dictionaries KERN_LEFT_OFFSETS / KERN_MID_CHARS); draw_text_with_stroke gains the two optional arguments tune_glyphs / kern_positions (default = the old drawing); the QtGui import gains QTransform; no score, no rule, no constant
+                ("utils.py", old_utils, {"write_desktop_log", "draw_text_with_stroke"}, {"set_desktop_log_enabled", "desktop_log_enabled", "desktop_log_requested", "glyph_tune_of", "tuned_text_path", "kerned_text_layout", "kerned_text_width",
+                                                                                       "Assign(targets=[Name(id='_GLYPH_TUNE_CACHE', ctx=Store())], value=Dict())",
+                                                                                       "Assign(targets=[Name(id='KERN_LEFT_OFFSETS', ctx=Store())], value=Dict(keys=[Constant(value='（'), Constant(value='(')], values=[Constant(value=28), Constant(value=3)]))",
+                                                                                       "Assign(targets=[Name(id='KERN_MID_CHARS', ctx=Store())], value=Tuple(elts=[Constant(value='°'), Constant(value='）'), Constant(value=')')], ctx=Load()))"}),
                 # Stage TB-H (on purpose): the timing screen of draw_menu is the ONLY member of menu_ui.py that changed since E3 (nothing removed, nothing added)
                 # Stage TB-I (brake chain, on purpose): the ONE new member is the pure helper _brake_rule_start (the effective start of a basic brake rule that the screens draw); draw_menu calls it at four places
                 # Stage UI-D4 (on purpose; follow-up of the live Run CUI-C-02): the LAYERED dims of the F1 screens - the ONE dim function (a whole-window rectangle), the panel rectangle (the page behind a pop-up is clipped with it) and three module
@@ -1884,8 +1896,8 @@ class G_RealOverlayAndScoringLifecycle(unittest.TestCase):
             changed = {k for k in set(a) & set(b) if a[k] != b[k]}
             added = set(b) - set(a)
             # the 'from utils import (...)' statement of scoring_logic gains desktop_log_enabled; the utils module gains the switch variable and the env name
-            removed = {k for k in removed if not k.startswith("ImportFrom(module='utils'")}
-            added = {k for k in added if not k.startswith("ImportFrom(module='utils'") and not k.startswith("Assign(targets=[Name(id='_desktop_log_enabled'")
+            removed = {k for k in removed if not k.startswith("ImportFrom(module='utils'") and not (name == "utils.py" and k.startswith("ImportFrom(module='PyQt6.QtGui'"))}
+            added = {k for k in added if not k.startswith("ImportFrom(module='utils'") and not (name == "utils.py" and k.startswith("ImportFrom(module='PyQt6.QtGui'")) and not k.startswith("Assign(targets=[Name(id='_desktop_log_enabled'")
                      and not k.startswith("Assign(targets=[Name(id='DESKTOP_LOG_ENV'")}
             self.assertEqual((removed, changed, added), (set(), allowed_changed, allowed_added), name)
 

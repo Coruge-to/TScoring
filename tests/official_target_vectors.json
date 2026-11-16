@@ -205,7 +205,7 @@
     ]},
     {"id": "OP-04", "file": "ownership", "source": "synthetic (MISSED hold)", "list": "L4", "family": "R-OP-04", "steps": [
       {"loc": 1005.0, "speed": 40.0, "door": 0, "doordir": 0, "machine": {"nextloc": 1000.0, "nexttime": 36120000, "tgt": 1}, "own": {"mode": true, "finished": false}, "official": {"state": "K", "index": 2},
-       "expect": {"owner": "TS", "hud_dist": "-5.0 m", "hud_time_left": "02:00"}}
+       "expect": {"owner": "TS", "hud_dist": "-5.00 m", "hud_time_left": "02:00"}}
     ]},
     {"id": "NT-01", "file": "ownership", "source": "synthetic (running: the arrival time)", "list": "L4", "family": "R-NT-01", "steps": [
       {"loc": 500.0, "speed": 20.0, "door": 0, "machine": {"nextloc": -1.0, "nexttime": -1, "tgt": -1}, "official": {"state": "K", "index": 2},
@@ -336,7 +336,7 @@
       {"loc": 900.0, "time_ms": 36000000, "machine": {"nextloc": 1000.0, "nexttime": 36060000, "tgt": 1}, "official": {"state": "K", "index": 1},
        "expect": {"owner": "BVE", "official_state": "KNOWN", "official_index": 1, "target_nextloc": 1000.0, "target_nexttime": 36060000, "hud_dist": "100.0 m", "hud_time_left": "01:00"}},
       {"loc": 1995.0, "jump": 1, "time_ms": 36300000, "machine": {"nextloc": 1000.0, "nexttime": 36060000, "tgt": 1}, "official": {"state": "K", "index": 2},
-       "expect": {"owner": "BVE", "official_state": "KNOWN", "official_index": 2, "target_nextloc": 2000.0, "target_nexttime": 36360000, "hud_dist": "5.0 m", "hud_time_left": "01:00"}}
+       "expect": {"owner": "BVE", "official_state": "KNOWN", "official_index": 2, "target_nextloc": 2000.0, "target_nexttime": 36360000, "hud_dist": "5.00 m", "hud_time_left": "01:00"}}
     ]},
     {"id": "A0-1B", "file": "reinit", "source": "synthetic (A0: an official Jump to a pass station, k -> k+1)", "list": "L5P", "family": "R-REINIT-A0-1", "steps": [
       {"loc": 900.0, "time_ms": 36000000, "machine": {"nextloc": 1000.0, "nexttime": 36060000, "tgt": 1}, "official": {"state": "K", "index": 1},
@@ -362,7 +362,7 @@
       {"generation": 1, "sid": 7, "loc": 100.0, "time_ms": 36000000, "machine": {"nextloc": 1000.0, "nexttime": 36060000, "tgt": 1}, "official": {"state": "K", "index": 1},
        "expect": {"owner": "BVE", "official_state": "KNOWN", "official_index": 1, "target_nextloc": 1000.0, "target_nexttime": 36060000, "hud_dist": "900.0 m", "hud_time_left": "01:00"}},
       {"generation": 2, "sid": 8, "list": "L4", "loc": 1990.5, "time_ms": 36300000, "machine": {"nextloc": 2000.0, "nexttime": 36360000, "tgt": 2}, "official": {"state": "K", "index": 2},
-       "expect": {"owner": "BVE", "official_state": "KNOWN", "official_index": 2, "official_location": 2000.0, "target_nextloc": 2000.0, "target_nexttime": 36360000, "hud_dist": "9.5 m", "hud_time_left": "01:00"}}
+       "expect": {"owner": "BVE", "official_state": "KNOWN", "official_index": 2, "official_location": 2000.0, "target_nextloc": 2000.0, "target_nexttime": 36360000, "hud_dist": "9.50 m", "hud_time_left": "01:00"}}
     ]},
     {"id": "F5-2", "file": "reinit", "source": "synthetic distance d=44.9 m (machine value equals the official one)", "list": "L4", "strict": true, "family": "R-REINIT-F5-2", "steps": [
       {"generation": 1, "sid": 7, "loc": 100.0, "time_ms": 36000000, "machine": {"nextloc": 1000.0, "nexttime": 36060000, "tgt": 1}, "official": {"state": "K", "index": 1},

@@ -111,7 +111,7 @@ class H12_Overlay(unittest.TestCase):
     def test_HUD_2_R12_units_digits_and_larger_distances_are_unchanged(self):
         with F.Scene(self.vec) as sc:
             sc.load_list("L4")
-            for d, want in ((2.0, "2.00 m"), (-3.0, "-3.00 m"), (-0.5, "-0.50 m"), (50.0, "50.0 m"), (-6.0, "-6.0 m"), (-4.96, "-5.0 m")):
+            for d, want in ((2.0, "2.00 m"), (-3.0, "-3.00 m"), (-0.5, "-0.50 m"), (50.0, "50.0 m"), (-6.0, "-6.00 m"), (-4.96, "-4.96 m")):    # case C1 (on purpose; Owner 2026-11-16): two decimals below 10 m, so -6.0 m is -6.00 m and -4.96 m is no longer rounded to -5.0 m
                 self.assertEqual(self.dist(sc, d), want, "d=%r" % d)
 
 

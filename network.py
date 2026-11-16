@@ -132,15 +132,11 @@ def process_udp_data(self):
                             fm = QFontMetrics(self.font_ui)
                             
                             from main import KERNING_OFFSETS
+                            from utils import kerned_text_width
                             def get_adjusted_max_w(text_list, apply_offset=False):
                                 adjusted_widths = []
                                 for s in text_list:
-                                    w = fm.horizontalAdvance(s)
-                                    if apply_offset:
-                                        for suffix, offset in KERNING_OFFSETS.items():
-                                            if s.endswith(suffix):
-                                                w -= offset
-                                                break
+                                    w = kerned_text_width(s, fm, KERNING_OFFSETS) if apply_offset else fm.horizontalAdvance(s)
                                     adjusted_widths.append(w)
                                 return max(adjusted_widths + [40]) if adjusted_widths else 40
 

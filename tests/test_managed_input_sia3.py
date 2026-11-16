@@ -1799,10 +1799,12 @@ class I_DesktopLogAndStaticGuards(unittest.TestCase):
             "if not getattr(self, 'jump_lock', False) and not getattr(self, 'is_first_station', False):",
             "not getattr(self, 'jump_lock', False)",
         )
+        # HUD UI rework (on purpose; Owner 2026-11-16, case C3-d): LABEL_WIDTH 380 -> 364 (the km / km/h units are small): the one old line (stripped) that left config.py; no score, no rule and no constant of the scoring is among them
+        label_width_364 = ("LABEL_WIDTH = 380",)
         self.assertEqual(removed, [l for l in removed if "from utils import" in l or l.strip("-").strip() in ("", ")", pid_d6_transport) + tbd_running_end_judgement + pseudo_turnback_a_seam + st2a_checkpoint_identity + st2b_retry_by_saved_index
                                    + st3d_request_by_the_one_builder + st2c_first_station_distance + timefix_b_departure_margins + timefix_b3_zero_speed_and_jump_boundary
                                    + close_range_shared_basic_braking_init + si_r5_2a_p03_target_index + si_r5_2b_arrival_target_index + si_r5_2c_departure_prev_target_index
-                                   + lc3b_same_time_history_replace + stage_tbh6_illegal_move_wording + formal_bveg_retired + initial_defaults_settings_reads + stage_f2_desktop_log_label + f2_rollback_message_lifetime + stop_range_official_half_open + backward_jump_lock_reads], removed)
+                                   + lc3b_same_time_history_replace + stage_tbh6_illegal_move_wording + formal_bveg_retired + initial_defaults_settings_reads + stage_f2_desktop_log_label + f2_rollback_message_lifetime + stop_range_official_half_open + backward_jump_lock_reads + label_width_364], removed)
 
     def test_the_scoring_function_bodies_are_ast_identical_to_the_baseline(self):
         old = git("show", BASELINE + ":scoring_logic.py")
@@ -1855,12 +1857,17 @@ class I_DesktopLogAndStaticGuards(unittest.TestCase):
         if old is None:
             self.skipTest("baseline commit / git not available (INCONCLUSIVE)")
         # 2026-11-08 (an intended change, formal LastStop BveG): the stop-jerk constants are ADDED (nothing is changed or removed)
-        added = {"STANDARD_GRAVITY_MPS2", "STOP_JERK_WINDOW_SECONDS", "STOP_JERK_FIRST_BOUNDARY_G", "STOP_JERK_SECOND_BOUNDARY_G"}
+        # HUD distance case C (on purpose; Owner 2026-11-16): DIST_KM_UNIT_POINT_SIZE is ADDED (the size of the km unit of the remaining distance; nothing is changed or removed)
+        added = {"STANDARD_GRAVITY_MPS2", "STOP_JERK_WINDOW_SECONDS", "STOP_JERK_FIRST_BOUNDARY_G", "STOP_JERK_SECOND_BOUNDARY_G", "DIST_KM_UNIT_POINT_SIZE", "HANDLE_DEFAULT_TEXT_RATIO"}
         now = ast.parse(read("config.py"))
         kept = [n for n in now.body if not (isinstance(n, ast.Assign) and any(getattr(t, "id", None) in added for t in n.targets))]
         self.assertEqual(len(now.body) - len(kept), len(added))
         now.body = kept
-        self.assertEqual(ast.dump(ast.parse(old.replace("\r\n", "\n"))), ast.dump(now))
+        # HUD UI rework (on purpose; Owner 2026-11-16, case C3-d): LABEL_WIDTH 380 -> 364; every other constant is unchanged
+        old_tree = ast.parse(old.replace("\r\n", "\n"))
+        for tree in (old_tree, now):
+            tree.body = [n for n in tree.body if not (isinstance(n, ast.Assign) and any(getattr(t, "id", None) == "LABEL_WIDTH" for t in n.targets))]
+        self.assertEqual(ast.dump(old_tree), ast.dump(now))
 
 
 if __name__ == "__main__":
