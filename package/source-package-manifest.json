@@ -74,7 +74,7 @@
     ]
   },
   "files": [
-    {"set": "python", "path": "config.py", "blob_sha256": "B01F49624936A12421567514C5F586106C2552141812C1E0547B84131832358D", "blob_size": 2741, "blob_eol": "lf"},
+    {"set": "python", "path": "config.py", "blob_sha256": "8A33FC0DF6957A6BA2B68C637DBB529617B557A86454EC44E73A029C65F115BA", "blob_size": 2858, "blob_eol": "lf"},
     {"set": "python", "path": "current_jump_client.py", "blob_sha256": "C2E41A1DFA47274E527A41926D7FEBC52D070A380124BCC05C2536CA0C1F10EC", "blob_size": 18302, "blob_eol": "lf"},
     {"set": "python", "path": "dataplane_contract.py", "blob_sha256": "53D23EA683DE8C6344932DEF5D550C0646B3B95ECC5561A3CDAF66F46D9EF27D", "blob_size": 7696, "blob_eol": "lf"},
     {"set": "python", "path": "effective_station_state.py", "blob_sha256": "09407973D3AAF103863FD58C9C18D06828A498AE4EECA7EA8A48C8DEC6F1F261", "blob_size": 14980, "blob_eol": "lf"},
@@ -141,5 +141,5 @@
     {"set": "shared", "path": "TsScoringPlugin/Handshake/Telemetry/Shared/TelemetryContract.cs", "blob_sha256": "D5E4AAB343C9BB6145CDFDE9226C1871BDDAD1D4EAE503D368C5841922D966D8", "blob_size": 9030, "blob_eol": "lf"},
     {"set": "shared", "path": "TsScoringPlugin/Handshake/Telemetry/Shared/TelemetryDirectoryReader.cs", "blob_sha256": "9D6C47493457FD840E8CA5186C8E16181F0B5CF85C10721087C9098DD6644680", "blob_size": 6615, "blob_eol": "lf"}
   ],
-  "fingerprint": "2D8F6D683F2497209E3CAC87FF65BBCA76F0ACF5FDBF842A832EF7C0CB091596"
+  "fingerprint": "216598A2F991A6CC89B76030F4DB377AF823D01456D7CFBA63B533E6D6CBFC17"
 }

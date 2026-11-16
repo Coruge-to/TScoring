@@ -132,6 +132,18 @@ class C_KmUnit(unittest.TestCase):
         import config
         self.assertEqual(config.LABEL_WIDTH, 364)
 
+    def test_C_6_the_unit_size_is_30_and_the_units_stay_inside_their_slots(self):
+        # case C4-30 (Owner 2026-11-17): the km / km/h units are 30 (was 28); the digits keep their place, the units stay inside the slots of " m" / " km/h"
+        import config
+        from PyQt6.QtGui import QFont, QFontMetrics
+        self.assertEqual(config.DIST_KM_UNIT_POINT_SIZE, 30)
+        with F.Scene(self.vec) as sc:
+            unit_font = QFont(sc.o.font_ui)
+            unit_font.setPointSize(config.DIST_KM_UNIT_POINT_SIZE)
+            ufm, fm = QFontMetrics(unit_font), QFontMetrics(sc.o.font_ui)
+            self.assertLess(ufm.horizontalAdvance("km"), fm.horizontalAdvance(" m"))
+            self.assertLess(ufm.horizontalAdvance("km/h"), fm.horizontalAdvance(" km/h") - fm.horizontalAdvance("0"))
+
 
 @unittest.skipUnless(HAS_QT, "PyQt6 is not importable by this interpreter")
 class C1_TwoDecimalsBelow10m(unittest.TestCase):

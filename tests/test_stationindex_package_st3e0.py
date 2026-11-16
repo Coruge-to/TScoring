@@ -56,7 +56,7 @@ CAPABILITIES = ("jump-request-v2", "jump-completion-v2", "current-selected-idx",
 
 # the git blob ids of commit 0b8e511 of every runtime source that ST-3e0 must not change (main.py and the two projects are handled apart: one line is added to each)
 BASE_BLOBS = {
-    "config.py": "2cb5a5d7b4ab7dfb467968bc267bac584e874b8d",  # HUD distance case C (on purpose; Owner 2026-11-16): config.py gained the one constant DIST_KM_UNIT_POINT_SIZE (the size of the km unit of the remaining distance); was 0b83a545...
+    "config.py": "df1ce749b5d38cb39233d54d77c632f40deb49bf",  # HUD distance case C4-30 (on purpose; Owner 2026-11-17): DIST_KM_UNIT_POINT_SIZE 28 -> 30 (was 2cb5a5d7...; case C: the constant was added, was 0b83a545...)
     #       # 2026-11-08 (the pin moved, an intended change: formal LastStop BveG, CalcG / sway retired; was 9572d1b7...)       # 2026-11-08 (the pin moved, an intended change: display change (--- and plain description); was 07f9a29f...)
     "current_jump_client.py": "bfcee44c0a0f79a76a8a6e950c738084523f1cf9",
     "dataplane_contract.py": "56da8579207ae7f6d866f17ce4aafe6d0553c23f",

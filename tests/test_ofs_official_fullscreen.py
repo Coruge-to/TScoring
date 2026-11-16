@@ -611,7 +611,7 @@ class I_FontHinting(unittest.TestCase):
     full hinting: the same advances at 125% / 150% (and at most 1 px less at 175%), and exactly the old pixels at 100%."""
 
     # the digest of the pixels of the HUD (menu_state 0) and of the F1 menu (menu_state 1) at 100% BEFORE this change (default hinting, measured with the same child)
-    OLD_PIXELS_100 = {0: "eaa5955121043c7f", 1: "1f9854ae520fa95d"}     # HUD UI rework (on purpose; Owner 2026-11-16, case C3-d): the default HUD draws the units km/h small, the digits one digit to the right and the decimal point centred; menu_state 0 was c51aff63179f6124
+    OLD_PIXELS_100 = {0: "b50078b2db62162c", 1: "1f9854ae520fa95d"}     # HUD UI rework (on purpose; Owner 2026-11-16, case C3-d): the default HUD draws the units km/h small, the digits one digit to the right and the decimal point centred; menu_state 0 was c51aff63179f6124; case C4-30 (Owner 2026-11-17): the units are 30 (was 28), menu_state 0 was eaa5955121043c7f
 
     def run_child(self, scale, menu_state=0):
         if not HAS_QT or importlib.util.find_spec("win32gui") is None:
