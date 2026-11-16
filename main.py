@@ -2583,6 +2583,19 @@ class Overlay(QWidget):
         except Exception:
             return True
 
+    def warm_up(self, rect):
+        """Managed mode, ONCE per process, while the HUD is hidden (HUD warm-up (on purpose; Owner 2026-11-16)): pays the first-use costs that otherwise delay the first HUD by 0.2-0.3 s - the key listener of the
+        keyboard module (its first use starts a thread and the low-level hook; the first update step used to do it), the native window, and a first paint at the REAL size of the BVE client
+        area (fonts, the glyph paths, the first raster). Nothing is shown: the window stays hidden (SetWindowPos without SWP_SHOWWINDOW), the paint goes to a pixmap (grab), no key is pressed
+        or suppressed. `rect` = (x, y, w, h) in Win32 physical px. The controller reports the elapsed time once."""
+        try:
+            keyboard.is_pressed('f24')                    # a key nothing uses: only the start of the listener
+        except Exception:
+            pass
+        self.winId()
+        self.set_client_rect_physical(*rect)
+        self.grab()
+
     def client_rect_physical(self):
         """The BVE client area in physical px for hit testing: the last applied rectangle, or (before any placement) the widget's geometry scaled to physical."""
         if self._client_phys is not None:

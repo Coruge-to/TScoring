@@ -49,6 +49,7 @@ from managed_mode import describe_exception
 ACTIVE_INTERVAL_MS = 16          # the interval the Overlay's own timer has always used
 IDLE_INTERVAL_MS = 30            # while nothing is shown, and while no Tick comes: the state block is looked at (and the HUD follows the BVE window); was 100 ms (HUD visibility rule (on purpose; Owner 2026-11-16): a load shows the HUD at most one poll after Session ON)
 WINDOW_SEARCH_INTERVAL_S = 0.5   # EnumWindows is not run more often than this while no BVE window is linked
+WARMUP_MAX_TRIES = 120           # HUD warm-up (on purpose; Owner 2026-11-16): the once-per-process warm-up looks for the BVE window at most this many times (every WINDOW_SEARCH_INTERVAL_S), then gives up silently
 MAX_HUD_ERROR_LINES = 5
 MAX_ZORDER_LINES = 5             # hud-zorder-set / hud-zorder-error lines; further ones are only counted
 MAX_ZORDER_WALK = 64             # Phase OFS-1: at most this many windows above the HUD are looked at when it is placed in the topmost band
@@ -197,6 +198,9 @@ class ManagedHudController(object):
         self._next_search = 0.0
         self._zkeep_retry_at = 0.0      # Phase OFS-1: earliest time of the next topmost-band keep step after a failure
         self._wait_logged = False
+        self._warmed = False            # HUD warm-up (on purpose; Owner 2026-11-16): the first-use costs (the key listener, the native window, the first paint at the BVE window's size) were paid while the HUD was still hidden
+        self._warm_tries = 0
+        self._next_warm_search = 0.0
         self._driving_seen = False      # HUD first-show rule (on purpose; Owner 2026-11-16: the HUD must not come before the driving screen): the Driving was ON in this generation (the driving screen has been drawn); the HUD of a WAITING state is shown / kept only then
         self._shutdown = False
         self._error_lines = 0
@@ -384,6 +388,8 @@ class ManagedHudController(object):
             if self._reader.lost is not None:
                 self._enter_failsafe(self._reader.lost)
                 return
+            if not self._warmed:
+                self._warm_up()
             change = self.gate.apply(snapshot)
             if change is not None:
                 self._on_change(change)
@@ -449,6 +455,40 @@ class ManagedHudController(object):
             else:
                 self._set_interval(IDLE_INTERVAL_MS)
                 self._hide("session-off")
+
+    def _warm_up(self):
+        """HUD warm-up (on purpose; Owner 2026-11-16): the FIRST HUD of a process came up 0.2-0.3 s after the cab (live: the first update step starts the key listener, about 60 ms; the first show creates the native
+        window and paints it for the first time, 55-100 ms; both under BVE's own load), while every later show is instant. They are paid ONCE here, while the HUD is hidden and nothing is
+        waiting for it (the Caller starts this process at the first ScenarioOpened): the Overlay's warm_up(rect) at the BVE client area's real size. It shows nothing, links nothing, owns nothing,
+        changes no state of the controller and takes no key. Not while ACTIVE; the BVE window is looked for every WINDOW_SEARCH_INTERVAL_S at most WARMUP_MAX_TRIES times; a failure is
+        reported once and never repeated. A fake Overlay without warm_up is simply marked done."""
+        if self.gate.mode == managed_state.MODE_ACTIVE or self._shutdown:
+            return
+        overlay = self._overlay
+        warm = getattr(overlay, "warm_up", None)
+        if warm is None or self._warm_tries >= WARMUP_MAX_TRIES:
+            self._warmed = True
+            return
+        now = self._clock()
+        if now < self._next_warm_search:
+            return
+        self._next_warm_search = now + WINDOW_SEARCH_INTERVAL_S
+        self._warm_tries += 1
+        try:
+            api = self._api
+            hwnd = api.find_bve_window(self._args.bve_pid)
+            if hwnd is None or api.is_iconic(hwnd):
+                return                                   # not there (yet): the next search
+            rect = api.client_rect_on_screen(hwnd)
+            if rect is None:
+                return
+            started = self._clock()
+            warm(rect)
+            self._warmed = True
+            self._emit("hud-warmup", ms=int(round((self._clock() - started) * 1000)), tries=self._warm_tries)
+        except Exception as e:
+            self._warmed = True
+            self._emit("hud-warmup-failed", error=describe_exception(e), tries=self._warm_tries)
 
     def _note_epoch(self, snapshot):
         """Phase SI-A7 (M1a): the Ready epoch of the Bridge, DIAGNOSTIC ONLY. One `epoch-info` line whenever (supported, tick seen, epoch number) differs from the last one

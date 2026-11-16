@@ -172,7 +172,7 @@ class Static(unittest.TestCase):
         """both the managed path and the normal-mode path place through the same method; the hit test reads what that method stored"""
         self.assertIn("self._client_phys = rect", self.place)
         self.assertIn("return self._client_phys", segment(self.main, "Overlay.client_rect_physical"))
-        self.assertEqual(self.main.count("set_client_rect_physical("), 2, "def + the normal-mode call (the managed call lives in managed_hud)")
+        self.assertEqual(self.main.count("set_client_rect_physical("), 3, "def + the normal-mode call + Overlay.warm_up (HUD warm-up, on purpose; Owner 2026-11-16: it places the HIDDEN window at the BVE client rect before the first show); the managed call lives in managed_hud")
         self.assertIn("client_rect_applied(rect)", self.hud)
 
     def test_the_transform_module_is_pure(self):
