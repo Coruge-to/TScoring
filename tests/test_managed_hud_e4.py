@@ -1212,7 +1212,7 @@ class I_ZOrder(ControllerCase):
         self.pump(100)
         self.assertEqual(self.api.z, [SELECT, HUD, 5000])
         self.assertEqual(self.api.z_calls, [])                                   # HUD Z order on resume (on purpose; Owner 2026-11-16): the order was already right: nothing is placed
-        self.assertEqual(self.api.z_queries, queries + 1)                        # ... but the resume looks ONCE (tests/test_hud_z_resume.py)
+        self.assertEqual(self.api.z_queries, queries + 2)                        # ... but the resume looks twice: once at the resume and ONCE more 0.4 s later (tests/test_hud_z_resume.py)
         self.assertEqual((self.overlay.shows, self.overlay.hides), (1, 0))
 
     def test_reload_finalises_once_for_the_reshow(self):

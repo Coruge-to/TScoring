@@ -8,7 +8,10 @@ Z3  once per resume: a thousand active Ticks later nothing is polled or correcte
 Z4  nothing happens while the Tick is stopped (WAITING): a drift is not fought and no Z operation is made
 Z5  every resume does it once (three Tick stops: three corrections)
 Z6  a reload (the Session ends and the HUD is re-shown) still finalises exactly once (the show path), not twice
-Z7  a minimized BVE window at the resume: nothing is placed while it is minimized; the show after the restore finalises once
+Z7  a minimized BVE window at the resume: nothing is placed while it is minimized; the show after the restore finalises once (+ the one recheck)
+Z8  the re-ordering that Windows does for ~0.1-0.3 s after BVE answers again: a first look inside it (HUD > BVE > list: the HUD already is directly above BVE) does nothing, the recheck 0.4 s later\n    finds HUD > list > BVE and puts the HUD directly under the list (live 23:34:06.9)
+Z9  the recheck happens ONCE per resume (a thousand more Ticks: nothing)
+Z10 a HUD that is hidden before the recheck is due is not looked at (the next show places it)
 """
 import os
 import sys
@@ -64,6 +67,7 @@ class Z_Resume(e4.ControllerCase):
         self.stop_ticks()
         self.api.z = [HUD, SELECT, BVE]
         self.resume()
+        self.pump(40)                                        # the one recheck (0.4 s after the first look) is over
         self.api.z_calls.clear()
         queries = self.api.z_queries
         self.api.z = [HUD, OTHER, SELECT, BVE]               # drift while the HUD stays shown
@@ -115,7 +119,51 @@ class Z_Resume(e4.ControllerCase):
         self.pump(60)
         self.assertEqual(self.api.z, [SELECT, HUD, BVE])
         self.assertEqual(len(self.api.z_calls), 1)
-        self.assertEqual(self.api.z_queries, queries + 1)    # the show path finalises once; the pending resume does not add a second look
+        self.assertEqual(self.api.z_queries, queries + 2)    # the show path finalises once (the pending resume does not add a second look there) + the one recheck 0.4 s later
+
+
+    def test_Z8_the_recheck_after_the_reordering_has_settled(self):
+        self.activate([SELECT, BVE])
+        self.stop_ticks()
+        self.api.z = [HUD, BVE, SELECT]                      # Windows' transient state: the list is under BVE for a moment
+        self.api.z_calls.clear()
+        self.publish(True, True, 1)
+        self.pump(3)                                         # the first look: HUD is directly above BVE: nothing to do
+        self.assertEqual(self.api.z_calls, [])
+        self.api.z = [HUD, SELECT, BVE]                      # settled: the list came back above BVE, still under the HUD
+        self.pump(30)                                        # 0.6 s: the recheck
+        self.assertEqual(self.api.z, [SELECT, HUD, BVE])
+        self.assertEqual(self.api.z_calls, [(HUD, SELECT)])
+
+    def test_Z9_the_recheck_happens_once(self):
+        self.activate([SELECT, BVE])
+        self.stop_ticks()
+        self.resume()
+        self.pump(40)
+        queries = self.api.z_queries
+        self.pump(1000)
+        self.assertEqual(self.api.z_queries, queries)
+
+    def test_Z10_a_hidden_hud_is_not_looked_at(self):
+        self.activate([SELECT, BVE])
+        self.stop_ticks()
+        self.resume()                                        # 5 ticks = 0.1 s: the recheck is pending
+        self.publish(False, False, 1)                        # the Session ends: the HUD is hidden
+        self.pump(5)
+        queries = self.api.z_queries
+        self.pump(60)
+        self.assertEqual(self.api.z_queries, queries)
+
+    def test_Z11_a_recheck_that_was_pending_when_the_hud_was_hidden_does_not_run_after_the_next_show(self):
+        self.activate([SELECT, BVE])
+        self.stop_ticks()
+        self.resume()                                        # the recheck is pending
+        self.publish(False, False, 1)                        # hidden before it is due
+        self.pump(40)                                        # 0.8 s: it would be overdue
+        queries = self.api.z_queries
+        self.publish(True, True, 2)                          # the HUD is shown again: the show path places it once
+        self.pump(60)
+        self.assertEqual(self.api.z_queries, queries + 1)
 
 
 if __name__ == "__main__":

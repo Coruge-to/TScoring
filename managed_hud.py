@@ -49,6 +49,7 @@ from managed_mode import describe_exception
 ACTIVE_INTERVAL_MS = 16          # the interval the Overlay's own timer has always used
 IDLE_INTERVAL_MS = 30            # while nothing is shown, and while no Tick comes: the state block is looked at (and the HUD follows the BVE window); was 100 ms (HUD visibility rule (on purpose; Owner 2026-11-16): a load shows the HUD at most one poll after Session ON)
 WINDOW_SEARCH_INTERVAL_S = 0.5   # EnumWindows is not run more often than this while no BVE window is linked
+Z_RECHECK_S = 0.4                # HUD Z order recheck (on purpose; Owner 2026-11-16): once after a resume the HUD's place is looked at AGAIN this long after the first look (Windows re-orders the windows of a BVE that answers again for about 0.1-0.3 s; the first look can fall into that)
 WARMUP_MAX_TRIES = 120           # HUD warm-up (on purpose; Owner 2026-11-16): the once-per-process warm-up looks for the BVE window at most this many times (every WINDOW_SEARCH_INTERVAL_S), then gives up silently
 MAX_HUD_ERROR_LINES = 5
 MAX_ZORDER_LINES = 5             # hud-zorder-set / hud-zorder-error lines; further ones are only counted
@@ -198,6 +199,7 @@ class ManagedHudController(object):
         self._next_search = 0.0
         self._zkeep_retry_at = 0.0      # Phase OFS-1: earliest time of the next topmost-band keep step after a failure
         self._wait_logged = False
+        self._z_recheck_at = 0.0        # HUD Z order recheck (on purpose; Owner 2026-11-16): monotonic time of the one second look after a resume (0 = none pending)
         self._z_resume = False          # HUD Z order on resume (on purpose; Owner 2026-11-16): the Tick came back after a stop (WAITING -> ACTIVE): the HUD's place in the Z order is finalised ONCE (the scenario selection window of BVE may have come back over / under it while BVE did not respond)
         self._warmed = False            # HUD warm-up (on purpose; Owner 2026-11-16): the first-use costs (the key listener, the native window, the first paint at the BVE window's size) were paid while the HUD was still hidden
         self._warm_tries = 0
@@ -586,6 +588,10 @@ class ManagedHudController(object):
                         self._z_resume = False                 # once per resume (never polled): the rule of the first show - directly above the BVE window, below every window that lies over it
                         if not shown_now:
                             self._ensure_z_order()
+                        self._z_recheck_at = self._clock() + Z_RECHECK_S      # HUD Z order recheck (on purpose; Owner 2026-11-16): and ONE more look after the re-ordering of the windows has settled
+                    elif self._z_recheck_at and self._clock() >= self._z_recheck_at:
+                        self._z_recheck_at = 0.0
+                        self._ensure_z_order()
             except Exception:
                 self._unlink("bve-window-error")
                 linked = False
@@ -888,6 +894,7 @@ class ManagedHudController(object):
                 self.input_errors += 1
         self._overlay.hide()
         self._shown = False
+        self._z_recheck_at = 0.0                     # a hidden HUD is placed again by its next show
         self.hides += 1
         self._emit("hud-hide", reason=reason, hides=self.hides)
 
