@@ -569,9 +569,13 @@ class S_CSharp(unittest.TestCase):
         # Nothing else of HandshakeSession.cs may differ from LC-4b: after the two strings are neutralised back the text must be identical.
         if self.CALLER in changed:
             base_hs = subprocess.run(["git", "-C", ROOT, "show", "cbebfd3:" + self.CALLER], capture_output=True, timeout=60).stdout.decode("utf-8", "replace").replace("\r\n", "\n")
-            back = lambda text: pid_s3_undo.undo_caller_notice(text.replace("\r\n", "\n")).replace('ProductDisplayName = "TScoring";', 'ProductDisplayName = "TS Scoring";').replace('"TScoringにはBveEXが必要です。', '"TS ScoringにはBveEXが必要です。')
-            self.assertEqual(back(read(self.CALLER)), base_hs, "HandshakeSession.cs may differ from LC-4b in the two TScoring display strings only")
+            # Phase C-early (an intended change, on purpose; Owner 2026-11-16): ObserveAppControllerLocked gained ONE call line (the early start request) and the start-request reason text is chosen by AppStep.Early;
+            # nothing of Dispose / shutdown / withdraw differs: after those two are neutralised back the text must be identical to LC-4b.
+            undo_early = lambda text: re.sub(r"[ ]*LogAppStepLocked\(appController\.ObserveOpened\(scenarioGenerationSeen\)\);[^\n]*\n", "", text).replace("(step.Early ? AppRequestReasons.ScenarioOpened : AppRequestReasons.FirstDrivingOn)", "AppRequestReasons.FirstDrivingOn")
+            back = lambda text: undo_early(pid_s3_undo.undo_caller_notice(text.replace("\r\n", "\n"))).replace('ProductDisplayName = "TScoring";', 'ProductDisplayName = "TS Scoring";').replace('"TScoringにはBveEXが必要です。', '"TS ScoringにはBveEXが必要です。')
+            self.assertEqual(back(read(self.CALLER)), base_hs, "HandshakeSession.cs may differ from LC-4b in the two TScoring display strings and the C-early lines only")
             self.assertIn('ProductDisplayName = "TScoring";', read(self.CALLER))
+            self.assertIn("appController.ObserveOpened(scenarioGenerationSeen)", read(self.CALLER))
         # Phase PP-11 / PP-13 (an intended change, on purpose; Owner 2026-11-13): the Legacy Bridge gained the Pause pulse (a timer that posts to the host UI thread and calls tracker.OnPulse; its Dispose stops the timer); it
         # carries no clean-up of the shutdown set (Test-ExtensionControlPlaneSIA7 E5-E10 and Tools/Verify-PausePulsePP13.ps1 pin it).
         self.assertEqual([c for c in changed if c not in (self.SES, self.EXT, self.APM, self.CALLER, "TsScoringPlugin/Handshake/Bridge/Legacy/src/TsScoringLegacyBridge.cs")], [])

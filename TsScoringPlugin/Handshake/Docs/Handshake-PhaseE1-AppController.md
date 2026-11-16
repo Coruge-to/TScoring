@@ -92,3 +92,13 @@ DrivingActive の成立条件・250 ms／2000 ms・hard／soft OFF の理由と�
 - BVE の正常終了または TS Scoring OFF: `APP_STOP_REQUEST` が 1 行。TS Scoring OFF→ON では新しい `cycle` が `requestNo=1` から始まる。
 - 起動要求のないまま終了: `APP_STOP_NOT_REQUIRED` が 1 行。
 - タスクマネージャーに新しいプロセスが現れない。
+
+## Phase C-early（2026-11-16、Owner 指示）: 最初の起動要求だけを早める
+
+HUD の最初の表示が遅い（Python の起動約 0.4 秒が、運転画面の描画のあとに始まる）ため、Caller インスタンスの **最初の起動要求だけ** を、最初の `ScenarioGeneration` を見た時点（BVE の ScenarioOpened、シナリオの読込みの数秒前）に出す。
+
+- 新しい理由: `APP_START_REQUEST … reason=scenario-opened dryRun=yes`（`AppController.ObserveOpened`）。Caller インスタンスにつき 1 回、起動要求がまだ無く、世代が 1 以上で、閉じていないときだけ。
+- そのあとの最初の DrivingActive ON は「同じ世代で要求済み」として `APP_START_SUPPRESSED` が 1 行だけ出る（これまでの再 ON と同じ扱い）。
+- 以降の世代は従来どおり（その世代の最初の ON で要求。プロセスは生きているので、プロセスマネージャーが抑止する）。
+- 停止要求（Dispose で 1 回）、ScenarioReady の撤回、soft OFF の扱いは変わらない。
+- Python 側は変更なし（`session` が OFF の間は非表示で待つ）。

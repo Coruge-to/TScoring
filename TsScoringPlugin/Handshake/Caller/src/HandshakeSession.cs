@@ -460,6 +460,7 @@ namespace TSScoringPlugin.Handshake
         {
             try
             {
+                LogAppStepLocked(appController.ObserveOpened(scenarioGenerationSeen));   // Phase C-early: the first generation this instance sees starts the application early (once); nothing otherwise
                 LogAppStepLocked(appController.Observe(driving.Active, scenarioReadyLevel, scenarioGenerationSeen));
             }
             catch (Exception ex)
@@ -510,7 +511,7 @@ namespace TSScoringPlugin.Handshake
             switch (step.Action)
             {
                 case AppAction.StartRequested:
-                    ObsA("APP_START_REQUEST", "pid=" + pid + " ScenarioGeneration=" + step.ScenarioGeneration + " requestNo=" + step.RequestNumber + " reason=" + AppRequestReasons.FirstDrivingOn + " dryRun=yes");
+                    ObsA("APP_START_REQUEST", "pid=" + pid + " ScenarioGeneration=" + step.ScenarioGeneration + " requestNo=" + step.RequestNumber + " reason=" + (step.Early ? AppRequestReasons.ScenarioOpened : AppRequestReasons.FirstDrivingOn) + " dryRun=yes");
                     ObsA("APP_START_REQUEST_EPOCH", "requestNo=" + step.RequestNumber + " ScenarioGeneration=" + step.ScenarioGeneration + " " + EpochTextLocked());   // Phase SI-A7: the epoch the request was made in (a companion line: the E1 line above is unchanged)
                     RequestAppLaunchLocked(step); // Phase E3: the decision above is acted on by the process manager (its own APP_LAUNCH_* / APP_* lines say what happened)
                     break;

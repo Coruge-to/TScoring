@@ -14,6 +14,9 @@
 //   No further request in the same generation: a repeated ON after a soft OFF, a Pause, a short Tick stop, the scenario-selection screen of the
 //   legacy host, an ON / OFF oscillation. The first such suppressed ON of a generation is reported once (Suppressed); it is never repeated.
 //   A different ScenarioGeneration carries nothing over from the old one: its first DrivingActive ON is a new request (new number).
+//   Phase C-early (ObserveOpened): the very FIRST start request of a Caller instance is made earlier, when the first ScenarioGeneration is seen (BVE's ScenarioOpened; reason
+//   scenario-opened), so the application's start (about 0.4 s) hides behind the scenario load (3-5 s). The first DrivingActive ON of that generation is then reported once as
+//   Suppressed; every later generation behaves as before (a new request at its first ON, which the process manager suppresses while the one process is alive).
 // STOP request: exactly ONE per Caller instance, when Dispose begins - and only if a start request was made (nothing was "started" otherwise).
 //   Nothing else produces a stop request: not a soft OFF, not a hard OFF, not the withdrawal of the scenario, not a new generation.
 // After Dispose began the controller is closed: it never produces another request.
@@ -41,6 +44,9 @@ namespace TSScoringPlugin.Handshake
     internal static class AppRequestReasons
     {
         public const string FirstDrivingOn = "first-driving-on";
+
+        /// <summary>Phase C-early: the application is started when the FIRST ScenarioGeneration of this Caller instance is seen (BVE's ScenarioOpened), seconds before its first DrivingActive ON.</summary>
+        public const string ScenarioOpened = "scenario-opened";
         public const string CallerDispose = "caller-dispose";
         public const string AlreadyRequestedForGeneration = "already-requested-for-generation";
         public const string NoStartRequest = "no-start-request";
@@ -52,6 +58,9 @@ namespace TSScoringPlugin.Handshake
         public AppAction Action;
         public int RequestNumber;
         public int ScenarioGeneration;
+
+        /// <summary>Phase C-early: the start request was made by ObserveOpened (reason scenario-opened), not by a DrivingActive ON.</summary>
+        public bool Early;
     }
 
     internal sealed class AppController
@@ -74,6 +83,29 @@ namespace TSScoringPlugin.Handshake
         public int LastRequestedGeneration { get { return requestedGeneration; } }
 
         public bool Closed { get { return closed; } }
+
+        /// <summary>
+        /// Phase C-early: the first ScenarioGeneration this Caller instance sees (BVE's ScenarioOpened; the generation is published at once, a few seconds before the scenario is
+        /// created and before any DrivingActive) makes the ONE early start request, so the application is already running when the cab is drawn. Only the very first one: once
+        /// any start request exists (early or at a DrivingActive ON) this does nothing. The generation of the early request is remembered, so the first DrivingActive ON of that
+        /// same generation is reported once as already requested (Suppressed), exactly like a repeated ON. Generation 0 = "none yet" never qualifies. A closed controller never requests.
+        /// </summary>
+        public AppStep ObserveOpened(int scenarioGeneration)
+        {
+            AppStep r = new AppStep();
+            if (closed || startCount > 0 || scenarioGeneration <= 0)
+            {
+                return r;
+            }
+
+            startCount++;
+            requestedGeneration = scenarioGeneration;
+            r.Action = AppAction.StartRequested;
+            r.RequestNumber = startCount;
+            r.ScenarioGeneration = scenarioGeneration;
+            r.Early = true;
+            return r;
+        }
 
         /// <param name="drivingActive">DrivingActive after this step's evaluation.</param>
         /// <param name="scenarioPublished">The Caller's own reading of the scenario publication (the same value DrivingActive was given).</param>

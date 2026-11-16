@@ -126,6 +126,11 @@ function Obs($c, [bool]$active, [bool]$published, [int]$gen) {
     $t = $st.GetType()
     return [pscustomobject]@{ Action = ([string]$t.GetField('Action').GetValue($st)); No = [int]$t.GetField('RequestNumber').GetValue($st); Gen = [int]$t.GetField('ScenarioGeneration').GetValue($st) }
 }
+function ObsOpened($c, [int]$gen) {   # Phase C-early (Owner 2026-11-16): the early start request (the first generation this instance sees)
+    $st = $appT.GetMethod('ObserveOpened').Invoke($c, @($gen))
+    $t = $st.GetType()
+    return [pscustomobject]@{ Action = ([string]$t.GetField('Action').GetValue($st)); No = [int]$t.GetField('RequestNumber').GetValue($st); Gen = [int]$t.GetField('ScenarioGeneration').GetValue($st); Early = [bool]$t.GetField('Early').GetValue($st) }
+}
 function Disp($c) {
     $st = $appT.GetMethod('OnDispose').Invoke($c, @())
     $t = $st.GetType()
@@ -343,6 +348,29 @@ $ok = $true
 foreach ($g in @([int]::MaxValue, 1, [int]::MaxValue)) { try { [void](Obs $c $true $true $g); [void](Obs $c $false $true $g) } catch { $ok = $false } }
 Check 'A22 extreme generation numbers (Int32.MaxValue, back to 1, Int32.MaxValue again) do not throw; each change is a new request (3)' ($ok -and ((CProp $c 'StartRequestCount') -eq 3))
 
+# Phase C-early (Owner 2026-11-16): the early start request of a Caller instance (ObserveOpened)
+$c = NewCtl
+$x = @((ObsOpened $c 0).Action, (ObsOpened $c -1).Action, (ObsOpened $c ([int]::MinValue)).Action)
+Check 'A23 no valid generation (0 / negative): no early request' ((@($x | Where-Object { $_ -ne 'None' }).Count -eq 0) -and ((CProp $c 'StartRequestCount') -eq 0))
+$x = ObsOpened $c 7
+Check 'A24 the first valid generation: ONE early start request (number 1, generation 7, Early)' (($x.Action -eq 'StartRequested') -and ($x.No -eq 1) -and ($x.Gen -eq 7) -and $x.Early -and ((CProp $c 'StartRequestCount') -eq 1) -and ((CProp $c 'LastRequestedGeneration') -eq 7))
+$x = @(1..40 | ForEach-Object { (ObsOpened $c 7).Action }) + @((ObsOpened $c 8).Action)
+Check 'A25 the early request is made once per instance: the same generation 40 times and the next generation: nothing more' ((@($x | Where-Object { $_ -ne 'None' }).Count -eq 0) -and ((CProp $c 'StartRequestCount') -eq 1) -and ((CProp $c 'LastRequestedGeneration') -eq 7))
+$x = Obs $c $true $true 7
+$y = Obs $c $true $true 7
+$z = Obs $c $false $true 7; $w = Obs $c $true $true 7
+Check 'A26 the first DrivingActive ON of the early generation is reported ONCE as suppressed (request number 1), then nothing; no new request' (($x.Action -eq 'StartSuppressed') -and ($x.No -eq 1) -and ($x.Gen -eq 7) -and ($y.Action -eq 'None') -and ($w.Action -eq 'None') -and ((CProp $c 'StartRequestCount') -eq 1))
+$x = Obs $c $true $true 8
+Check 'A27 a later generation behaves as before: its first ON is a new request (number 2, not Early)' (($x.Action -eq 'StartRequested') -and ($x.No -eq 2) -and ($x.Gen -eq 8) -and ((CProp $c 'StartRequestCount') -eq 2))
+$c = NewCtl
+[void](Obs $c $true $true 3)
+$x = ObsOpened $c 3
+Check 'A28 once any start request exists (made at a DrivingActive ON) the early observation does nothing' (($x.Action -eq 'None') -and ((CProp $c 'StartRequestCount') -eq 1))
+$c = NewCtl
+[void](Disp $c)
+$x = ObsOpened $c 5
+Check 'A29 after Dispose began the early observation never requests' (($x.Action -eq 'None') -and ((CProp $c 'StartRequestCount') -eq 0))
+
 # ================================================================================================================ S: the session (hand-driven monitor steps)
 Write-Host '--- S: session (Step driven by hand, real DrivingActive state, real log)'
 $pid1 = 960001
@@ -353,13 +381,14 @@ $startLines = @($app | Where-Object { $_ -match ' APP_START_REQUEST ' })
 $stopLines = @($app | Where-Object { $_ -match ' APP_STOP_REQUEST ' })
 Check ('S01 three generations, soft OFF / ON, Pause-like Ticks, withdrawal, generation change, Dispose: ' + (Summary $r)) (($r.Starts -eq 3) -and ($r.Stops -eq 1) -and ($r.Gens -eq '1,2,3') -and ($r.Nos -eq '1,2,3') -and ($r.CtlStarts -eq 3) -and ($r.CtlStops -eq 1))
 $f = $startLines[0]
-Check 'S02 the first start request names the Caller instance (cycle), the BVE PID, the generation, the request number, the reason and dry-run' (($f -match (' cycle=' + $r.Cycle + ' ')) -and ((Field $f 'pid') -eq [string]$pid1) -and ((Field $f 'ScenarioGeneration') -eq '1') -and ((Field $f 'requestNo') -eq '1') -and ((Field $f 'reason') -ceq 'first-driving-on') -and ((Field $f 'dryRun') -ceq 'yes') -and ($f -match ' T=A th=\d+ APP_START_REQUEST '))
+Check 'S02 the first start request (the early one, reason scenario-opened) names the Caller instance (cycle), the BVE PID, the generation, the request number, the reason and dry-run' (($f -match (' cycle=' + $r.Cycle + ' ')) -and ((Field $f 'pid') -eq [string]$pid1) -and ((Field $f 'ScenarioGeneration') -eq '1') -and ((Field $f 'requestNo') -eq '1') -and ((Field $f 'reason') -ceq 'scenario-opened') -and ((Field $f 'dryRun') -ceq 'yes') -and ($f -match ' T=A th=\d+ APP_START_REQUEST '))
 $g = $stopLines[0]
 Check 'S03 the stop request names instance, PID, request number 1, reason caller-dispose, the three start requests and dry-run' (($g -match (' cycle=' + $r.Cycle + ' ')) -and ((Field $g 'pid') -eq [string]$pid1) -and ((Field $g 'requestNo') -eq '1') -and ((Field $g 'reason') -ceq 'caller-dispose') -and ((Field $g 'startRequests') -eq '3') -and ((Field $g 'lastScenarioGeneration') -eq '3') -and ((Field $g 'dryRun') -ceq 'yes'))
 $iOn1 = IndexOfLine $L 'DRIVING_ACTIVE_ON' 'ScenarioGeneration=1 '
 $iStart1 = IndexOfLine $L 'APP_START_REQUEST' 'ScenarioGeneration=1 '
 $iReadyOn1 = IndexOfLine $L 'SCN_READY_ON' 'ScenarioGeneration=1 '
-Check 'S04 the first start request comes after the scenario publication and right with the first DrivingActive ON (never before them)' (($iReadyOn1 -ge 0) -and ($iOn1 -gt $iReadyOn1) -and ($iStart1 -gt $iOn1) -and ($iStart1 -eq $iOn1 + 1))
+$iGen1 = IndexOfLine $L 'SCN_GENERATION_CHANGED' 'to=1 '
+Check 'S04 the first start request (Phase C-early) comes with the first generation this instance sees - after the generation change, BEFORE the first DrivingActive ON - and the first ON of that generation follows as one reported suppression' (($iGen1 -ge 0) -and ($iReadyOn1 -ge 0) -and ($iOn1 -gt $iReadyOn1) -and ($iStart1 -gt $iGen1) -and ($iStart1 -lt $iOn1) -and ($iOn1 -lt (IndexOfLine $L 'APP_START_SUPPRESSED' 'ScenarioGeneration=1 ')))
 $firstStartIdx = $iStart1
 $beforeStart = @($L[0..($firstStartIdx - 1)] | Where-Object { $_ -match ' APP_' })
 Check 'S05 nothing APP_ was logged before it: 30 Ticks without a publication, the publication alone and the unarmed Steps produced no request' ($beforeStart.Count -eq 0)
@@ -391,12 +420,24 @@ $p = SetLog 's2-zero.log' $pid2
 $b = NewBridgeObjs $pid2
 $h = NewSession $pid2
 for ($i = 0; $i -lt 40; $i++) { TickS $h; Step $h }
-SetSR $b 1 $true
-for ($i = 0; $i -lt 40; $i++) { Step $h }
-Check 'S12 zero start requests: Ticks alone, then the publication alone (40 Steps each) - no APP_ line, DrivingActive OFF' (((AppLines $p).Count -eq 0) -and (-not (Active $h)))
+Check 'S12 zero start requests: Ticks alone, no scenario published (40 Steps) - no APP_ line, DrivingActive OFF' (((AppLines $p).Count -eq 0) -and (-not (Active $h)))
 EndS $h
 $a2 = AppLines $p
 Check 'S13 Dispose of that instance (nothing was requested): no APP_STOP_REQUEST; exactly one APP_STOP_NOT_REQUIRED note (reason no-start-request, dry-run)' ((@($a2 | Where-Object { $_ -match ' APP_STOP_REQUEST ' }).Count -eq 0) -and (@($a2 | Where-Object { $_ -match ' APP_STOP_NOT_REQUIRED ' }).Count -eq 1) -and ((Field (@($a2 | Where-Object { $_ -match 'NOT_REQUIRED' })[0]) 'reason') -ceq 'no-start-request'))
+DisposeBridgeObjs $b
+
+# Phase C-early (Owner 2026-11-16): the publication alone (no Tick, DrivingActive never ON) already makes the early start request; Dispose then makes the one stop request
+$pid2b = 960012
+$p = SetLog 's12b-early.log' $pid2b
+$b = NewBridgeObjs $pid2b
+$h = NewSession $pid2b
+SetSR $b 1 $true
+for ($i = 0; $i -lt 40; $i++) { Step $h }
+$a2b = @(AppLines $p)
+Check 'S12b the publication alone (40 Steps, no Tick, DrivingActive OFF): exactly ONE start request, the early one (reason scenario-opened, generation 1, number 1), nothing else' ((@($a2b).Count -eq 1) -and ($a2b[0] -match ' APP_START_REQUEST ') -and ((Field $a2b[0] 'reason') -ceq 'scenario-opened') -and ((Field $a2b[0] 'ScenarioGeneration') -eq '1') -and ((Field $a2b[0] 'requestNo') -eq '1') -and (-not (Active $h)))
+EndS $h
+$a2b = @(AppLines $p)
+Check 'S13b Dispose of that instance (the early request was made): one stop request (number 1), no not-required note' ((@($a2b | Where-Object { $_ -match ' APP_STOP_REQUEST ' }).Count -eq 1) -and (@($a2b | Where-Object { $_ -match 'NOT_REQUIRED' }).Count -eq 0))
 DisposeBridgeObjs $b
 
 $pid3 = 960003
@@ -472,7 +513,7 @@ TickS $h2; Step $h2
 EndS $h2
 $a7 = @(AppLines $p)
 $st7 = @($a7 | Where-Object { $_ -match ' APP_START_REQUEST ' }); $sp7 = @($a7 | Where-Object { $_ -match ' APP_STOP_REQUEST ' })
-Check 'S19 TS Scoring OFF -> ON: instance 1 requested start + stop; instance 2 (new cycle) arms alone (no request), then makes its OWN start request number 1 and its own stop request number 1' (($st7.Count -eq 2) -and ($sp7.Count -eq 2) -and ($mid.Count -eq 2) -and ($st7[0] -match (' cycle=' + $h1.Cycle + ' ')) -and ($st7[1] -match (' cycle=' + $h2.Cycle + ' ')) -and ($h1.Cycle -ne $h2.Cycle) -and ((Field $st7[1] 'requestNo') -eq '1') -and ((Field $sp7[1] 'requestNo') -eq '1'))
+Check 'S19 TS Scoring OFF -> ON: instance 1 requested start + stop; instance 2 (new cycle) inherits nothing and makes its OWN (early) start request number 1 at its first Step, then its own stop request number 1' (($st7.Count -eq 2) -and ($sp7.Count -eq 2) -and ($mid.Count -eq 4) -and ($st7[0] -match (' cycle=' + $h1.Cycle + ' ')) -and ($st7[1] -match (' cycle=' + $h2.Cycle + ' ')) -and ($h1.Cycle -ne $h2.Cycle) -and ((Field $st7[1] 'requestNo') -eq '1') -and ((Field $sp7[1] 'requestNo') -eq '1'))
 DisposeBridgeObjs $b
 
 # Enabled false: there is no path other than Dispose (and a Caller that was never started)

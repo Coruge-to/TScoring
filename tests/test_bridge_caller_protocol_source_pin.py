@@ -50,7 +50,7 @@ PINNED = {
     "Bridge/src/ScenarioReadyTracker.cs": "9C357AED54D4229E53597A16BC0944749D421A1AF8119DD90E1E33A59CCD59D1",
     "Bridge/src/TsScoringBridgePrototype.cs": "C24B511FBE64ED8C741B730AE144ED421EA48ED5F2C3549D0B83BB5C54C8F3CC",
     "Caller/TSScoringPlugin.Caller.InputDevice.csproj": "CEBE7CF0FD70F07CC9234DE40E8E2FFB1416C8B01A1A0E4199158A71634A393E",
-    "Caller/src/AppController.cs": "28FE0F5B180F26184AF148E25C6693DCC206E3A7A1C49B9E9034396C7E1F36B6",
+    "Caller/src/AppController.cs": "71E6CFDD2D84201F01134A4C0294B2B244E0369EE45A5873DC41ADFBDD0669DB",
     "Caller/src/AppDirectoryPublisher.cs": "CB2DD29E86AFD4E55B938E56C95BB3DBE390E73D41DF35E324519D61987730D2",
     "Caller/src/AppProcessManager.cs": "3C6B23EF471DE544B6E1EB3EA7A3CB4ECB59470F6E2917474856CBEA7307CAE1",
     "Caller/src/AppStatePublisher.cs": "F6E6745AB65CBCAE2F118C9ED185B9305E8BD68ABACC3B350E2CA15240D1AF71",
@@ -58,7 +58,7 @@ PINNED = {
     "Caller/src/BveWindowMessageObserver.cs": "6E4FD08FE9F19E51FA50BB17EF25A188AC9E1A6A5ABD8331559256C340E5AAB3",
     "Caller/src/DrivingActivityState.cs": "B643C3FC6EB77CFFB2EF1DA29F4C90D6FC6C419B9EBFD564FAA9A46CC2B85639",
     "Caller/src/F11CloseProtocol.cs": "FE5BA894B5AB83CC9341B9BCD4B747FCEEEEFE74193E3A7E30103C8993A41924",
-    "Caller/src/HandshakeSession.cs": "B93C1FC2FC745BF6EF859DF19CD0F2AE5BE4699AE5FC39EDE79D48C75EFC12AE",
+    "Caller/src/HandshakeSession.cs": "43C68DC670F837295A43F8D1AFC123E2E7E96A3F09B3167A9FEBF2DFADC85C1C",
     "Caller/src/InitialDefaultsLauncher.cs": "5EC41F87E4DF8E8E3BADE67E3FF6EB740E50D8B412BBF33DA9D70D23BAB27EF6",
     "Caller/src/InitialDefaultsWindow.cs": "3B6167A8002C26E07FC3D3F87690070EB1E5FC266796A6F3F24775DBCE87F6C4",
     "Caller/src/LauncherConfig.cs": "B8F560879550E0A371F8804A5AD6DA001763C735974FE5F4803BF5ED59F52D05",
@@ -91,6 +91,18 @@ PIN_UPDATES = [
         "tests": ["Handshake/Tests/Test-PausePulseGateS05.ps1", "Handshake/Tests/Test-PausePulseContractS05.ps1", "Handshake/Tools/Invoke-PausePulseSiteMutationS05.ps1", "Handshake/Tools/Verify-PausePulsePP13.ps1"],
         "liveRequired": True,
         "commit": "this commit (S05 fix)",
+    },
+    {
+        "stage": "C-early (the Caller starts the application at the first ScenarioOpened)",
+        "ownerContract": "Owner 2026-11-16: the first HUD of a Caller instance is late because the application is started only at the first DrivingActive ON (about 0.4 s of start after the cab is drawn); the start request of an "
+                         "instance is made earlier, when the FIRST ScenarioGeneration is seen (BVE's ScenarioOpened, reason scenario-opened, seconds before the scenario is created); everything else of the controller and the process manager is unchanged",
+        "files": ["Caller/src/AppController.cs", "Caller/src/HandshakeSession.cs"],
+        "reason": "AppController.ObserveOpened (one early start request per instance, only while no request exists, generation > 0, not closed; the first DrivingActive ON of that generation is then the usual one reported suppression) "
+                  "and its call in HandshakeSession.ObserveAppControllerLocked (before the DrivingActive observation) with the reason text chosen by AppStep.Early",
+        "newSha": {"Caller/src/AppController.cs": "71E6CFDD2D84201F01134A4C0294B2B244E0369EE45A5873DC41ADFBDD0669DB", "Caller/src/HandshakeSession.cs": "43C68DC670F837295A43F8D1AFC123E2E7E96A3F09B3167A9FEBF2DFADC85C1C"},
+        "tests": ["Handshake/Tests/Test-AppControllerE1.ps1 (A23-A29, S02, S04, S12b, S13b, S19)", "Handshake/Tests/Test-AppProcessE3.ps1 (R01b-R01e)", "Handshake/Tests/Test-HudLinkE4.ps1 (H04)", "tests/test_lc5_ui_shutdown.py (C7)"],
+        "liveRequired": True,
+        "commit": "this commit (C-early)",
     },]
 
 

@@ -96,3 +96,7 @@ stderr／stdout:
 3. Pause・再読込・シナリオ終了・選択画面の往復: Python が増えず、終了もしない（`APP_LAUNCH_SUPPRESSED` が再読込ごとに 1 行）。
 4. TS Scoring を OFF／BVE を終了: `APP_STOP_SIGNALLED` → `APP_EXITED exitCode=0`、残留 Python なし。
 5. 手動で `main.py` を先に起動してから管理起動: `APP_EXIT_BEFORE_READY exitCode=2`（UDP bind 失敗）。再起動しない。
+
+## Phase C-early（2026-11-16）: 起動のきっかけ
+
+管理 Python の起動は、最初の DrivingActive ON ではなく、**最初の ScenarioGeneration を見た時点**（`APP_START_REQUEST reason=scenario-opened`）から始まる。起動の手順（`APP_LAUNCH_BEGIN` → `APP_PROCESS_STARTED` → `APP_READY`）、同時に 1 プロセス、試行は 1 回、Stop の手順は変わらない。最初の DrivingActive ON の時点では、すでに起動済み（または起動中）のため、`APP_START_SUPPRESSED` が 1 行出るだけで、`APP_LAUNCH_SUPPRESSED` は増えない。

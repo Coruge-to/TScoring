@@ -744,6 +744,30 @@ End $s
 Check ('R03 Dispose of the session: ONE logical stop request, ONE Stop signal, the process leaves by itself with exit code 0 (' + $endMs + ' ms), a second Dispose does nothing') (((ELines $log 'APP_STOP_REQUEST').Count -eq 1) -and ((EventLines $m.Sink 'APP_STOP_SIGNALLED').Count -eq 1) -and (-not (PidAlive $cp)) -and ([int](Mg $m 'ExitCode') -eq 0) -and ((EventLines $m.Sink 'APP_SHUTDOWN_END').Count -eq 1) -and ($endMs -lt 3500))
 DisposeBridgeObjs $b
 
+# Phase C-early (Owner 2026-11-16): the process is started by the FIRST generation this instance sees (BVE's ScenarioOpened: the generation is published, the scenario is not ready, no Tick yet), seconds before the cab is drawn
+$fp = 960362
+$log = SetLog 'r1b.log' $fp
+$b = NewBridgeObjs $fp
+$m = NewMgr $fp (NewOpts)
+$s = NewSession $fp $m.Mgr
+for ($i = 0; $i -lt 20; $i++) { Tick $s; Step $s }
+$noneYet = ([int](Mg $m 'ProcessStartCount') -eq 0)
+SetSR $b 1 $false; Step $s; Step $s
+$rdyEarly = WaitFor { [string](Mg $m 'State') -eq 'Ready' } 15000
+Track $m
+$cp = [int](Mg $m 'AppPid')
+$startsEarly = [int](Mg $m 'ProcessStartCount')
+$reqEarly = @(ELines $log 'APP_START_REQUEST')
+Check 'R01b the first generation seen (scenario NOT ready, no Tick, DrivingActive OFF) starts the process once: before that nothing; the request is the early one (reason scenario-opened)' ($noneYet -and $rdyEarly -and ($startsEarly -eq 1) -and ($reqEarly.Count -eq 1) -and ($reqEarly[0] -match 'reason=scenario-opened') -and ((EventLines $m.Sink 'APP_PROCESS_STARTED').Count -eq 1) -and (PidAlive $cp))
+SetSR $b 1 $true; Step $s; Tick $s; Step $s; Tick $s; Step $s
+Check 'R01c the scenario becomes ready and DrivingActive turns ON in the same generation: no second request, no second process (one Process.Start), the ON is reported once as suppressed' (([int](Mg $m 'ProcessStartCount') -eq 1) -and ((ELines $log 'APP_START_REQUEST').Count -eq 1) -and ((ELines $log 'APP_START_SUPPRESSED').Count -eq 1) -and (PidAlive $cp))
+SetSR $b 2 $true; Step $s; Tick $s; Step $s
+Check 'R01d a later generation (reload): a logical request is logged, the one process is untouched (still ONE Process.Start)' (([int](Mg $m 'ProcessStartCount') -eq 1) -and ((ELines $log 'APP_START_REQUEST').Count -eq 2) -and (PidAlive $cp))
+End $s
+End $s
+Check 'R01e Dispose after an early start: ONE logical stop request, the process leaves by itself with exit code 0' (((ELines $log 'APP_STOP_REQUEST').Count -eq 1) -and ((EventLines $m.Sink 'APP_STOP_SIGNALLED').Count -eq 1) -and (-not (PidAlive $cp)) -and ([int](Mg $m 'ExitCode') -eq 0) -and ((EventLines $m.Sink 'APP_SHUTDOWN_END').Count -eq 1))
+DisposeBridgeObjs $b
+
 # a session built without a manager (every other test constructor) never starts anything
 $fp = 960361
 $log = SetLog 'r2.log' $fp

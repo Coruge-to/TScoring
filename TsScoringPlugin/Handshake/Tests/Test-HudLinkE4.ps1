@@ -510,8 +510,9 @@ $rdy = WaitFor { [string](Mg $m 'State') -eq 'Ready' } 15000
 Track $m
 [void](WaitFor { (Rec).Count -ge 1 } 5000)
 Check ('H03 the first DrivingActive ON: Driving ON, the process starts, and its FIRST reading is already Session ON / Driving ON / generation 1 (' + (Rec)[0] + ')') ($rdy -and ((Latest $m) -ceq '1/1/1') -and ((Rec)[0] -match '^FIRST s=1 d=1 c=0 g=1 '))
+$pubBefore = [int](Mg $m 'StatePublishCount'); $pubLinesBefore = (EventLines $m.Sink 'APP_STATE_PUBLISH').Count      # Phase C-early (Owner 2026-11-16): the process is started by the first generation seen (Session ON / Driving OFF), so the Driving ON is a write of its own: the check is the CHANGE over the Pause-like Ticks
 for ($i = 0; $i -lt 60; $i++) { Tick $s; Step $s }
-Check 'H04 Pause-like Ticks change nothing: no write, no new log line of the state' (([int](Mg $m 'StatePublishCount') -eq 1) -and ((EventLines $m.Sink 'APP_STATE_PUBLISH').Count -eq 0))
+Check 'H04 Pause-like Ticks change nothing: no write, no new log line of the state (the counts before and after 60 Ticks are equal; the one write at the first Driving ON came before)' (($pubBefore -ge 1) -and ([int](Mg $m 'StatePublishCount') -eq $pubBefore) -and ((EventLines $m.Sink 'APP_STATE_PUBLISH').Count -eq $pubLinesBefore))
 MakeStale $s 2500; Step $s
 $softOff = WaitFor { (RecLast) -match '^CHG s=1 d=0 c=0 g=1 ' } 5000
 Check 'H05 soft OFF (Tick stale, ScenarioReady still published): Session stays ON, Driving OFF, the generation is kept (the Legacy selection-screen pattern)' ($softOff -and ((Latest $m) -ceq '1/0/1'))
