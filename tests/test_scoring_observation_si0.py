@@ -381,7 +381,7 @@ class E_TheSeamsOfUpdateLogic(unittest.TestCase):
             "elif key == 'f12':",
             "reset_transient_scoring_state(self)",
             "update_physics_and_scoring(self, current_time, dt)",
-            "self.update()",
+            "self.request_repaint()",                                      # repaint only when the picture changes (on purpose; Owner 2026-11-17): was self.update()
         ]
         last = -1
         for m in markers:

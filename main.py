@@ -6,8 +6,8 @@ import win32gui
 import win32con
 from datetime import datetime
 from PyQt6.QtWidgets import QApplication, QWidget, QFileDialog
-from PyQt6.QtCore import Qt, QTimer, QObject, pyqtSignal, pyqtSlot
-from PyQt6.QtGui import QFont, QPainter, QFontDatabase, QColor, QFontMetrics, QPixmap, QCursor
+from PyQt6.QtCore import Qt, QTimer, QObject, pyqtSignal, pyqtSlot, QBuffer, QIODevice
+from PyQt6.QtGui import QFont, QPainter, QFontDatabase, QColor, QFontMetrics, QPixmap, QCursor, QPicture
 from PyQt6.QtNetwork import QUdpSocket, QHostAddress
 import keyboard
 # The Overlay's OWN window operations (Phase OVS-1). Bound by name on purpose: the tests of the BVE window operations replace the `win32gui` module attribute of this
@@ -3117,8 +3117,8 @@ class Overlay(QWidget):
         self.last_bve_time_ms = self.bve_time_ms
 
         update_physics_and_scoring(self, current_time, dt)
-        
-        self.update() 
+
+        self.request_repaint()
 
     # -- Phase SI-A: what the managed mode needs from the Overlay (nothing here runs in normal mode) ---------------------------------------------------
     def _emit_input_event(self, event, **fields):
@@ -3316,8 +3316,12 @@ class Overlay(QWidget):
 
     def paintEvent(self, event):
         painter = QPainter(self)
+        self._paint_to(painter)
+
+    def _paint_to(self, painter):
+        """The drawing of the Overlay on any painter (the window itself in paintEvent; a QPicture in the repaint check)."""
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        
+
         hud_scale = self.height() / BASE_SCREEN_H if self.height() > 0 else 1.0
         hud_logical_width = self.width() / hud_scale if hud_scale > 0 else BASE_SCREEN_W
 
@@ -3327,6 +3331,46 @@ class Overlay(QWidget):
             painter.scale(hud_scale, hud_scale)
             self._hud_target_sync()
             draw_hud(self, painter, hud_logical_width)
+
+    # -- Repaint only when the picture would change (Owner 2026-11-17: an unchanged HUD / F1 menu must not use the CPU; the HUD process used about half a core at a standstill) --------
+    # Every step of the shared update used to end in update(): a full repaint (about 6 ms of QPainter work and a layered window update) 60 times a second, changed or not.
+    # Now the drawing is first RECORDED into a QPicture (about 1 ms; the draw functions run exactly as they do in a paint, they only draw into the record), and the window is asked to repaint only
+    # when the record differs from the previous one, the window size / display scale / menu page differ, or REPAINT_HEARTBEAT_S has passed (a safety net: whatever a record could miss is
+    # drawn again within that time). The real paint is untouched (paintEvent -> _paint_to on the window), so the pixels are what they always were. A hidden window is not recorded at all
+    # (Qt paints a window that is shown again by itself, and the first tick after it is shown repaints).
+    REPAINT_HEARTBEAT_S = 1.0
+    _repaint_key = None                    # (record bytes, width, height, device pixel ratio, menu_state) of the last requested repaint
+    _repaint_at = 0.0
+    _repaint_clock = staticmethod(time.monotonic)
+
+    def _paint_record(self):
+        """The drawing of this moment as bytes (a QPicture saved to a buffer)."""
+        picture = QPicture()
+        painter = QPainter(picture)
+        try:
+            self._paint_to(painter)
+        finally:
+            painter.end()
+        buffer = QBuffer()
+        buffer.open(QIODevice.OpenModeFlag.WriteOnly)
+        picture.save(buffer)
+        return bytes(buffer.data())
+
+    def request_repaint(self):
+        """Replaces the unconditional update() of the update step: asks for a repaint only when it can change the picture (see above)."""
+        try:
+            if not self.isVisible():
+                self._repaint_key = None
+                return
+            key = (self._paint_record(), self.width(), self.height(), self.devicePixelRatioF(), self.menu_state)
+        except Exception:
+            key = None                                          # not recordable: fall back to the old behaviour (repaint every time)
+        now = self._repaint_clock()
+        if key is not None and key == self._repaint_key and (now - self._repaint_at) < self.REPAINT_HEARTBEAT_S:
+            return
+        self._repaint_key = key
+        self._repaint_at = now
+        self.update()
 
 class _ManagedShutdownBridge(QObject):
     """Hands the stop request of the watcher thread to the UI thread (a queued signal); only the slot touches Qt objects."""

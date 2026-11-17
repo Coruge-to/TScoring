@@ -119,7 +119,7 @@ class Static(unittest.TestCase):
         cls.place = segment(cls.main, "Overlay.set_client_rect_physical")
         cls.follow = segment(cls.main, "Overlay._follow_bve_window")
         cls.mouse = segment(cls.main, "Overlay._handle_mouse")
-        cls.paint = segment(cls.main, "Overlay.paintEvent")
+        cls.paint = segment(cls.main, "Overlay.paintEvent") + "\n" + segment(cls.main, "Overlay._paint_to")      # repaint only when the picture changes (on purpose; Owner 2026-11-17): the drawing body moved, unchanged, from paintEvent into _paint_to (the repaint check records the same body)
 
     def test_r1_the_physical_rectangle_is_never_handed_to_qt_set_geometry(self):
         self.assertNotIn("overlay.setGeometry(*rect)", self.hud)

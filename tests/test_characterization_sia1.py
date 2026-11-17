@@ -330,9 +330,18 @@ class A_ScoringState(Base):
         self.assertEqual(self.o.menu_state, 11)
         self.assertFalse(self.o.is_capturing_screenshot)
 
+    def saved_result_file(self):
+        """A result that was really saved: the flag AND an existing file. The drawing of the result screen clears the flag when the saved file is missing (menu_ui: 'the saved state is released
+        when the destination does not exist'); since the repaint check (Owner 2026-11-17) records the drawing in every update step, a test that only sets the flag now sees it cleared."""
+        path = os.path.join(self.tmp.name, "Result_saved.jpg")
+        with open(path, "wb") as f:
+            f.write(b"x")
+        self.o.is_result_saved = True
+        self.o.saved_file_path = path
+
     def test_a_saved_result_is_closed_by_the_second_Enter(self):
         self.result_screen()
-        self.o.is_result_saved = True
+        self.saved_result_file()
         self.tap("enter")
         self.assertEqual(self.o.menu_state, 0)
         self.assertEqual(R.FakeFileDialog.calls, [])
@@ -346,7 +355,7 @@ class A_ScoringState(Base):
 
     def test_Backspace_closes_a_saved_result_screen(self):
         self.result_screen()
-        self.o.is_result_saved = True
+        self.saved_result_file()
         self.tap("backspace")
         self.assertEqual(self.o.menu_state, 0)
 

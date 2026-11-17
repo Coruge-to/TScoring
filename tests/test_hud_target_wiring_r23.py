@@ -101,7 +101,7 @@ class A_Wiring(unittest.TestCase):
         self.assertEqual(len(calls_of(self.methods["_offtgt_sync"], "_hud_target_sync")), 1)
 
     def test_the_sync_runs_right_before_the_hud_is_drawn(self):
-        paint = self.methods["paintEvent"]
+        paint = self.methods["_paint_to"]               # repaint only when the picture changes (on purpose; Owner 2026-11-17): the drawing body of paintEvent moved, unchanged, into _paint_to
         order = [(n.lineno, "sync" if (isinstance(n.func, ast.Attribute) and n.func.attr == "_hud_target_sync") else "draw")
                  for n in ast.walk(paint) if isinstance(n, ast.Call) and ((isinstance(n.func, ast.Attribute) and n.func.attr == "_hud_target_sync")
                                                                            or (isinstance(n.func, ast.Name) and n.func.id == "draw_hud"))]
@@ -109,7 +109,7 @@ class A_Wiring(unittest.TestCase):
 
     def test_the_sync_is_not_called_from_anywhere_else(self):
         callers = sorted(name for name, fn in self.methods.items() if calls_of(fn, "_hud_target_sync"))
-        self.assertEqual(callers, ["_offtgt_sync", "paintEvent"])
+        self.assertEqual(callers, ["_offtgt_sync", "_paint_to"])      # was paintEvent: the drawing body moved into _paint_to (paintEvent calls it; the repaint check records it)
 
     def test_the_display_state_is_initialised_reset_and_written_by_its_owners_only(self):
         writers = {name for name, fn in self.methods.items() if self_stores(fn) & set(STATE_ATTRS)}

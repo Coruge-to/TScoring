@@ -163,7 +163,11 @@ def hud_update_step(overlay):
         overlay.last_update_time = current_time
     overlay.last_bve_time_ms = overlay.bve_time_ms
     update_physics_and_scoring(overlay, current_time, dt)
-    overlay.update()
+    request = getattr(overlay, 'request_repaint', None)
+    if request is not None:
+        request()                                    # repaints only when the picture can change (Overlay.request_repaint); a stand-in without it keeps the plain update()
+    else:
+        overlay.update()
 
 
 class ManagedHudController(object):
