@@ -59,6 +59,10 @@ namespace TsScoringPlugin
         // S05 fix: the shared gate owns pending (max 1), the scenario epoch, the 500 ms settle after ScenarioCreated, teardown / Dispose / formal-Tick suppression and the running slot.
         private TSScoringPlugin.Pulse.PausePulseGate pulseGate = new TSScoringPlugin.Pulse.PausePulseGate();
         private bool pulseEventsSubscribed;
+        // H-1 (Owner 2026-11-17): the heartbeat timer runs on a thread pool thread and must NOT read the host (BveHacker.IsScenarioCreated is a read of MainForm.CurrentScenario with no lock and no generation).
+        // It reads only these two flags: heartbeatScenarioActive is set by the scenario events (UI thread; seeded once in the constructor), heartbeatDisposed by Dispose (before anything is torn down).
+        private volatile bool heartbeatScenarioActive;
+        private volatile bool heartbeatDisposed;
         private DateTime pulseLastSend = DateTime.MinValue;
         private double lastLocationSample = double.NaN;
 
@@ -211,14 +215,15 @@ namespace TsScoringPlugin
             try
             {
                 pulseContext = System.Threading.SynchronizationContext.Current;
+                // S05 fix: the generation events feed the gate BEFORE the timer exists. Without the events the gate would never be read-ready, so no timer is started (fail closed).
+                // H-1: the events are subscribed also when there is no synchronization context (the heartbeat needs the scenario state from the events); only the pulse TIMER needs the context.
+                BveHacker.ScenarioOpened += OnPulseScenarioOpened;
+                BveHacker.ScenarioClosed += OnPulseScenarioClosed;
+                BveHacker.ScenarioCreated += OnPulseScenarioCreated;
+                pulseEventsSubscribed = true;
+                try { if (BveHacker.IsScenarioCreated) { heartbeatScenarioActive = true; pulseGate.OnScenarioCreated(); } } catch { }      // the host may already report a created scenario (read once, here, on the UI thread): the heartbeat says LOADED and the settle window starts now
                 if (pulseContext != null)
                 {
-                    // S05 fix: the generation events feed the gate BEFORE the timer exists. Without the events the gate would never be read-ready, so no timer is started (fail closed).
-                    BveHacker.ScenarioOpened += OnPulseScenarioOpened;
-                    BveHacker.ScenarioClosed += OnPulseScenarioClosed;
-                    BveHacker.ScenarioCreated += OnPulseScenarioCreated;
-                    pulseEventsSubscribed = true;
-                    try { if (BveHacker.IsScenarioCreated) pulseGate.OnScenarioCreated(); } catch { }      // the host may already report a created scenario: start the settle window now
                     pulseTimer = new System.Threading.Timer(PulseTimerCallback, null, 1000, PausePulseIntervalMs);
                 }
             }
@@ -241,17 +246,25 @@ namespace TsScoringPlugin
                 if (log != null) log("event=jump-endpoint-failed error=" + ex.GetType().Name);
             }
         }
+        /// <summary>The heartbeat datagram text: null while no scenario is created, else STATUS:LOADED:PAUSED / RUNNING (no Tick for more than 100 ms = PAUSED). Pure (H-1): no host access.</summary>
+        internal static byte[] ComposeHeartbeat(bool scenarioActive, DateTime now, DateTime lastTick)
+        {
+            if (!scenarioActive) return null;
+            bool isPaused = (now - lastTick).TotalMilliseconds > 100;
+            string statusSuffix = isPaused ? "PAUSED" : "RUNNING";
+            return Encoding.UTF8.GetBytes($"STATUS:LOADED:{statusSuffix}");
+        }
         private void HeartbeatTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
-                // BVEがポーズ中でも、ScenarioCreatedがTrueなら送信！
-                if (BveHacker.IsScenarioCreated)
+                if (heartbeatDisposed) return;
+                // BVEがポーズ中でも、ScenarioCreatedがTrueなら送信！ H-1: the state comes from the scenario events (heartbeatScenarioActive), never from a read of the host on this thread
+                byte[] hbBytes = ComposeHeartbeat(heartbeatScenarioActive, DateTime.Now, lastTickTime);
+                if (hbBytes != null)
                 {
-                    bool isPaused = (DateTime.Now - lastTickTime).TotalMilliseconds > 100;
-                    string statusSuffix = isPaused ? "PAUSED" : "RUNNING";
-                    byte[] hbBytes = Encoding.UTF8.GetBytes($"STATUS:LOADED:{statusSuffix}");
                     var currentRouter = router;
+                    if (heartbeatDisposed) return;
                     if (udpClient != null && currentRouter != null) currentRouter.Begin().Send(TSScoringPlugin.DataPlane.DataPlaneMessageTypes.Heartbeat, hbBytes);
                 }
             }
@@ -259,6 +272,7 @@ namespace TsScoringPlugin
         }
         public override void Dispose()
         {
+            heartbeatDisposed = true;          // H-1: before anything is torn down (a heartbeat that is already running does not send into a closed router)
             try
             {
                 if (heartbeatTimer != null)
@@ -531,9 +545,9 @@ namespace TsScoringPlugin
 
         private bool firstTickNoted;
 
-        private void OnPulseScenarioOpened(ScenarioOpenedEventArgs e) { try { pulseGate.OnScenarioOpenedOrClosed(); } catch { } }
-        private void OnPulseScenarioClosed(EventArgs e) { try { pulseGate.OnScenarioOpenedOrClosed(); } catch { } }
-        private void OnPulseScenarioCreated(ScenarioCreatedEventArgs e) { try { pulseGate.OnScenarioCreated(); } catch { } }
+        private void OnPulseScenarioOpened(ScenarioOpenedEventArgs e) { heartbeatScenarioActive = false; try { pulseGate.OnScenarioOpenedOrClosed(); } catch { } }
+        private void OnPulseScenarioClosed(EventArgs e) { heartbeatScenarioActive = false; try { pulseGate.OnScenarioOpenedOrClosed(); } catch { } }
+        private void OnPulseScenarioCreated(ScenarioCreatedEventArgs e) { heartbeatScenarioActive = true; try { pulseGate.OnScenarioCreated(); } catch { } }
 
         private void PulseTimerCallback(object state)
         {
