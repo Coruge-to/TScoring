@@ -223,6 +223,20 @@ def reset_roll_state(self):
     self.roll_was_moving = False
     self.roll_event_id += 1
 
+def blue_covered_by_red_range(future_evals, raise_dist):
+    """The blue "the limit rises" blink is not shown when the point where the limit rises (raise_dist ahead: the tail clears there) already lies inside the red range of a LOWER limit beyond it
+    (Owner 2026-11-17, option B): that red starts before / at the raise point and takes the display over, so the higher limit can never be used. future_evals = the evaluations of the limit
+    candidates (dist = distance to the candidate, warn_dist = its warning distance). A candidate that lies beyond the raise point and whose distance from it is within its warning distance
+    covers the blue; a red range that starts only just AFTER the raise point does not (blue, then red: as before)."""
+    for ev in future_evals:
+        warn = ev.get('warn_dist')
+        if warn is None:
+            continue
+        if ev['dist'] > raise_dist and ev['dist'] - raise_dist <= warn:
+            return True
+    return False
+
+
 def write_limit_debug_log(
     self,
     current_time,
@@ -2773,10 +2787,15 @@ def update_physics_and_scoring(self, current_time, dt):
         self.strictest_flashed_key = None
 
     active_blue = None
+    blue_suppressed = False
     if target_val > self.effective_limit:
         is_capped = (target_val != min(rnd_head_limit, rnd_sig_limit)) if is_waiting_tail else False
         dist_for_blue = (target_loc - self.bve_location) if is_capped else max(1.0, self.bve_clear_dist)
         active_blue = {'val': target_val, 'dist': max(1.0, dist_for_blue), 'type': target_type}
+        # the limit rises inside the red range of a lower limit ahead: the red takes over before the raised limit can be used, so the blue is not shown (the red itself is not touched)
+        if blue_covered_by_red_range(future_evals, active_blue['dist']):
+            active_blue = None
+            blue_suppressed = True
 
     # 制限速度診断に使用する現在の判定状態を保存する
     self.dbg_target_cap = target_val
@@ -2833,6 +2852,6 @@ def update_physics_and_scoring(self, current_time, dt):
         active_reds,
     )
     # Observation only (off unless the probe's flag file exists; it never raises and changes nothing): the time series of the speed limit advance judgement
-    speed_limit_probe.note(self, current_time, dt, is_waiting_tail, target_val, target_loc, future_targets, active_reds, active_red, active_blue, blink_cycle if self.blink_active else 0.0)
+    speed_limit_probe.note(self, current_time, dt, is_waiting_tail, target_val, target_loc, future_targets, active_reds, active_red, active_blue, blink_cycle if self.blink_active else 0.0, blue_suppressed)
 
     self.prev_frame_loc = self.bve_location

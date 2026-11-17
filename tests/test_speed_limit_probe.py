@@ -159,7 +159,7 @@ class Probe(unittest.TestCase):
         self.assertIn("'warn_dist': warn_dist, 'calc_v': calc_v", src)
         self.assertIn("import speed_limit_probe\n", src)
         i = src.index("    write_limit_debug_log(\n        self,")
-        j = src.index("    speed_limit_probe.note(self, current_time, dt, is_waiting_tail, target_val, target_loc, future_targets, active_reds, active_red, active_blue, blink_cycle if self.blink_active else 0.0)")
+        j = src.index("    speed_limit_probe.note(self, current_time, dt, is_waiting_tail, target_val, target_loc, future_targets, active_reds, active_red, active_blue, blink_cycle if self.blink_active else 0.0, blue_suppressed)")
         self.assertGreater(j, i)
         self.assertLess(j - i, 600, "right after the existing debug log")
         self.assertIsNone(re.search(r"speed_limit_probe\.[a-z_]+\(", src[:i]), "no other call of the probe before the judgement is complete")

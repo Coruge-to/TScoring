@@ -21,7 +21,7 @@ COLUMNS = (
     "eff_limit", "limit_type", "head_limit", "tail_limit", "sig_limit", "fwd_sig_loc", "fwd_sig_limit", "clear_dist_m", "train_len_m", "waiting_tail", "target_val", "target_loc",
     "disp_limit", "color", "blink_active", "blink_phase", "blink_cycle_s",
     "red_val", "red_loc", "red_dist_m", "red_decel_m", "red_warn_m", "red_urgency_m", "red_calc_v", "red_type",
-    "blue_val", "blue_dist_m", "blue_type",
+    "blue_val", "blue_dist_m", "blue_type", "blue_suppressed",
     "n_reds", "reds", "future3", "flash_key", "flash_count", "strictest_val",
 )
 
@@ -117,7 +117,7 @@ def _color_name(c):
     return str(c).replace(",", " ")
 
 
-def note(o, current_time, dt, is_waiting_tail, target_val, target_loc, future_targets, active_reds, active_red, active_blue, blink_cycle):
+def note(o, current_time, dt, is_waiting_tail, target_val, target_loc, future_targets, active_reds, active_red, active_blue, blink_cycle, blue_suppressed=False):
     """Called once per update step right after the speed limit judgement. Never raises, never changes anything."""
     try:
         p = _probe
@@ -131,7 +131,7 @@ def note(o, current_time, dt, is_waiting_tail, target_val, target_loc, future_ta
         disp = getattr(o, "disp_limit", "")
         color = _color_name(getattr(o, "limit_color", None))
         blink = bool(getattr(o, "blink_active", False))
-        sig = (disp, color, blink, red.get("val"), red.get("loc"), blue.get("val"), getattr(o, "effective_limit", None), bool(is_waiting_tail), key)
+        sig = (disp, color, blink, red.get("val"), red.get("loc"), blue.get("val"), getattr(o, "effective_limit", None), bool(is_waiting_tail), key, bool(blue_suppressed))
         reds = ";".join("%s@%s:%s/%s" % (r.get("val"), _f(r.get("loc"), 0), _f(r.get("dist"), 0), _f(r.get("decel_dist"), 0)) for r in (active_reds or []))
         fut = ";".join("%s@%s" % (t[1], _f(t[0], 0)) for t in (future_targets or [])[:3])
         row = (
@@ -142,7 +142,7 @@ def note(o, current_time, dt, is_waiting_tail, target_val, target_loc, future_ta
             str(disp), color, "1" if blink else "0", _f(getattr(o, "blink_phase", ""), 3), _f(blink_cycle, 3),
             str(red.get("val", "")), _f(red.get("loc", ""), 1), _f(red.get("dist", ""), 1), _f(red.get("decel_dist", ""), 1), _f(red.get("warn_dist", ""), 1), _f(red.get("urgency", ""), 1),
             _f(red.get("calc_v", ""), 2), str(red.get("type", "")),
-            str(blue.get("val", "")), _f(blue.get("dist", ""), 1), str(blue.get("type", "")),
+            str(blue.get("val", "")), _f(blue.get("dist", ""), 1), str(blue.get("type", "")), "1" if blue_suppressed else "0",
             str(len(active_reds or [])), reds, fut, str(key or ""), str(counts.get(key, "")) if key else "", str(getattr(o, "strictest_flashed_val", "")),
         )
         p.write(now, sig, row)
