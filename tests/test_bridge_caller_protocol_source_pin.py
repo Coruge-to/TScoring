@@ -83,7 +83,7 @@ PIN_UPDATES = [
     },
     {
         "stage": "S05 fix (read-only Pause pulse: queue coalescing / generation ownership)",
-        "ownerContract": "Owner 2026-11-16, DQ-0..DQ-5: PAUSE READ-ONLY PULSE / QUEUE COALESCING / GENERATION OWNERSHIP DEFECT is fixed with the shared PausePulseGate (pending max 1, scenario epoch, 500 ms settle after ScenarioCreated, "
+        "ownerContract": "Owner 2026-11-16, DQ-0..DQ-5: PAUSE READ-ONLY PULSE / QUEUE COALESCING / GENERATION OWNERSHIP DEFECT is fixed with the shared PausePulseGate (pending max 1, scenario epoch, settle after ScenarioCreated (150 ms from 2026-11-17, was 500 ms), "
                          "teardown / Dispose / formal-Tick suppression, running slot) in the Current Bridge and the Legacy Bridge (and Class1 / the Legacy Telemetry extension, outside this pin's scope); S05 itself stays HISTORICAL PRODUCT_SUSPECT / DIRECT CAUSATION UNPROVEN",
         "files": ["Bridge/Legacy/TSScoringPlugin.AtsExLegacy.Bridge.Prototype.csproj", "Bridge/Legacy/src/TsScoringLegacyBridge.cs", "Bridge/TSScoringPlugin.BveEx.Bridge.Prototype.csproj", "Bridge/src/TsScoringBridgePrototype.cs"],
         "reason": "the two Bridge adapters ask the gate before every Post, enter the pulse body only through the gate and feed it the scenario events; the two Bridge projects compile the shared Telemetry/Shared/PausePulseGate.cs",

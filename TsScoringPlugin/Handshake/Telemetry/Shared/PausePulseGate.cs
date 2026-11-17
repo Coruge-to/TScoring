@@ -25,7 +25,10 @@ namespace TSScoringPlugin.Pulse
     internal sealed class PausePulseGate
     {
         internal const long DefaultGapMs = 150;
-        internal const long DefaultSettleMs = 500;
+        // The settle after ScenarioCreated (the comments of the four senders that still say '500 ms settle' predate 2026-11-17; THIS constant is the value). 500 ms until 2026-11-17: in a paused F5 on a light scenario the HUD, which first shows with the telemetry of the pulse, then followed the driving screen
+        // about 0.45 s late (measured with screen capture, cab visible -> HUD visible; settle 0 = aligned). Owner 2026-11-17 (design 1'): a short settle that keeps the gate rule (the body is not entered
+        // right at ScenarioCreated). The value is the one the S05 live comparison (HUD lag and failure counts against 500 ms) allowed.
+        internal const long DefaultSettleMs = 150;
         /// <summary>A pending request that was never consumed for this long is treated as lost (the host dropped the Post) and may be replaced.</summary>
         internal const long PendingExpireMs = 10000;
 
