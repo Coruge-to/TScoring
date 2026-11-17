@@ -9,6 +9,7 @@ import jump_transaction
 import jump_wire
 import pseudo_turnback_machine
 import scoring_settings
+import speed_limit_probe
 import station_identity
 from utils import (
     calculate_apex_speed,
@@ -2704,7 +2705,8 @@ def update_physics_and_scoring(self, current_time, dt):
 
                 future_evals.append({
                     'loc': loc, 'val': val, 'dist': dist_to_limit,
-                    'decel_dist': decel_dist, 'urgency': urgency, 'type': l_type
+                    'decel_dist': decel_dist, 'urgency': urgency, 'type': l_type,
+                    'warn_dist': warn_dist, 'calc_v': calc_v        # read by speed_limit_probe only (observation; the judgement does not use them)
                 })
 
                 if is_warning:
@@ -2830,5 +2832,7 @@ def update_physics_and_scoring(self, current_time, dt):
         future_targets,
         active_reds,
     )
+    # Observation only (off unless the probe's flag file exists; it never raises and changes nothing): the time series of the speed limit advance judgement
+    speed_limit_probe.note(self, current_time, dt, is_waiting_tail, target_val, target_loc, future_targets, active_reds, active_red, active_blue, blink_cycle if self.blink_active else 0.0)
 
     self.prev_frame_loc = self.bve_location
