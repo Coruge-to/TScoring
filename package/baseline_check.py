@@ -191,7 +191,7 @@ def _cli_plan(args):
         if name != 'TScoring.TelemetryA.dll':
             return None
         r = subprocess.run([sys.executable, '-B', os.path.join(HERE, 'artifact_guard.py'), 'check', '--stage', 'promote', '--dll', path, '--deployed', find(m, name)['deploy'][0],
-                            '--remote-ref', args.remote_ref or 'origin/refactor/state-transitions'], capture_output=True, text=True)
+                            '--remote-ref', args.remote_ref or 'origin/main'], capture_output=True, text=True)
         out = (r.stdout + r.stderr).strip().splitlines()
         return None if r.returncode == 0 else 'TelemetryA artifact_guard: ' + (out[-1] if out else 'refused')
 

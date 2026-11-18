@@ -1,6 +1,6 @@
 # The Global Close identity check of the formal TelemetryA (OD-X11 v2, Owner 2026-11-15). ASCII-only on purpose; Windows PowerShell 5.1. Read-only: it changes nothing.
 #
-#   .\Test-ArtifactIdentity.ps1 -Dll <the promoted candidate DLL> -Deployed <the installed DLL> -RemoteRef origin/refactor/state-transitions [-Ledger <json>] [-Since 'yyyy-MM-dd HH:mm'] [-RollbackDll <asset>] [-OwnerApproval <id>]
+#   .\Test-ArtifactIdentity.ps1 -Dll <the promoted candidate DLL> -Deployed <the installed DLL> -RemoteRef origin/main [-Ledger <json>] [-Since 'yyyy-MM-dd HH:mm'] [-RollbackDll <asset>] [-OwnerApproval <id>]
 #
 # A Global Close of the formal TelemetryA PASSES only when ALL of these hold (each is printed as PASS / FAIL):
 #   1  ACCEPTED SHA = DEPLOYED SHA = PROMOTED SHA   (ledger entries build -> accept -> deploy of the candidate, the installed file, the candidate)
@@ -14,7 +14,7 @@ param(
     [Parameter(Mandatory = $true)][string]$Dll,
     [Parameter(Mandatory = $true)][string]$Deployed,
     [string]$Ledger = '',
-    [string]$RemoteRef = 'origin/refactor/state-transitions',
+    [string]$RemoteRef = 'origin/main',
     [string]$Since = '',
     [string]$RollbackDll = '',
     [string]$OwnerApproval = ''

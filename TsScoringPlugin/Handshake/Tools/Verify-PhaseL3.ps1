@@ -156,7 +156,7 @@ Check 'only the L3 files and the listed later accepted files (Phase LI0..SI-1, P
 $frozen = @($touched | Where-Object { ($_ -notin $laterControl) -and ($_ -notin $laterScoring) -and ($_ -match ('^' + [regex]::Escape($prefix) + '(Caller|Bridge|Shared)/') -or $_ -match 'Class1\.cs$|AtsLoggerPlugin\.cs$|/packages/|\.vcxproj|\.slnx$|^scoring_logic\.py$|^menu_ui\.py$|^config\.py$|^utils\.py$|^network\.py$|^managed_state\.py$|launcher\.template\.json$|Handshake-Phase(B|C1|C3|D1|E1|E3|L1|M1|E4-StatePublication)') })
 Check 'the control plane is untouched by Phase L3 itself: Caller, both Bridges, Shared, Class1.cs, packages, project files, managed_state, the scoring / UI modules and the documents of earlier phases do not differ from the E4 commit EXCEPT the exactly listed files that the accepted Phase SI-A / SI-A6 / SI-A7 M1a changed (managed_mode.py only gained the P1 owner-process watch, allowed above)' ($frozen.Count -eq 0)
 Check 'no build output, DLL, PDB, log or personal launcher.json among the files of the phase' (@($touched | Where-Object { $_ -match '/out/|/obj/|/dist/|/logs/|build\.log|\.dll$|\.pdb$|\.log$|\.exe$' -or $_ -match '(^|/)launcher\.json$' }).Count -eq 0)
-& git -C $top merge-base --is-ancestor origin/refactor/state-transitions HEAD 2>$null
+& git -C $top merge-base --is-ancestor origin/main HEAD 2>$null
 Check 'no push: the branch is only ahead of its upstream, never behind or diverged (this script does not push; the upstream position moves with the pushes the owner makes)' ($LASTEXITCODE -eq 0)
 
 Write-Host '==== the document ===='

@@ -12,7 +12,7 @@ param(
     [string]$OutDir = '',
     [string]$LedgerPath = '',
     [string]$Evidence = '',
-    [string]$RemoteRef = 'origin/refactor/state-transitions'
+    [string]$RemoteRef = 'origin/main'
 )
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
