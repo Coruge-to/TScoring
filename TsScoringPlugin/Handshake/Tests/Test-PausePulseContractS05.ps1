@@ -31,8 +31,9 @@ if ($UseInstalled) {
     if (-not $BridgeDll) { $BridgeDll = Join-Path $HostDir $(if ($Adapter -eq 'Legacy') { 'Extensions\TScoring.BridgeA.dll' } else { 'Extensions\TScoring.BridgeB.dll' }) }
     if (-not $TelemetryDll) { $TelemetryDll = Join-Path $HostDir $(if ($Adapter -eq 'Legacy') { 'Extensions\TScoring.TelemetryA.dll' } else { 'Extensions\TScoring.TelemetryB.dll' }) }
 } else {
-    if (-not $BridgeDll) { $BridgeDll = $(if ($Adapter -eq 'Legacy') { Join-Path $Root 'Bridge\Legacy\out\TScoring.BridgeA.dll' } else { Join-Path $Root 'Bridge\out\TScoring.BridgeB.dll' }) }
-    if (-not $TelemetryDll) { $TelemetryDll = $(if ($Adapter -eq 'Legacy') { Join-Path $Root 'Telemetry\Legacy\out\TScoring.TelemetryA.dll' } else { Join-Path (Split-Path $Root -Parent) 'TsScoringPlugin\bin\Release\TScoring.TelemetryB.dll' }) }
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+    if (-not $BridgeDll) { $BridgeDll = $(if ($Adapter -eq 'Legacy') { (Require-TsArtifact $Root 'TScoring.BridgeA.dll') } else { (Require-TsArtifact $Root 'TScoring.BridgeB.dll') }) }
+    if (-not $TelemetryDll) { $TelemetryDll = $(if ($Adapter -eq 'Legacy') { (Require-TsArtifact $Root 'TScoring.TelemetryA.dll') } else { Join-Path (Split-Path $Root -Parent) 'TsScoringPlugin\bin\Release\TScoring.TelemetryB.dll' }) }
 }
 foreach ($need in $CallerDll, $BridgeDll, $TelemetryDll) { if (-not (Test-Path -LiteralPath $need)) { Write-Host ('PREREQUISITE MISSING: ' + $need + ' (build the DLLs first, or pass -UseInstalled)'); exit 2 } }
 

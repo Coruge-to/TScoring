@@ -66,7 +66,8 @@ public static class WinEnum
 # No AssemblyResolve handler: nothing here loads Mackoy.IInputDevice (the input-device class is never instantiated), and a script-block handler recursed
 # without end inside Get-CimInstance on this host.
 
-$callerPath = Join-Path $Root 'dist\TScoring.InputDevice.dll'
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+$callerPath = (Require-TsArtifact $Root 'TScoring.InputDevice.dll')
 $callerAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes($callerPath))
 $NS = 'TSScoringPlugin.Handshake.'
 $sessT = $callerAsm.GetType($NS + 'HandshakeSession')

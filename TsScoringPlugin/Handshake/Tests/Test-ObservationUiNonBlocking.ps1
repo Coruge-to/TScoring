@@ -308,8 +308,9 @@ public static class TestResolver
 }
 "@
 [TestResolver]::Install(@((Join-Path $env:ProgramW6432 'mackoy\BveTs6'), (Join-Path $env:PUBLIC 'Documents\BveEx\2.0')))
-$callerAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes((Join-Path $Root 'dist\TScoring.InputDevice.dll')))
-$bridgeAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes((Join-Path $Root 'dist\TScoring.BridgeB.dll')))
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+$callerAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.InputDevice.dll'))))
+$bridgeAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.BridgeB.dll'))))
 $NS = 'TSScoringPlugin.Handshake.'
 if ($FixScript) {
     # Stage 0 validation: the integrated scratch prototype replaces BOTH dist assemblies (its ObservationLog serves the Bridge and the Caller rows)
@@ -667,7 +668,7 @@ if ($ProtoScript) {
     Invoke-ProtoValidation -Root $Root -TestDir $testDir -Rows $rows -BudgetMs $BudgetMs
 }
 
-$summary = @('# Test-ObservationUiNonBlocking  ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), '# dist Bridge/Caller byte SHA-256 (first 8): ' + ((Get-FileHash (Join-Path $Root 'dist\TScoring.BridgeB.dll')).Hash.Substring(0, 8)) + ' / ' + ((Get-FileHash (Join-Path $Root 'dist\TScoring.InputDevice.dll')).Hash.Substring(0, 8))) + $rows
+$summary = @('# Test-ObservationUiNonBlocking  ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), '# dist Bridge/Caller byte SHA-256 (first 8): ' + ((Get-FileHash ((Require-TsArtifact $Root 'TScoring.BridgeB.dll'))).Hash.Substring(0, 8)) + ' / ' + ((Get-FileHash ((Require-TsArtifact $Root 'TScoring.InputDevice.dll'))).Hash.Substring(0, 8))) + $rows
 if ($ResultsFile) { $summary | Set-Content -LiteralPath $ResultsFile -Encoding UTF8 }
 $redFail = @($rows | Where-Object { $_ -match '^RESULT \S+ RED FAIL' }).Count
 $redPass = @($rows | Where-Object { $_ -match '^RESULT \S+ RED PASS' }).Count

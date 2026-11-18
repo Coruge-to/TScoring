@@ -68,7 +68,8 @@ New-Item -ItemType Directory -Force (Join-Path $sandbox 'Desktop') | Out-Null
 
 # the telemetry DLL (copied) and the fixture (compiled into an assembly that may see the internals)
 $dllCopy = Join-Path $testDir 'TScoring.TelemetryA.dll'
-Copy-Item (Join-Path $Root 'Telemetry\Legacy\out\TScoring.TelemetryA.dll') $dllCopy
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+Copy-Item ((Require-TsArtifact $Root 'TScoring.TelemetryA.dll')) $dllCopy
 $fixtureDll = Join-Path $testDir 'TsScoringLegacyTelemetryTests.dll'
 Add-Type -TypeDefinition ([IO.File]::ReadAllText((Join-Path $Root 'Tests\TelemetryTestFixture.cs'))) -ReferencedAssemblies @($dllCopy) -OutputAssembly $fixtureDll -OutputType Library
 Add-Type -TypeDefinition @"
@@ -97,7 +98,7 @@ public static class L3Resolver
 [void][Reflection.Assembly]::LoadFrom($fixtureDll)
 
 # the real Caller (unchanged by Phase L3)
-$callerAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes((Join-Path $Root 'dist\TScoring.InputDevice.dll')))
+$callerAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.InputDevice.dll'))))
 $NS = 'TSScoringPlugin.Handshake.'
 $sessT = $callerAsm.GetType($NS + 'HandshakeSession')
 $mgrT = $callerAsm.GetType($NS + 'AppProcessManager')
@@ -210,7 +211,7 @@ try {
     # path again and runs for real: the sender discovers the application's Directory endpoint of the stand-in BVE process (its Ready event / AppDirectory / Telemetry Directory
     # are the real ones the Caller code creates), sends Envelope v1 there, and sends NOTHING to the fixed legacy port.
     $legacyManagedChainApplicable = $true
-    if ($legacyManagedChainApplicable -and $qtOk -and (-not $udpBusy) -and (-not $mainRunning) -and (Test-Path $mainPy) -and (Test-Path $bveWinPy) -and (Test-Path (Join-Path $Root 'dist\TScoring.InputDevice.dll'))) {
+    if ($legacyManagedChainApplicable -and $qtOk -and (-not $udpBusy) -and (-not $mainRunning) -and (Test-Path $mainPy) -and (Test-Path $bveWinPy) -and (Test-Path ((Require-TsArtifact $Root 'TScoring.InputDevice.dll')))) {
         $env:USERPROFILE = $sandbox
         $env:HOME = $sandbox
         $psi = New-Object Diagnostics.ProcessStartInfo

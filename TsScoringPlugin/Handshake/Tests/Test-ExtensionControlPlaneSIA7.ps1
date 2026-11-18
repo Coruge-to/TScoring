@@ -352,9 +352,10 @@ $hostDir = if ($isLegacy) { Join-Path $publicDocs 'Legacy' } else { Join-Path $p
 [SiaTestResolver]::Install(@((Join-Path $env:ProgramW6432 'mackoy\BveTs6'), $hostDir))
 if ($isLegacy) { [void][Reflection.Assembly]::LoadFrom((Join-Path $hostDir 'AtsEx.PluginHost.dll')) }
 
-$callerAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes((Join-Path $Root 'dist\TScoring.InputDevice.dll')))
-$curAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes((Join-Path $Root 'dist\TScoring.BridgeB.dll')))
-$legAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes((Join-Path $Root 'Bridge\Legacy\out\TScoring.BridgeA.dll')))
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+$callerAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.InputDevice.dll'))))
+$curAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.BridgeB.dll'))))
+$legAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.BridgeA.dll'))))
 $brAsm = if ($isLegacy) { $legAsm } else { $curAsm }
 $NS = 'TSScoringPlugin.Handshake.'
 $NPS = [Reflection.BindingFlags]'NonPublic,Public,Static'
@@ -869,7 +870,7 @@ try {
     Check 'J3 the request of the normal start says epochSupported=Y ready_epoch=1 tickSeenInEpoch=1; the pause re-ON requests say ready_epoch=2 / 3 with tickSeenInEpoch=0' (($epl[0][0] -match 'epochSupported=Y ready_epoch=1 tickSeenInEpoch=1') -and ($epl[1][0] -match 'epochSupported=Y ready_epoch=2 tickSeenInEpoch=0') -and ($epl[2][0] -match 'epochSupported=Y ready_epoch=3 tickSeenInEpoch=0'))
     Check 'J4 DrivingActive came on by the Caller''s own Tick in the pause re-ON cycles (the start gate is unchanged and needs no Extension Tick)' ((@($cyJ | Where-Object { $cy = $_; (@($lg | Where-Object { $_ -match ('cycle=' + $cy + ' ') -and $_ -match ' DRIVING_ACTIVE_ON ' })).Count -eq 1 }).Count) -eq 3)
     Check 'J5 no automatic P: the Caller sends no key at all (the Caller DLL has no SendInput / PostMessage / keybd_event; the only P/Invoke is the notice MessageBoxW)' (& {
-            $cb = [Text.Encoding]::ASCII.GetString([IO.File]::ReadAllBytes((Join-Path $Root 'dist\TScoring.InputDevice.dll')))
+            $cb = [Text.Encoding]::ASCII.GetString([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.InputDevice.dll'))))
             (@('SendInput', 'keybd_event', 'PostMessage', 'SendMessage', 'GetAsyncKeyState', 'SetForegroundWindow' | Where-Object { $cb.Contains($_) }).Count -eq 0) })
     ADispose $b4
 

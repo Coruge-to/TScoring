@@ -5,8 +5,10 @@
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
     [string]$Baseline = 'fe2b223ee20db1a682468e6b75168f39ed7e9942',
-    [string]$LegacyDll = (Join-Path (Split-Path $PSScriptRoot -Parent) 'Bridge\Legacy\out\TScoring.BridgeA.dll')
+    [string]$LegacyDll = ''
 )
+. (Join-Path $PSScriptRoot 'Resolve-TsArtifact.ps1')
+if ([string]::IsNullOrEmpty($LegacyDll)) { $LegacyDll = (Require-TsArtifact -Root (Split-Path $PSScriptRoot -Parent) -Name 'TScoring.BridgeA.dll') }
 
 $results = New-Object System.Collections.Generic.List[object]
 function Check([string]$name, [bool]$ok) { $results.Add([pscustomobject]@{ Name = $name; Ok = $ok }); ("{0} {1}" -f $(if ($ok) { 'PASS' } else { 'FAIL' }), $name) }

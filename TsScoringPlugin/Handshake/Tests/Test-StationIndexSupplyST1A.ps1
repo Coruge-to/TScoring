@@ -20,7 +20,8 @@ $repo = Split-Path (Split-Path $Root -Parent) -Parent
 $telRoot = Join-Path $Root 'Telemetry'
 $vectorPath = Join-Path $repo 'tests\stidx_vectors_st0.json'
 $fixturePath = Join-Path $Root 'Tests\TelemetryTestFixture.cs'
-$refDllPath = Join-Path $Root 'Telemetry\Legacy\out\TScoring.TelemetryA.dll'
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+$refDllPath = (Require-TsArtifact $Root 'TScoring.TelemetryA.dll')
 $AuditedRefDllSha256 = '43E7B9D35F840FAEF0DFCBEC8F2EDB66F259F42FA9CD62644B1DFD1A45EDF691'     # Legacy telemetry 0.6.0.0 DEFAULT build of Phase LJX-1 (the last build before ST-1A)
 
 $script:pass = 0

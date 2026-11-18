@@ -86,7 +86,8 @@ $handler = [ResolveEventHandler]{
 }
 [AppDomain]::CurrentDomain.add_AssemblyResolve($handler)
 
-$callerPath = Join-Path $Root 'dist\TScoring.InputDevice.dll'
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+$callerPath = (Require-TsArtifact $Root 'TScoring.InputDevice.dll')
 $callerBytes = [IO.File]::ReadAllBytes($callerPath)
 $callerAsm = [Reflection.Assembly]::Load($callerBytes)
 $NS = 'TSScoringPlugin.Handshake.'

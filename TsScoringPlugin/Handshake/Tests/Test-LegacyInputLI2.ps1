@@ -11,7 +11,8 @@ param([string]$Root = (Split-Path $PSScriptRoot -Parent), [string]$PythonExe = '
 
 $repo = Split-Path (Split-Path $Root -Parent) -Parent
 $legacyHost = Join-Path $env:PUBLIC 'Documents\BveEx\Legacy'
-$dllPath = Join-Path $Root 'Telemetry\Legacy\out\TScoring.TelemetryA.dll'
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+$dllPath = (Require-TsArtifact $Root 'TScoring.TelemetryA.dll')
 $fixtureSrc = Join-Path $Root 'Tests\TelemetryTestFixture.cs'
 $testDir = Join-Path $Root 'logs\li2-tests'
 if (Test-Path $testDir) { Remove-Item $testDir -Recurse -Force }

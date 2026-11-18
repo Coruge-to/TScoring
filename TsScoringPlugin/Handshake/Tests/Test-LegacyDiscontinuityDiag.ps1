@@ -19,7 +19,8 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $legacyHost = Join-Path $env:PUBLIC 'Documents\BveEx\Legacy'
-if ([string]::IsNullOrEmpty($DllPath)) { $DllPath = Join-Path $Root 'Telemetry\Legacy\out\TScoring.TelemetryA.dll' }
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+if ([string]::IsNullOrEmpty($DllPath)) { $DllPath = (Require-TsArtifact $Root 'TScoring.TelemetryA.dll') }
 $fixtureSrc = Join-Path $Root 'Tests\TelemetryTestFixture.cs'
 $srcDir = Join-Path $Root 'Telemetry\Legacy\src'
 $testDir = Join-Path $env:TEMP ('tsscoring-discdiag-' + [guid]::NewGuid().ToString('N').Substring(0, 12))

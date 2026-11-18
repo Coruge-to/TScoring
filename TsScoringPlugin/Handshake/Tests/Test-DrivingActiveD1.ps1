@@ -68,7 +68,8 @@ $handler = [ResolveEventHandler]{
 }
 [AppDomain]::CurrentDomain.add_AssemblyResolve($handler)
 
-$callerPath = Join-Path $Root 'dist\TScoring.InputDevice.dll'
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+$callerPath = (Require-TsArtifact $Root 'TScoring.InputDevice.dll')
 $callerBytes = [IO.File]::ReadAllBytes($callerPath)
 $callerAsm = [Reflection.Assembly]::Load($callerBytes)
 $NS = 'TSScoringPlugin.Handshake.'
@@ -599,9 +600,9 @@ $bridgeNow = @(Get-ChildItem (Join-Path $Root 'Bridge') -Recurse -File -Include 
 $bridgeBaseList = @((RunGit @('ls-tree', '-r', '--name-only', '--full-name', $Baseline, '--', 'Bridge')) -split "`n" | Where-Object { $_ -match '\.(cs|csproj)$' -and $_ -notmatch 'Bridge/Legacy/src/HandshakeControlPlane\.cs$' })
 $bridgeDiff = @()
 foreach ($bf in $bridgeBaseList) { $rel = $bf.Substring($prefix.Length).Replace('/', '\'); if ((-not (Test-Path (Join-Path $Root $rel))) -or ((BaseText $rel) -cne (WorkText $rel))) { $bridgeDiff += $rel } }
-$curSha = (Get-FileHash (Join-Path $Root 'dist\TScoring.BridgeB.dll')).Hash
-$curOutSha = (Get-FileHash (Join-Path $Root 'Bridge\out\TScoring.BridgeB.dll')).Hash
-$legSha = (Get-FileHash (Join-Path $Root 'Bridge\Legacy\out\TScoring.BridgeA.dll')).Hash
+$curSha = (Get-FileHash ((Require-TsArtifact $Root 'TScoring.BridgeB.dll'))).Hash
+$curOutSha = (Get-FileHash ((Require-TsArtifact $Root 'TScoring.BridgeB.dll'))).Hash
+$legSha = (Get-FileHash ((Require-TsArtifact $Root 'TScoring.BridgeA.dll'))).Hash
 # (This guard compares the baseline with the Phase E1 COMMIT, not with the working tree: the Phase SI-A6 sources are pinned by Test-PauseRecoverySIA6.ps1 and the re-pinned M1-21 / M1-22; here only the built DLLs are the new formal ones.)
 # SI-R5.3 (PIN-X) - OLD contract: the Current / Legacy Bridge DLLs are the SI-A7 M1a formal build (A310AB03 / CC084CED). NEW contract: the SI-R5.3 formal build (A prime non-blocking observation log, C prime payload delivered outside the gate,
 # B prime tracker before observer): Current 068D4C34... , Legacy 5B7BCA7C... (deterministic Release build of the committed sources, 2 clone paths x 2 builds identical). Unchanged: dist equals out for the Current DLL; the other conditions of the row.

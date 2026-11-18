@@ -69,8 +69,9 @@ public static class TestResolver
 }
 "@
 [TestResolver]::Install(@((Join-Path $env:ProgramW6432 'mackoy\BveTs6'), (Join-Path $env:PUBLIC 'Documents\BveEx\2.0')))
-$callerAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes((Join-Path $Root 'dist\TScoring.InputDevice.dll')))
-$bridgeAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes((Join-Path $Root 'dist\TScoring.BridgeB.dll')))
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+$callerAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.InputDevice.dll'))))
+$bridgeAsm = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.BridgeB.dll'))))
 $NS = 'TSScoringPlugin.Handshake.'
 $sessionType = $callerAsm.GetType($NS + 'HandshakeSession')
 $bridgeType = $bridgeAsm.GetType($NS + 'TsScoringBridgePrototype')

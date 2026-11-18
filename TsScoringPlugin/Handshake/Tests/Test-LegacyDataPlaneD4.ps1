@@ -14,7 +14,8 @@ param(
 
 $repo = Split-Path (Split-Path $Root -Parent) -Parent
 $legacyHost = Join-Path $env:PUBLIC 'Documents\BveEx\Legacy'
-if ([string]::IsNullOrEmpty($DllPath)) { $DllPath = Join-Path $Root 'Telemetry\Legacy\out\TScoring.TelemetryA.dll' }
+. (Join-Path $PSScriptRoot '..\Tools\Resolve-TsArtifact.ps1')
+if ([string]::IsNullOrEmpty($DllPath)) { $DllPath = (Require-TsArtifact $Root 'TScoring.TelemetryA.dll') }
 $fixtures = @((Join-Path $Root 'Tests\TelemetryTestFixture.cs'), (Join-Path $Root 'Tests\LegacyDataPlaneTestFixture.cs'), (Join-Path $Root 'Tests\LegacyIlCallScan.cs'))
 $testDir = Join-Path $Root 'logs\d4-tests'
 if (Test-Path $testDir) { Remove-Item $testDir -Recurse -Force }
