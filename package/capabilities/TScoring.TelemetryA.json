@@ -15,8 +15,8 @@
     "note": "OD-X11 v2 (Owner 2026-11-15): the formal TelemetryA has the Legacy Jump execution ON. Jump OFF is a diagnostic / comparison build only and is never a formal candidate, deployed under the formal name or promoted."
   },
   "baseline": {
-    "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
-    "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+    "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
+    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
     "sizeBytes": 184320,
     "capabilities": {
       "legacyJumpExec": true,
@@ -30,8 +30,8 @@
         "PseudoTurnbackPairCodec"
       ]
     },
-    "promotedAt": "2026-11-16T03:52:18Z",
-    "closeRef": "PROMOTED 2026-11-16: ACCEPTED=DEPLOYED=PROMOTED sha BEAE0167, source b408bf5 on remote (tree ad76a963), S05 pulse gate fix; formal live acceptance PASS (Current x10 + Legacy x10 Pause-F5, see the accept entry). Known host signatures S01/S02/S04 recorded separately; 1 UNRESOLVED host signature nvd3dumx (no TScoring frame) recorded in the handoff 08-live-stop-report; Owner ruled resume. Companion baselines (no ledger): TelemetryB 7977259D, BridgeB E35A19BF, BridgeA FE6EEA1B. Rollback asset: D6E6E324 (previous baseline, handoff backup-old)."
+    "promotedAt": "2026-11-18T02:01:02Z",
+    "closeRef": "Owner approved 100 ms 2026-11-18, pushed b75575a, remote verified; Live (automated, 2026-11-18, handoff s05-settle100-h1-promotion-v1-20261118\\09-live-results.md): Current 137M 12/12 + Iida 25/25, Legacy 920T 10/10 paused-F5, 0 new WER/dump, tickInGen=0 for every paused-F5 establishment."
   },
   "history": [
     {
@@ -225,6 +225,101 @@
       },
       "evidence": "PROMOTED 2026-11-16: ACCEPTED=DEPLOYED=PROMOTED sha BEAE0167, source b408bf5 on remote (tree ad76a963), S05 pulse gate fix; formal live acceptance PASS (Current x10 + Legacy x10 Pause-F5, see the accept entry). Known host signatures S01/S02/S04 recorded separately; 1 UNRESOLVED host signature nvd3dumx (no TScoring frame) recorded in the handoff 08-live-stop-report; Owner ruled resume. Companion baselines (no ledger): TelemetryB 7977259D, BridgeB E35A19BF, BridgeA FE6EEA1B. Rollback asset: D6E6E324 (previous baseline, handoff backup-old).",
       "at": "2026-11-16T03:52:18Z"
+    },
+    {
+      "stage": "build",
+      "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
+      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "settle 150->100 final + H-1 (b75575a). Build: 2 clean roots 3FB6D2A2, guard ACCEPT. Gate S1 4732/0, S2 27/27.",
+      "at": "2026-11-18T00:48:47Z"
+    },
+    {
+      "stage": "accept",
+      "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
+      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "settle 150->100 final + H-1 (b75575a). Build: 2 clean roots 3FB6D2A2, guard ACCEPT. Gate S1 4732/0, S2 27/27. (pre-deploy accept)",
+      "at": "2026-11-18T00:48:47Z"
+    },
+    {
+      "stage": "deploy",
+      "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
+      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "deployed pair-wise with backup-old (deploy-pair.ps1) 2026-11-18 09:49",
+      "at": "2026-11-18T00:49:56Z"
+    },
+    {
+      "stage": "accept",
+      "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
+      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "Live (automated, 2026-11-18, handoff s05-settle100-h1-promotion-v1-20261118\\09-live-results.md): Current 137M 12/12 + Iida 25/25, Legacy 920T 10/10 paused-F5, 0 new WER/dump, tickInGen=0 for every paused-F5 establishment.",
+      "at": "2026-11-18T01:29:10Z"
+    },
+    {
+      "stage": "promote",
+      "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
+      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "evidence": "Owner approved 100 ms 2026-11-18, pushed b75575a, remote verified; Live (automated, 2026-11-18, handoff s05-settle100-h1-promotion-v1-20261118\\09-live-results.md): Current 137M 12/12 + Iida 25/25, Legacy 920T 10/10 paused-F5, 0 new WER/dump, tickInGen=0 for every paused-F5 establishment.",
+      "at": "2026-11-18T02:01:02Z"
     }
   ],
   "rollbackAssets": [
@@ -299,6 +394,23 @@
       },
       "path": "C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\s05-pulse-deploy-live-v1-20261116-20261116-115544\\backup-old\\TScoring.TelemetryA.dll",
       "note": "previous formal baseline D6E6E324 (source f42f0df, Jump ON, featureBits 7): ordinary rollback target of the S05 pulse gate promote (no capability loss); backup copy in the deploy folder backup-old with SHA ledger"
+    },
+    {
+      "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
+      "capabilities": {
+        "legacyJumpExec": true,
+        "executionCompiledIn": true,
+        "jumpCapabilityAdvertised": true,
+        "featureBits": 7,
+        "buildRole": "Formal",
+        "tokens": [
+          "ACCELZ",
+          "PTPAIR",
+          "PseudoTurnbackPairCodec"
+        ]
+      },
+      "path": "C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\s05-settle100-h1-promotion-v1-20261118\\backup-old\\TScoring.TelemetryA.dll",
+      "note": "previous baseline BEAE0167 (S05 pulse gate fix, source b408bf5); ordinary rollback target (capability kept: Jump ON, featureBits 7)"
     }
   ]
 }

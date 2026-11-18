@@ -1,0 +1,2370 @@
+n:AbandonPendingJump
+n:AbortedLine
+n:Action
+n:ActiveCondition
+n:AddSeconds
+n:Addresses
+n:AllBrakeTexts
+n:AllClBrakeTexts
+n:AllHoldBrakeTexts
+n:AllHoldingTexts
+n:AllPowerTexts
+n:AllReverserTexts
+n:AppDirectoryInvalid
+n:AppDirectoryMissing
+n:AppDirectoryNotReady
+n:AppDirectorySize
+n:AppDirectoryTorn
+n:AppInstance
+n:AppInstanceMismatch
+n:AppMagic
+n:AppPid
+n:AppPidMismatch
+n:AppProcessId
+n:AppVersion
+n:Append
+n:AppendAllText
+n:AppendLine
+n:AreManagedRuntimeValuesEqual
+n:ArgumentException
+n:ArgumentNullException
+n:ArgumentOutOfRangeException
+n:ArrivalStated
+n:ArrivalStationIndex
+n:AsciiInstance
+n:Assemble
+n:AssemblyCompanyAttribute
+n:AssemblyConfigurationAttribute
+n:AssemblyCopyrightAttribute
+n:AssemblyDescriptionAttribute
+n:AssemblyFileVersionAttribute
+n:AssemblyName
+n:AssemblyPluginBase
+n:AssemblyProductAttribute
+n:AssemblyTitleAttribute
+n:AssemblyTrademarkAttribute
+n:AtsLoggerPlugin
+n:Begin
+n:BeginPendingJump
+n:BinaryOperation
+n:BindingFlags
+n:BitConverter
+n:BitLength
+n:Build
+n:BuildJumpView
+n:BuildTable
+n:BveEx.PluginHost
+n:BveEx.PluginHost.Plugins
+n:BveEx.PluginHost.Plugins.Extensions
+n:BvePid
+n:BvePidMismatch
+n:BveProcessId
+n:BveTypes
+n:BveTypes.ClassWrappers
+n:BveTypes.ClassWrappers.Extensions
+n:CSharpArgumentInfo
+n:CSharpArgumentInfoFlags
+n:CSharpBinderFlags
+n:CallSite
+n:CallSiteBinder
+n:CallerControlPlaneProbe
+n:CancelRequest
+n:ChangeCount
+n:CheckRanges
+n:ClBrakeText
+n:ClEmergency
+n:ClLap
+n:ClRun
+n:ClService
+n:ClassWrapperBase
+n:Clear
+n:ClearPendingJump
+n:Clock
+n:Clone
+n:Close
+n:CollectJumpCommands
+n:ComVisibleAttribute
+n:Combine
+n:Compare
+n:CompareExchange
+n:CompilationRelaxationsAttribute
+n:CompilerGeneratedAttribute
+n:CompleteAfterJump
+n:CompletedLine
+n:CompletionStatus
+n:CompletionWireVersion
+n:Component
+n:Compute
+n:ComputeFileSha256
+n:ComputeHash
+n:Concat
+n:ConstantTimeEquals
+n:ConstructorInfo
+n:Contains
+n:ContainsKey
+n:ContinueScoring
+n:Convert
+n:Copyright
+n:Coruge
+n:CountOk
+n:Crc32
+n:CreateNew
+n:CreateOfficialTargetHost
+n:CreateProduction
+n:CreateViewAccessor
+n:CultureInfo
+n:CurrentCountText
+n:CurrentJumpCommand
+n:CurrentJumpDecision
+n:CurrentJumpDiagnostic
+n:CurrentJumpEndpoint
+n:CurrentJumpExecution
+n:CurrentJumpView
+n:CurrentModeLatch
+n:CurrentProcessId
+n:CurrentRequestBrakeCandidate
+n:CurrentRequestKind
+n:CurrentSenderMode
+n:CurrentTelemetryLogFile
+n:CurrentTelemetryRouter
+n:CursorOk
+n:DataContractAttribute
+n:DataContractJsonSerializer
+n:DataMemberAttribute
+n:DataPlaneMessageTypes
+n:DataPlaneProtocol
+n:DateTime
+n:DebuggableAttribute
+n:DebuggingModes
+n:Decimal
+n:DecodeEnvelope
+n:DecodeJumpDirectory
+n:DecodeTelemetryDirectory
+n:DecoderFallbackException
+n:DefaultGapMs
+n:DefaultHoldOffMs
+n:DefaultMemberAttribute
+n:DefaultNowMs
+n:DefaultSettleMs
+n:DefaultTime
+n:Delegate
+n:DepartureStated
+n:DepartureStationIndex
+n:Dequeue
+n:Describe
+n:Detail
+n:Detection
+n:DetectionCompletionStatus
+n:DetectionPriority
+n:DetectionStrategy
+n:DiagField
+n:DiagFields
+n:DiagNumber
+n:DiagUnknown
+n:DiagnoseAtsPtAppDomain
+n:DiagnoseBveExHostReferences
+n:DiagnoseBveExStaticPluginHosts
+n:DiagnoseBveHackerEventTargets
+n:DiagnoseDirectBrakeOutputComparison
+n:DiagnoseExplicitBrakeRequestFlags
+n:DiagnoseExtensionSet
+n:DiagnoseHankyuEmergencyRequestState
+n:DiagnoseKintetsuEmergencyCandidates
+n:DiagnoseKintetsuServiceAndEmergencyCandidates
+n:DiagnoseManagedPrimaryRuntimeState
+n:DiagnoseMetroRequestCandidates
+n:DiagnoseNankaiAtsNEmergencyRequestState
+n:DiagnoseNankaiAtsPnRequestState
+n:DiagnoseNankaiLegacyAtsPnRequestState
+n:DiagnoseNnnCatsRequestState
+n:DiagnoseObjectBackedBrakeState
+n:DiagnosePluginHostApp
+n:DiagnoseRuntimeProfiles
+n:DiagnoseSwp2DeviceAggregatedRequest
+n:DiagnoseThreeStateBrakeIntervention
+n:DiagnoseVehiclePlugins
+n:DirectEmergencyRva
+n:DirectOutputBrakeRva
+n:DirectPhysicalBrakeRva
+n:DirectServiceMaximumRva
+n:DirectoryVersion
+n:Dispose
+n:DoorDir
+n:DoubleToInt64Bits
+n:Drain
+n:DumpDelegateInfo
+n:DumpObjectMembers
+n:DumpTypeDefinition
+n:DynamicAttribute
+n:EffectiveTerminal
+n:ElapsedEventArgs
+n:ElapsedEventHandler
+n:ElapsedMs
+n:Emergency
+n:EmergencyModeValue
+n:EmergencyRequestFlagRvas
+n:EmergencyRequestFlags
+n:EmptyId
+n:EmptyListId
+n:EnabledExists
+n:EnabledName
+n:Encode
+n:EncodeEnvelope
+n:EncodeJumpDirectory
+n:EncodeTelemetryDirectory
+n:Enqueue
+n:EnvelopeMagic
+n:EnvelopeSize
+n:EnvelopeV1
+n:EnvelopeVersion
+n:Environment
+n:Evaluate
+n:EventFieldName
+n:EventWaitHandle
+n:EventWaitHandleRights
+n:ExactQuotient
+n:ExpectedTypeName
+n:ExpressionType
+n:FCount
+n:FJump
+n:FList
+n:FScen
+n:FTime
+n:FailureRetryMs
+n:FieldTotal
+n:FileNotFoundException
+n:FileStream
+n:FindJumpTimeField
+n:FirstOrDefault
+n:Flush
+n:FormatActiveRequestFlagRvas
+n:FormatCompletion
+n:FormatCompletionV2
+n:FormatDumpValue
+n:FormatLocation
+n:FormatMethodSignature
+n:FormatRequestV2
+n:FractionDigits
+n:Framework
+n:FrameworkDisplayName
+n:Frequency
+n:FromSource
+n:GenericHandleTextContract
+n:GetAssemblies
+n:GetAssemblyIdentity
+n:GetBytes
+n:GetConstructors
+n:GetCount
+n:GetCurrentProcess
+n:GetCursor
+n:GetDirectRuntimeRvas
+n:GetEnumerator
+n:GetExtension
+n:GetField
+n:GetFields
+n:GetFileName
+n:GetFolderPath
+n:GetGetMethod
+n:GetHashCode
+n:GetIndex
+n:GetIndexParameters
+n:GetInvocationList
+n:GetMember
+n:GetMethods
+n:GetName
+n:GetObjectIdentity
+n:GetParameters
+n:GetProperties
+n:GetProperty
+n:GetStations
+n:GetString
+n:GetTimestamp
+n:GetType
+n:GetTypeFromHandle
+n:GetTypes
+n:GuidAttribute
+n:HankyuInputBrakeRva
+n:HankyuOutputBrakeRva
+n:HankyuRequestActiveRva
+n:HankyuRequestedBrakeRva
+n:HasCurrentEmergencyState
+n:HasCurrentRequestBrake
+n:HasCurrentSecurityEmergencyState
+n:HasLocation
+n:HasLoggedInitialState
+n:HasLoggedResolved
+n:HasLoggedStructureError
+n:HasPreviousHankyuRequestState
+n:HasPreviousInterventionState
+n:HasPreviousKintetsuEmergencyCandidateState
+n:HasPreviousKintetsuServiceAndEmergencyCandidateState
+n:HasPreviousMetroRequestCandidateState
+n:HasPreviousModeValue
+n:HasPreviousNankaiLegacyPnRequestState
+n:HasPreviousNankaiNEmergencyState
+n:HasPreviousNankaiPnRequestState
+n:HasPreviousNnnCatsRequestState
+n:HasPreviousRequestFlagState
+n:HasPreviousState
+n:HasPreviousSwp2State
+n:HasRequest
+n:HasStationIndex
+n:HasTimeDef
+n:HasValidatedMembers
+n:HashAlgorithm
+n:HashSet
+n:Heartbeat
+n:HeartbeatTimer_Elapsed
+n:HoldBrake
+n:HoldBrakeBrakeText
+n:HostNull
+n:IBveHacker
+n:ICallerProbe
+n:ICollection
+n:IComparer
+n:IDisposable
+n:IEndpointSource
+n:IEnumerable
+n:IEnumerator
+n:IEqualityComparer
+n:IExtension
+n:IExtensionSet
+n:IFormatProvider
+n:IList
+n:IPAddress
+n:IPEndPoint
+n:IPluginSet
+n:IReadOnlyDictionary
+n:ITelemetryTransport
+n:IdText
+n:Increment
+n:IndexOf
+n:InitializeArray
+n:InitializeManagedRuntimeProfiles
+n:InstancePublished
+n:Int32Max
+n:Int64BitsToDouble
+n:IntValue
+n:Interlocked
+n:InterpolatedTime
+n:InterventionModeRva
+n:InvalidOperationException
+n:Invoke
+n:InvokeMember
+n:IsAssignableFrom
+n:IsHash
+n:IsHexDigit
+n:IsInfinity
+n:IsInstanceOfType
+n:IsIntText
+n:IsInterestingPluginHostMember
+n:IsKnownAtsMainObject
+n:IsListId
+n:IsNaN
+n:IsNullOrEmpty
+n:IsNullOrWhiteSpace
+n:IsPass
+n:IsScoring
+n:IsTerminal
+n:IsVolatile
+n:IsZero
+n:JoinTexts
+n:Judge
+n:JudgeCore
+n:JumpCapabilities
+n:JumpCommandValidator
+n:JumpCompleteV1
+n:JumpCount
+n:JumpDiag
+n:JumpDirectoryPublisher
+n:JumpInput
+n:JumpKnownCapabilities
+n:JumpLocationTime
+n:JumpMagic
+n:JumpName
+n:JumpRefused
+n:JumpStationTime
+n:JumpWire
+n:JumpWireCompletion
+n:JumpWireRequest
+n:JumpWireScope
+n:KeyCollection
+n:KeyValuePair
+n:KindLoc
+n:KindSta
+n:KintetsuAbsoluteStopEmergencyLatch
+n:KintetsuAbsoluteStopEmergencyLatchRva
+n:KintetsuEmergencySourceA
+n:KintetsuEmergencySourceARva
+n:KintetsuEmergencySourceB
+n:KintetsuEmergencySourceBRva
+n:KintetsuSecondaryEmergencySource
+n:KintetsuSecondaryEmergencySourceRva
+n:KintetsuServiceMaximumSourceA
+n:KintetsuServiceMaximumSourceARva
+n:KintetsuServiceMaximumSourceB
+n:KintetsuServiceMaximumSourceBRva
+n:Known
+n:KnownStates
+n:LayoutCompV1
+n:LayoutCompV2
+n:LayoutReqV1Loc
+n:LayoutReqV1Sta
+n:LayoutReqV2Loc
+n:LayoutReqV2Sta
+n:LegacyTextPayload
+n:LoadRuntimeProfileCatalog
+n:LocReason
+n:LocationMaxAbs
+n:LocationMinAbs
+n:LogAtsPtMainCandidate
+n:LogExtensionSetItem
+n:LogExtensionSetObject
+n:LogPluginHostAppCollection
+n:LogStaticPluginHostValue
+n:Loopback
+n:Managed
+n:ManagedRuntimeMemberDefinition
+n:ManagedRuntimePathStep
+n:MapObjectBase
+n:MapObjectList
+n:Marshal
+n:MatchedSha256
+n:MaxDiagScanLength
+n:MaxDiagValueLength
+n:MaxLineLength
+n:MaxLines
+n:MaxNotches
+n:MaxSignificantDigits
+n:MemberInfo
+n:MemoryBarrier
+n:MemoryMappedFile
+n:MemoryMappedFileAccess
+n:MemoryMappedFileRights
+n:MemoryMappedViewAccessor
+n:MemoryStream
+n:MessageType
+n:Metadata
+n:MethodBase
+n:MethodInfo
+n:MetroControlMode
+n:MetroControlModeRva
+n:MetroEmergencySelectionFlag
+n:MetroEmergencySelectionFlagRva
+n:MetroInternalState
+n:MetroInternalStateRva
+n:MetroLevel4SelectionFlag
+n:MetroLevel4SelectionFlagRva
+n:MetroLevel7SelectionFlag
+n:MetroLevel7SelectionFlagRva
+n:MetroSafetyEmergencySource
+n:MetroSafetyEmergencySourceRva
+n:Microsoft.CSharp
+n:Microsoft.CSharp.RuntimeBinder
+n:MidpointRounding
+n:MinValue
+n:Module
+n:ModuleBaseAddress
+n:Monitor
+n:MonitorManagedRuntimeResolution
+n:MoveNext
+n:MulSmall
+n:NETFramework
+n:NamedObjects
+n:NankaiLegacyPnEmergencyFlagRva
+n:NankaiLegacyPnServiceSourceARva
+n:NankaiLegacyPnServiceSourceBRva
+n:NankaiLegacyPnServiceSourceCRva
+n:NankaiNEmergencyFlagRva
+n:NankaiPnEmergencyOffset
+n:NankaiPnRequestStatePointerRva
+n:NankaiPnServiceMaximumOffset
+n:NextLocation
+n:NextOk
+n:NnnCatsDriverBrakeRva
+n:NnnCatsEmergencyNotchRva
+n:NnnCatsMainStateRva
+n:NnnCatsMode0RequestStateRva
+n:NnnCatsMode1RequestStateRva
+n:NnnCatsRequestStatePointerRva
+n:NnnCatsReturnedBrakeRva
+n:NnnCatsSafetyFlagRva
+n:NoStation
+n:NoneModeValue
+n:Normal
+n:NormalProbeMs
+n:NormalizeLocation
+n:NoteFirstSend
+n:NoteTick
+n:NumberStyles
+n:ObjectDisposedException
+n:ObjectPath
+n:ObjectPointerRva
+n:ObserveProbeMs
+n:OfficialTargetReader
+n:OfficialTargetReading
+n:OfficialTargetStation
+n:OfficialTargetWire
+n:OnAtsLoggerScenarioClosed
+n:OnAtsLoggerScenarioCreated
+n:OnAtsLoggerScenarioOpened
+n:OnPulseScenarioClosed
+n:OnPulseScenarioCreated
+n:OnPulseScenarioOpened
+n:OnScenarioCreated
+n:OnScenarioOpenedOrClosed
+n:OpenRead
+n:OrderCompV1
+n:OrderCompV2
+n:OrderReqV1Loc
+n:OrderReqV1Sta
+n:OrderReqV2
+n:OutputBrake
+n:Overflow
+n:OwnerName
+n:PackageContract
+n:ParameterInfo
+n:ParseCompletion
+n:ParseCompletionCore
+n:ParseLocation
+n:ParseRequest
+n:ParseRequestCore
+n:Pattern
+n:PausePulse
+n:PausePulseGapMs
+n:PausePulseGate
+n:PausePulseIntervalMs
+n:PausePulseRefreshMs
+n:PendingExpireMs
+n:PhysicalBrake
+n:PhysicalBrakeOffset
+n:Placeholder
+n:PluginAttribute
+n:PluginBuilder
+n:PluginType
+n:PowerText
+n:PrefixComplete
+n:PrefixLoc
+n:PrefixSta
+n:PreviousEmergency
+n:PreviousEmergencyRequestFlags
+n:PreviousHankyuInputBrake
+n:PreviousHankyuOutputBrake
+n:PreviousHankyuRequestActive
+n:PreviousHankyuRequestedBrake
+n:PreviousInterventionKind
+n:PreviousKintetsuAbsoluteStopEmergencyLatch
+n:PreviousKintetsuEmergency
+n:PreviousKintetsuEmergencySourceA
+n:PreviousKintetsuEmergencySourceB
+n:PreviousKintetsuOutputBrake
+n:PreviousKintetsuPhysicalBrake
+n:PreviousKintetsuSecondaryEmergencySource
+n:PreviousKintetsuServiceAndEmergencyEmergency
+n:PreviousKintetsuServiceAndEmergencyOutputBrake
+n:PreviousKintetsuServiceAndEmergencyPhysicalBrake
+n:PreviousKintetsuServiceAndEmergencyServiceMaximum
+n:PreviousKintetsuServiceMaximum
+n:PreviousKintetsuServiceMaximumSourceA
+n:PreviousKintetsuServiceMaximumSourceB
+n:PreviousMetroControlMode
+n:PreviousMetroEmergencyFlag
+n:PreviousMetroInternalState
+n:PreviousMetroLevel7Flag
+n:PreviousMetroSafetyEmergencySource
+n:PreviousMetroServiceMaximumMinus3Flag
+n:PreviousNankaiLegacyPnEmergencyRequested
+n:PreviousNankaiLegacyPnServiceSourceA
+n:PreviousNankaiLegacyPnServiceSourceB
+n:PreviousNankaiLegacyPnServiceSourceC
+n:PreviousNankaiNEmergencyRequested
+n:PreviousNankaiPnEmergencyRequested
+n:PreviousNankaiPnServiceMaximumRequested
+n:PreviousNnnCatsDriverBrake
+n:PreviousNnnCatsEmergencyNotch
+n:PreviousNnnCatsMainState
+n:PreviousNnnCatsMode0RequestState
+n:PreviousNnnCatsMode1RequestState
+n:PreviousNnnCatsRequestStateAddress
+n:PreviousNnnCatsReturnedBrake
+n:PreviousNnnCatsSafetyFlag
+n:PreviousNnnCatsSelectedRequestState
+n:PreviousObjectAddress
+n:PreviousOutputBrake
+n:PreviousPhysicalBrake
+n:PreviousRequestEmergency
+n:PreviousRequestOutputBrake
+n:PreviousRequestPhysicalBrake
+n:PreviousRequestServiceMaximum
+n:PreviousServiceMaximum
+n:PreviousServiceMaximumRequestFlags
+n:PreviousSwp2AtsOnlyRequest
+n:PreviousSwp2AtsPRequest
+n:PreviousSwp2AtsSRequest
+n:PreviousSwp2FailureStage
+n:PreviousValues
+n:Priority
+n:PrivateImplementationDetails
+n:ProcessModule
+n:ProcessModuleCollection
+n:ProcessStarted
+n:ProfileCount
+n:Profiles
+n:PropertyInfo
+n:PseudoTurnbackCompletionMode
+n:PseudoTurnbackPair
+n:PseudoTurnbackPairCodec
+n:PseudoTurnbackPairSet
+n:PseudoTurnbackQualifier
+n:PseudoTurnbackRecord
+n:Publish
+n:PublisherPid
+n:PulseTimerCallback
+n:Qualify
+n:Queue
+n:RApiMissing
+n:RCompletionFormat
+n:RCompletionUnreadable
+n:RCountMismatch
+n:RCountRange
+n:RCountSyntax
+n:REmpty
+n:RFieldCount
+n:RIndexRange
+n:RJumpCountRange
+n:RJumpCountSyntax
+n:RJumpException
+n:RKind
+n:RListIdSyntax
+n:RListInconsistent
+n:RListMismatch
+n:RListNotReady
+n:RLocationMismatch
+n:RLocationPrecision
+n:RLocationRange
+n:RLocationSyntax
+n:RMalformed
+n:RPrefix
+n:RReinitLocation
+n:RReinitRange
+n:RScenarioChanged
+n:RScenarioIdRange
+n:RScenarioIdSyntax
+n:RScenarioMismatch
+n:RScenarioMissing
+n:RScopeIncomplete
+n:RSelectedIdxRange
+n:RSelectedIdxSyntax
+n:RStationIndexRange
+n:RStationIndexSyntax
+n:RSuperseded
+n:RTimeFieldMissing
+n:RTimeRange
+n:RTimeSyntax
+n:RUnsupportedVersion
+n:RandomBytes
+n:RandomNumberGenerator
+n:RangeReason
+n:RawArrTime
+n:RawDepTime
+n:RawTerminal
+n:ReadAllText
+n:ReadArray
+n:ReadByte
+n:ReadFields
+n:ReadInstance
+n:ReadInt32
+n:ReadInt64
+n:ReadIntPtr
+n:ReadObject
+n:ReadOnlyCollectionBase
+n:ReadStation
+n:ReadStationRange
+n:ReadUInt32
+n:ReaderEndpointSource
+n:ReadsBack
+n:ReadyAccepted
+n:ReadyExists
+n:ReadyName
+n:ReasonCount
+n:ReasonFinal
+n:ReasonInteger
+n:ReasonLimit
+n:ReasonListId
+n:ReasonMode
+n:ReasonOrder
+n:ReasonOverlap
+n:ReasonParts
+n:ReasonRange
+n:ReasonStationCount
+n:ReasonVersion
+n:Reasons
+n:ReasonsText
+n:Receive
+n:RecentCapacity
+n:ReflectionTypeLoadException
+n:RefusedLine
+n:RegisterHankyuDiagnosticRuntimeProfiles
+n:RegisterNankaiDiagnosticRuntimeProfiles
+n:RegisterNnnCatsDiagnosticRuntimeProfiles
+n:RegisterSwp2DeviceAggregatedRuntimeProfile
+n:RegisterSwp2DeviceAggregatedRuntimeProfiles
+n:ReinitializeTargetStateAfterJump
+n:Reject
+n:RejectStationList
+n:Remove
+n:Replace
+n:RequestWireVersion
+n:RequestedCountText
+n:RequestedIndexText
+n:Reserved
+n:ResetAtsLoggerScenarioState
+n:ResolveLocked
+n:ResolveManagedRuntimeProfiles
+n:ResolveRequestedTarget
+n:ResolvedFields
+n:ResolverStrategy
+n:RevBack
+n:RevForward
+n:RevOff
+n:ReverserText
+n:Round
+n:RuntimeByteListsEqual
+n:RuntimeCompatibilityAttribute
+n:RuntimeFieldHandle
+n:RuntimeHelpers
+n:RuntimeProfileCatalogAddress
+n:RuntimeProfileCatalogAddresses
+n:RuntimeProfileCatalogDetection
+n:RuntimeProfileCatalogEntry
+n:RuntimeProfileIdentity
+n:RuntimeTypeHandle
+n:SHA256
+n:STDJ.
+n:STDP.
+n:SafeEnabled
+n:SafeReady
+n:SafetyEmergencySourceVerificationStatus
+n:ScenarioClosedEventHandler
+n:ScenarioCreatedEventArgs
+n:ScenarioCreatedEventHandler
+n:ScenarioId
+n:ScenarioOpenedEventArgs
+n:ScenarioOpenedEventHandler
+n:ScenarioResetFixV2
+n:SchemaVersion
+n:ScopeVerdict
+n:SelectTargetByRequestedIndex
+n:SelectUnsetTarget
+n:SelectedIndex
+n:SemanticRole
+n:SendBatch
+n:SendCore
+n:SendJumpComplete
+n:SendOrPostCallback
+n:SenderPid
+n:Sequence
+n:ServiceMaximum
+n:ServiceMaximumModeValue
+n:ServiceMaximumRequestFlagRvas
+n:ServiceMaximumRequestFlags
+n:SetValue
+n:Sha256
+n:Sha256Values
+n:ShiftLeft
+n:ShortId
+n:Slice
+n:Socket
+n:SpecialFolder
+n:Split
+n:Stack
+n:StartNew
+n:StartsWith
+n:StationData
+n:StationIndexWire
+n:StationIndexWireVersion
+n:StationListIdentity
+n:StationLocationText
+n:StationLocations
+n:StatsText
+n:StoppageTime
+n:Stopwatch
+n:Strategy
+n:StringBuilder
+n:StringComparer
+n:StringComparison
+n:Strings
+n:Substring
+n:Subtract
+n:Summary
+n:Swp2AtsPApplyOffset
+n:Swp2AtsPBrakeOffset
+n:Swp2AtsSActiveOffset
+n:Swp2Group
+n:Swp2RootPointerRva
+n:SyncJumpReceiver
+n:SynchronizationContext
+n:SyntaxReason
+n:System
+n:System.Collections
+n:System.Collections.Generic
+n:System.ComponentModel
+n:System.Core
+n:System.Diagnostics
+n:System.Globalization
+n:System.IO
+n:System.IO.MemoryMappedFiles
+n:System.Linq
+n:System.Linq.Expressions
+n:System.Net
+n:System.Net.Sockets
+n:System.Reflection
+n:System.Runtime.CompilerServices
+n:System.Runtime.InteropServices
+n:System.Runtime.Serialization
+n:System.Runtime.Serialization.Json
+n:System.Runtime.Versioning
+n:System.Security.AccessControl
+n:System.Security.Cryptography
+n:System.Text
+n:System.Threading
+n:System.Timers
+n:TPD1.
+n:TSAD3
+n:TSScoringPlugin.DataPlane
+n:TSScoringPlugin.Package
+n:TSScoringPlugin.Pulse
+n:TSScoringPlugin.Telemetry
+n:TScoring
+n:TScoring.TelemetryB
+n:TScoring.TelemetryB.dll
+n:TScoring.TelemetryB.pdb
+n:Tachogenerator
+n:TargetFrameworkAttribute
+n:TargetObject
+n:TargetTypeName
+n:Telemetry
+n:TelemetryCapabilities
+n:TelemetryDirectoryInvalid
+n:TelemetryDirectoryMissing
+n:TelemetryDirectoryReader
+n:TelemetryDirectoryTorn
+n:TelemetryEndpoint
+n:TelemetryKnownCapabilities
+n:TelemetryMagic
+n:TelemetryName
+n:TelemetryNotReady
+n:TerminalDepartureTimeBve5Ms
+n:TerminalDepartureTimeBve6Ms
+n:TextEmergency
+n:TextNeutral
+n:Thread
+n:TickCore
+n:TimeSpan
+n:ToArray
+n:ToBase64String
+n:ToBoolean
+n:ToInt32
+n:ToInt64
+n:ToString
+n:ToUInt32
+n:ToUpperInvariant
+n:TrimEnd
+n:TrimStart
+n:TryCanonicalInt
+n:TryCreate
+n:TryDecode
+n:TryEnter
+n:TryGetDirectRuntimeRva
+n:TryGetIntField
+n:TryGetValue
+n:TryOpenExisting
+n:TryParse
+n:TryParseRuntimeRva
+n:TryReadManagedField
+n:TryReadResolvedManagedField
+n:TryReadRuntimeByte
+n:TryReadRuntimeBytes
+n:TryReadRuntimeDouble
+n:TryReadRuntimeInt32
+n:TryReadRuntimePointer
+n:TryReadRuntimePointer32
+n:TryReadStable
+n:TryReadSwp2Bab4NamedDouble
+n:TryReadSwp2Bab4Request
+n:TryReadSwp2GroupBRequest
+n:TryReadSwp2X64NamedInt32
+n:TryReadSwp2X64Request
+n:TryReadSwp2X64String
+n:TryReal
+n:TryRequest
+n:TryResolve
+n:TryResolveManagedFieldInfo
+n:TryResolveManagedRuntimeProfile
+n:TsScoringPlugin
+n:Tuple
+n:TypesText
+n:UTF8Encoding
+n:UdpClient
+n:UdpTransport
+n:UnaryOperation
+n:Undetermined
+n:UndeterminedProbeMs
+n:UnmanagedMemoryAccessor
+n:ValidGrammar
+n:ValidGrammarV1
+n:Validate
+n:ValidateCore
+n:ValidateInstance
+n:ValidateManagedRuntimeMembers
+n:ValidatePid
+n:ValidateScope
+n:ValidateToken
+n:ValueCollection
+n:ValueType
+n:ValueTypeName
+n:VerificationStatus
+n:Version
+n:Where
+n:Withdrawing
+n:Words
+n:WrapNonExceptionThrows
+n:WrappedList
+n:WriteAllText
+n:WriteArray
+n:XmlObjectSerializer
+n:_CorDllMain
+n:__StaticArrayInitTypeSize
+n:__this
+n:accepted
+n:activeCondition
+n:actualLocation
+n:add_Elapsed
+n:add_ScenarioClosed
+n:add_ScenarioCreated
+n:add_ScenarioOpened
+n:address
+n:addresses
+n:adoptedIndex
+n:allBrkTexts
+n:allHldTexts
+n:allPowTexts
+n:allRevTexts
+n:appInstance
+n:appPid
+n:appProcessId
+n:application.
+n:areDoorsClosed
+n:arrival
+n:arrivalSeq
+n:arrivalStated
+n:assembly
+n:atsBrake
+n:atsMainObject
+n:atsPApplyOffset
+n:atsPBrakeOffset
+n:atsPRequest
+n:atsSActiveOffset
+n:atsSRequest
+n:beaconList
+n:bindFlags
+n:brakeNotch
+n:build
+n:builder
+n:bvePid
+n:bveProcessId
+n:bytes
+n:cannot
+n:capabilities
+n:cctor
+n:changeCount
+n:character
+n:client
+n:clockMs
+n:closed
+n:coalesced
+n:completionStatus3
+n:count
+n:counter
+n:current
+n:currentCountText
+n:currentScenario
+n:datagram
+n:decision
+n:delegateName
+n:delegateObject
+n:departure
+n:departureStated
+n:destination
+n:detail
+n:detection
+n:diagnostics
+n:directory
+n:discardedDisposed
+n:discardedNotReady
+n:discardedReentry
+n:discardedStale
+n:discardedTick
+n:disposed
+n:eae2fc09c073
+n:elapsed
+n:emergency
+n:emergencyBrakeNotch
+n:emergencyNotch
+n:emergencyRequestFlags
+n:enabledName
+n:enabledSeenMs
+n:endPoint
+n:endpoint
+n:entered
+n:epoch
+n:exceptionType
+n:expandMembers
+n:expected
+n:expectedLocation
+n:expectedStationCount
+n:expectedTypeName
+n:expectedValueType
+n:expired
+n:extension
+n:failClosed
+n:failureReason
+n:failureStage
+n:field
+n:fieldName
+n:finalBrake
+n:firstAcceptNoted
+n:firstManagedSendNoted
+n:firstPlainSendNoted
+n:firstTickNoted
+n:flags
+n:g__Sanitize
+n:gapMs
+n:generation
+n:genericHoldingNotchCount
+n:genericPowerNotchCount
+n:get_ASCII
+n:get_Accepted
+n:get_ActiveCondition
+n:get_Addresses
+n:get_Assembly
+n:get_Available
+n:get_BaseAddress
+n:get_BaseType
+n:get_BveHacker
+n:get_CanRead
+n:get_CanWrite
+n:get_Chars
+n:get_Client
+n:get_Coalesced
+n:get_CompletionStatus
+n:get_Conductor
+n:get_Count
+n:get_Current
+n:get_CurrentDomain
+n:get_CurrentIndex
+n:get_DeclaringType
+n:get_Detection
+n:get_DiscardedDisposed
+n:get_DiscardedNotReady
+n:get_DiscardedReentry
+n:get_DiscardedStale
+n:get_DiscardedTick
+n:get_ElapsedMilliseconds
+n:get_Emergency
+n:get_EmergencyRequestFlags
+n:get_Entered
+n:get_Epoch
+n:get_Expired
+n:get_Extensions
+n:get_FailClosed
+n:get_FieldType
+n:get_FileName
+n:get_FilePath
+n:get_FriendlyName
+n:get_FullName
+n:get_Generation
+n:get_Held
+n:get_Id
+n:get_InvariantCulture
+n:get_IsByRef
+n:get_IsClass
+n:get_IsOut
+n:get_IsPrimitive
+n:get_IsPublic
+n:get_IsReadReady
+n:get_IsRunning
+n:get_IsScenarioCreated
+n:get_IsStatic
+n:get_IsValueType
+n:get_Item
+n:get_Item1
+n:get_Item2
+n:get_JumpCompleteExcluded
+n:get_JumpCompleteSent
+n:get_Key
+n:get_Keys
+n:get_Kind
+n:get_KintetsuAbsoluteStopEmergencyLatch
+n:get_KintetsuEmergencySourceA
+n:get_KintetsuEmergencySourceB
+n:get_KintetsuSecondaryEmergencySource
+n:get_KintetsuServiceMaximumSourceA
+n:get_KintetsuServiceMaximumSourceB
+n:get_Length
+n:get_LocalEndPoint
+n:get_Location
+n:get_Map
+n:get_MarginMax
+n:get_MarginMin
+n:get_Message
+n:get_Method
+n:get_MetroControlMode
+n:get_MetroEmergencySelectionFlag
+n:get_MetroInternalState
+n:get_MetroLevel4SelectionFlag
+n:get_MetroLevel7SelectionFlag
+n:get_MetroSafetyEmergencySource
+n:get_Mode
+n:get_ModuleMemorySize
+n:get_Modules
+n:get_Name
+n:get_Now
+n:get_Ordinal
+n:get_OrdinalIgnoreCase
+n:get_OutputBrake
+n:get_ParameterType
+n:get_Pattern
+n:get_PayloadTooLarge
+n:get_Pending
+n:get_PhysicalBrake
+n:get_PlainSent
+n:get_Plugins
+n:get_Port
+n:get_Priority
+n:get_ProfileCount
+n:get_Profiles
+n:get_PropertyType
+n:get_Rejected
+n:get_Requested
+n:get_ReturnType
+n:get_Rva
+n:get_SafetyEmergencySourceVerificationStatus
+n:get_Scenario
+n:get_ScenarioInfo
+n:get_SchemaVersion
+n:get_SendFailures
+n:get_ServiceMaximum
+n:get_ServiceMaximumRequestFlags
+n:get_Sha256
+n:get_Size
+n:get_Speed
+n:get_Src
+n:get_Stations
+n:get_Strategy
+n:get_Target
+n:get_Ticks
+n:get_Time
+n:get_TimeManager
+n:get_TokenCopy
+n:get_TotalMilliseconds
+n:get_Types
+n:get_UTF8
+n:get_UtcNow
+n:get_Validator
+n:get_Value
+n:get_ValueType
+n:get_Values
+n:get_Vehicle
+n:get_VehicleLocation
+n:get_VehiclePlugins
+n:get_VerificationStatus
+n:get_Version
+n:get_WrappedSent
+n:group
+n:handledScenarioGeneration
+n:hasChanges
+n:hasDoorOpenedAtTarget
+n:hasDumpedAtsPtAppDomain
+n:hasDumpedBveExHostReferences
+n:hasDumpedBveExStaticPluginHosts
+n:hasDumpedBveHackerEventTargets
+n:hasDumpedExtensionSet
+n:hasDumpedPluginHostApp
+n:hasDumpedVehiclePlugins
+n:hasHoldingSpeedBrake
+n:hasInitializedManagedRuntimeProfiles
+n:hasLoggedAtsPtAppDomainError
+n:hasLoggedBveExHostReferenceError
+n:hasLoggedBveExStaticPluginHostError
+n:hasLoggedBveHackerEventTargetError
+n:hasLoggedExtensionSetError
+n:hasLoggedManagedRuntimeResolverError
+n:hasLoggedPluginHostAppError
+n:hasLoggedRuntimeProfileError
+n:hasLoggedVehiclePluginsError
+n:hasPreviousManagedPrimaryState
+n:hasScannedRuntimeProfiles
+n:heartbeatTimer
+n:holdOffMs
+n:holdingNotches
+n:idxField
+n:index
+n:initialStaListSent
+n:inspectedRuntimeModulePaths
+n:instance
+n:instanceFlags
+n:interestingNames
+n:isAtsStructureDumped
+n:isBeaconsLoaded
+n:isInitialized
+n:isLogSessionInitialized
+n:isPass
+n:isTextsCached
+n:items
+n:jumpCompleteCapabilityNoted
+n:jumpCompleteExcluded
+n:jumpCompleteNoted
+n:jumpCompleteSent
+n:jumpCount
+n:jumpCounter
+n:jumpEndpoint
+n:jumpReceiverBindTried
+n:k__BackingField
+n:keyRva
+n:kintetsuAbsoluteStopEmergencyLatch
+n:kintetsuEmergencySourceA
+n:kintetsuEmergencySourceB
+n:kintetsuSecondaryEmergencySource
+n:kintetsuServiceMaximumSourceA
+n:kintetsuServiceMaximumSourceB
+n:lastHeartbeatTime
+n:lastLocation
+n:lastLocationSample
+n:lastMetaPacket
+n:lastProbeMs
+n:lastPulseSent
+n:lastReason
+n:lastStaListPacket
+n:lastStaListSendTime
+n:lastTickMs
+n:lastTickTime
+n:lastTimeMs
+n:lastUdpData
+n:latch
+n:layout
+n:legacyDestination
+n:lines
+n:listId
+n:location
+n:locations
+n:managed
+n:managedRuntimeProfiles
+n:managedRuntimeResolutions
+n:mantissa
+n:mapAddress
+n:mapping
+n:matchedRuntimeProfileHashes
+n:memberName
+n:memberType
+n:messageType
+n:metaAuthor
+n:metaComment
+n:metaRoute
+n:metaTitle
+n:metaVehicle
+n:method
+n:metroControlMode
+n:metroEmergencySelectionFlag
+n:metroInternalState
+n:metroLevel4SelectionFlag
+n:metroLevel7SelectionFlag
+n:metroSafetyEmergencySource.
+n:missing
+n:mode.
+n:moduleBaseAddress
+n:mscoree.dll
+n:mscorlib
+n:nextManagedRuntimeResolveTime
+n:nextResolveMs
+n:nextRuntimeProfileScanTime
+n:normalized
+n:notch
+n:nowMs
+n:objectName
+n:offset
+n:oneLever
+n:opStopDelayStartMs
+n:opStopMadeIndex
+n:op_Equality
+n:op_GreaterThanOrEqual
+n:op_Inequality
+n:op_LessThan
+n:op_Subtraction
+n:order
+n:outputBrake
+n:owner
+n:pairs
+n:parts
+n:pattern
+n:payload
+n:payloadTooLarge
+n:pending
+n:pendingJumpComplete
+n:pendingJumpRequestId
+n:pendingJumpRequestedIndex
+n:pendingJumpRequestedLocation
+n:pendingJumpStationIndex
+n:pendingJumpType
+n:pendingScenarioIdentity
+n:pendingSinceMs
+n:physicalBrake
+n:plainSent
+n:position
+n:powerNotches
+n:prefix
+n:prevAtsBrake
+n:prevAtsSrcBrake
+n:prevPanel
+n:prevPhysBrake
+n:prevPhysSrcBrake
+n:prevRawHandleCBrake
+n:prevRawHandleLBrake
+n:prevSound
+n:prevVehicleStateHandleBrake
+n:previousManagedPrimaryAtsBrake
+n:previousManagedPrimaryPhysicalBrake
+n:previousManagedPrimaryRequestBrake
+n:previousManagedPrimaryRequestKind
+n:priority
+n:probe
+n:profile
+n:profileCount
+n:profiles
+n:program
+n:ptRecords
+n:ptpairText
+n:publisher
+n:publisherPid
+n:pulse
+n:pulseContext
+n:pulseCount
+n:pulseDisposed
+n:pulseEventsSubscribed
+n:pulseGate
+n:pulseLastSend
+n:pulseMaxUs
+n:pulseRunning
+n:pulseTimer
+n:pulseTotalUs
+n:rawTerminal
+n:rawTimeMgr
+n:readyAtMs
+n:readyName
+n:readySeenMs
+n:realtimeLogPath
+n:reason
+n:reasons
+n:recent
+n:recentOrder
+n:records
+n:rejected
+n:reloc
+n:remove_ScenarioClosed
+n:remove_ScenarioCreated
+n:remove_ScenarioOpened
+n:requestEpoch
+n:requestId
+n:requested
+n:requestedCountText
+n:requestedIndex
+n:requestedIndexText
+n:requestedLocation
+n:requestedStationIndex
+n:requestedTargetIndex
+n:requestedTargetLocation
+n:resolution
+n:resolvedMember
+n:right
+n:rootPointerRva
+n:router
+n:rtLog
+n:running
+n:runtimeProfilePath
+n:runtimeProfilesByHash
+n:safetyEmergencySourceVerificationStatus
+n:scenario
+n:scenarioGeneration
+n:scenarioId
+n:scenarioResetPending
+n:schemaVersion
+n:scope
+n:selectedIdx
+n:sendFailing
+n:sendFailures
+n:sender
+n:senderPid
+n:sends
+n:sequence
+n:serviceMaxBrakeNotch
+n:serviceMaximum
+n:serviceMaximumRequestFlags
+n:set_ActiveCondition
+n:set_Addresses
+n:set_Blocking
+n:set_CompletionStatus
+n:set_Detection
+n:set_Emergency
+n:set_EmergencyRequestFlags
+n:set_Item
+n:set_Kind
+n:set_KintetsuAbsoluteStopEmergencyLatch
+n:set_KintetsuEmergencySourceA
+n:set_KintetsuEmergencySourceB
+n:set_KintetsuSecondaryEmergencySource
+n:set_KintetsuServiceMaximumSourceA
+n:set_KintetsuServiceMaximumSourceB
+n:set_MetroControlMode
+n:set_MetroEmergencySelectionFlag
+n:set_MetroInternalState
+n:set_MetroLevel4SelectionFlag
+n:set_MetroLevel7SelectionFlag
+n:set_MetroSafetyEmergencySource
+n:set_Mode
+n:set_OutputBrake
+n:set_Pattern
+n:set_PhysicalBrake
+n:set_Priority
+n:set_ProfileCount
+n:set_Profiles
+n:set_Rva
+n:set_SafetyEmergencySourceVerificationStatus
+n:set_SchemaVersion
+n:set_ServiceMaximum
+n:set_ServiceMaximumRequestFlags
+n:set_Sha256
+n:set_Strategy
+n:set_ValueType
+n:set_VerificationStatus
+n:settleMs
+n:sha256
+n:sharedWireGrammar
+n:source
+n:stage
+n:start
+n:startMs
+n:started
+n:state
+n:station
+n:stationCount
+n:stationIndex
+n:stationList
+n:stationRangeRejected
+n:stidxArrivalIndex
+n:stidxArrivalSeq
+n:stidxListCount
+n:stidxListId
+n:stidxListReady
+n:strategy
+n:stringAddress
+n:suffix
+n:target
+n:targetSha256
+n:targetStationIndex
+n:targetType
+n:telemetry
+n:terminalFrozenDiffSeconds
+n:texts
+n:tickNoted
+n:timeMs
+n:token
+n:track
+n:transport
+n:typeName
+n:udpClient
+n:udpReceiver
+n:usable
+n:v4.0.30319
+n:validator
+n:value
+n:valueType
+n:value__
+n:values
+n:vehicle
+n:verificationStatus
+n:version
+n:wanted
+n:wasTerminalDoorOpened
+n:wrappedByType
+n:wrappedSent
+n:zeroRequestId
+s:, AbsoluteStopEmergencyLatch:
+s:, ActiveEmergencyRvas:
+s:, ActiveServiceRvas:
+s:, ActualType:
+s:, Aggregation:Max(AtsP,AtsS), PanelUsed:False, PhysicalBrakeUsedAsRequest:False, ScoringEnabled:False
+s:, Assembly:
+s:, AssemblyLocation:
+s:, AssemblyName:
+s:, AssemblyVersion:
+s:, AtsPtIdentity:
+s:, BaseType:
+s:, CurrentKind:
+s:, DeclaredType:
+s:, DeclaringType:
+s:, DelegateType:
+s:, EmergencyFlagValues:
+s:, EmergencySelectionFlag:
+s:, EntryType:
+s:, Event:
+s:, ExpectedType:
+s:, Field:
+s:, File:
+s:, FromType:
+s:, Group:
+s:, Identity:
+s:, InvocationCount:0
+s:, ItemRuntimeType:
+s:, KeyAssembly:
+s:, KeyLocation:
+s:, KeySHA256:
+s:, Kind:
+s:, LegacyRole:ComparisonOnly, ScoringEnabled:False
+s:, Limit:200
+s:, Limit:500
+s:, Location:
+s:, Member:
+s:, Message:
+s:, Method:
+s:, MethodDeclaringType:
+s:, Mode0RequestState:
+s:, Mode1RequestState:
+s:, Name:
+s:, Owner:
+s:, OwnerType:
+s:, Pattern:
+s:, PreviousKind:
+s:, Priority:
+s:, Profile:
+s:, Reason:
+s:, Reason:FieldNotFoundOrNull, ScoringEnabled:False
+s:, Reason:OwnerNotResolved, ScoringEnabled:False
+s:, Reason:TypeMismatch, ScoringEnabled:False
+s:, RequestSource:
+s:, RuntimeType:
+s:, SHA256:
+s:, SafetyEmergencySourceVerification:
+s:, SafetyEmergencySourceVerified:
+s:, ScoringEnabled:False
+s:, SemanticRole:
+s:, ServiceFlagValues:
+s:, ServiceRequestFlagCount:
+s:, Source:ManagedRuntimeProfile, RequestKind:
+s:, Src.c.b:
+s:, Src.i.a.b:
+s:, Src.l.b:
+s:, Strategy:
+s:, TargetAssembly:
+s:, TargetIdentity:
+s:, TargetLocation:
+s:, TargetSHA256:
+s:, TargetType:
+s:, Type:
+s:, Value:
+s:, Value:<NULL>
+s:, ValueIdentity:
+s:, ValueRuntimeType:
+s:, ValueType:
+s:, Version:
+s:,ACCELZ:
+s:,ApplyBrake:
+s:,AtsPSource:State2C2D30,Now:
+s:,AtsPState:0x
+s:,AtsSActive:
+s:,AtsSActiveOffset:0x
+s:,AtsSEmergencyFlag:
+s:,AtsSWork:
+s:,BrakeNotchIndicator:
+s:,Deadline:
+s:,DirectLayout:7EE1,AtsPRequestOffset:0x
+s:,EbActiveDiagnosticOnly:
+s:,EbWork:
+s:,FinalBrake:
+s:,IndicatorInRange:
+s:,IndicatorRounded:
+s:,IndicatorSpecial10:
+s:,InternalEmergencyNotch:
+s:,Latches:
+s:,Layout:
+s:,MapOffset:0x68,NativeFunctionCalled:False,MemoryWritePerformed:False
+s:,OFFTGT:
+s:,STIDX:1:
+s:,State2C:
+s:,State2D:
+s:,State30:
+s:,TimerAuxiliary:
+s:,TimerFinished:
+s:--- Constructors ---
+s:--- Fields ---
+s:--- Properties ---
+s:-> {0}
+s:.AppDirectory
+s:.CurrentJump
+s:.Enabled
+s:.Ready
+s:.Telemetry
+s:0.#################
+s:0.14.0.0
+s:00000000
+s:000004b0
+s:0x{0:X}
+s:127.0.0.1
+s:4!7"8%9*:<;?
+s:6/708090:0;0<0=0>0?0@0A0B0C0D2E2F2G2H2I2J3K3L3M3
+s::Field:
+s::Property:
+s::Value
+s:<ARRAY Length={0}>
+s:<EMPTY>
+s:<ERROR:
+s:<ERROR>
+s:<FIELD_READ_ERROR>
+s:<Instance>k__BackingField
+s:<NONE>
+s:<NOT_CONFIGURED>
+s:<NOT_FOUND>
+s:<NOT_READ>
+s:<NULL METHOD>
+s:<NULL PARAMETER TYPE>
+s:<NULL RETURN TYPE>
+s:<NULL>
+s:<OBJECT Type=
+s:<OBJECT>
+s:<UNAVAILABLE>
+s:<UNINITIALIZED>
+s:<UNKNOWN>
+s:<UNREADABLE>
+s:=== DELEGATE INFO:
+s:=== END DELEGATE INFO:
+s:=== END OBJECT DUMP:
+s:=== END TYPE DEFINITION:
+s:=== OBJECT DUMP:
+s:=== REALTIME ATS LOG ===
+s:=== TYPE DEFINITION:
+s:A7EE1AtsPBrakeRequest
+s:A7EE1AtsSActive
+s:ATS-N.dll
+s:ATS-Nx64.dll
+s:ATS-PN.dll
+s:ATS-PNx64.dll
+s:ATS:{0},
+s:ATS_Realtime.log
+s:AccelerationZ
+s:AnySafetyEmergencyCandidate:
+s:AppDomain:
+s:AreAllClosed
+s:ArrivalTime
+s:Assembly Version
+s:AssemblyCount:{0},
+s:AtsHandles
+s:AtsMainCount:{0},
+s:AtsMainTypeCount:{0},
+s:AtsOnlyRequest:{0},
+s:AtsOutput:{0},
+s:AtsOutputMatchesRequest:{0},
+s:AtsPApplyBrake
+s:AtsPBrakeCandidate
+s:AtsPBrakeCandidate:
+s:AtsPBrakeRequest:
+s:AtsPFlags
+s:AtsPLatches
+s:AtsPManager
+s:AtsPNamedRequest:
+s:AtsPNamedValue
+s:AtsPRequest:{0},
+s:AtsPState
+s:AtsPT5
+s:AtsPlugin
+s:AtsPlugin.
+s:AtsPlugin.AtsMain
+s:AtsPlugin.Core.Engine.PT
+s:AtsPtFieldFound:{0},
+s:AtsPtRuntimeType:
+s:AtsSActive
+s:AtsSClock
+s:AtsSEmergencyFlag
+s:AtsSManager
+s:AtsSObject
+s:AtsSObject:0x
+s:AtsSRequest:{0},
+s:AtsSState
+s:AtsSTimer
+s:AtsSrc.b:
+s:Author
+s:AutomaticAir
+s:BEACON
+s:BEACONS_LOADED
+s:BRAKE_INTERNAL
+s:Bab4MapChild
+s:Bab4MapDepthLimit
+s:Bab4MapHead
+s:Bab4MapKey
+s:Bab4MapNilFlag
+s:Bab4MapNotFound
+s:Bab4MapRoot
+s:Bab4MapValue
+s:Bab4NamedValueArguments
+s:Base:0x{0:X},
+s:BaseType=
+s:BcValve
+s:Beacons
+s:BpInitialPressure
+s:BrakeController
+s:BrakeNotch
+s:BrakeNotchCount
+s:BrakeSystem
+s:BrakeTexts
+s:BveDllInventory
+s:BveEx.CoreExtensions
+s:BveEx.PluginHost
+s:BveEx.PluginHost.App
+s:BveHackerEvent:
+s:BveHackerEventDelegateTarget
+s:CHANGE
+s:CanRead:{0}
+s:CanRead:{0},
+s:CanWrite:{0}
+s:CandidateAssemblyCount:{0},
+s:CandidateMemberCount:{0},
+s:ChuoWestAtsPt5
+s:ClosedDiagnosticReadout
+s:CollectionItemCount:{0},
+s:Comment
+s:Comments
+s:CompanyName
+s:Copyright (c) 2026 Coruge-to
+s:Coruge-to
+s:Count:{0}
+s:CurrentSectionSpeedLimit
+s:Data:{0}
+s:DeclaredCount:{0},
+s:DeclaredType:
+s:DeclaredTypeMismatch:
+s:DeclaringType:
+s:DeclaringType=
+s:DefaultTime
+s:Delegate=<NULL>
+s:DelegateType=
+s:DepartureTime
+s:Detail:
+s:DiagnosticOnly
+s:DoorSideNumber
+s:Downloads
+s:DriverBrake:{0},
+s:DynamicReverificationPending
+s:DynamicVerificationPassed
+s:DynamicVerificationPending
+s:DynamicallyVerified
+s:Dynamics
+s:ERROR={0}
+s:Electromagnetic
+s:Emergency
+s:Emergency:{0},
+s:EmergencyCandidate
+s:EmergencyCandidate:{0},
+s:EmergencyFlagRva:0x{0:X},
+s:EmergencyFlags:
+s:EmergencyNotch
+s:EmergencyNotch:{0},
+s:EmergencyOnly
+s:EmergencyOutput
+s:EmergencyRequestFlagCount:
+s:EmergencyRequestState
+s:EmergencyRequested:{0},
+s:EmergencyRequestedRaw:{0},
+s:EmergencySourceA:{0},
+s:EmergencySourceB:{0},
+s:EmergencyThenServiceMaximum
+s:EntryCount:{0},
+s:Enumerable
+s:EnvironmentPointer
+s:EvenServiceMaximumCandidate:{0},
+s:EventFieldCount:{0},
+s:ExplicitBrakeRequestFlags
+s:ExplicitMetroBrakeRequestState
+s:FailureStage:
+s:Field:
+s:FieldInfoIsNull
+s:FieldNameIsEmpty
+s:FieldNotFound
+s:FileDescription
+s:FileVersion
+s:FinalBrakeNamedValue
+s:FirstCarBrake
+s:ForwardSectionSpeedLimit
+s:FullName=
+s:GetProperty
+s:GetType
+s:GetValue
+s:GetValueAt
+s:Gradient
+s:Gradients
+s:Handles
+s:HankyuAtsHk110
+s:HankyuAtsHk5300Alternate
+s:HankyuAtsHkAlternate
+s:HankyuAtsHkB8Legacy
+s:HankyuAtsHkLegacy
+s:HankyuAtsHkNewGeneration
+s:HankyuEmergencyRequestState
+s:HasAtsMain:{0},
+s:HasHoldingSpeedBrake
+s:HiddenByPhysical:
+s:HiddenByPhysical:{0},
+s:HoldingSpeedTexts
+s:Identity:
+s:Index:{0},
+s:Input:{0},
+s:InputRva:0x{0:X},
+s:Instance
+s:InstanceOwnerIsNull
+s:Instruments
+s:IntermediateOutput
+s:InternalName
+s:InternalState:{0},
+s:InvocationCount:{0}
+s:InvocationCount:{0},
+s:IsAtsMain:{0}
+s:IsAtsMain:{0},
+s:IsByRef:{0}
+s:IsClass:{0}
+s:IsClass={0}
+s:IsEmgBrake:{0},
+s:IsOut:{0},
+s:IsPublic:{0}
+s:IsPublic={0}
+s:IsStatic:{0},
+s:IsStatic={0}
+s:IsValueType={0}
+s:ItemCount:{0}
+s:JUMP_COMPLETE
+s:JUMP_LOC_TIME
+s:JUMP_LOC_TIME:
+s:JUMP_STA_TIME
+s:JUMP_STA_TIME:
+s:JumpDirectoryPublisher
+s:KintetsuEmergencyCandidates
+s:KintetsuServiceAndEmergencyCandidates
+s:KnownHash:{0}
+s:LegalCopyright
+s:LegalTrademarks
+s:Level7Flag:{0},
+s:Level:{0},
+s:LoadedCount:{0},
+s:Local\TSScoringPlugin.v1.
+s:Location
+s:LogSessionStarted={0:yyyy-MM-dd HH:mm:ss.fff}
+s:LowMainStateEmergencyOutputCondition:{0},
+s:MainIdentity:
+s:MainState:{0},
+s:MarginMax
+s:MarginMin
+s:MatchesPhysical
+s:MaxAtsSAndAtsP
+s:MaximumPressure
+s:Method
+s:Method:
+s:Method=
+s:MethodIsStatic:{0},
+s:Mode:{0},
+s:ModeRva:0x{0:X},
+s:ModuleBase:0x{0:X},
+s:ModuleMemorySize:{0},
+s:ModuleRva
+s:MyTrack
+s:NankaiAtsNEmergencyRequestState
+s:NankaiAtsNEmergencyRequestState32
+s:NankaiAtsNEmergencyRequestState64
+s:NankaiAtsPnAggregatedRequestState
+s:NankaiAtsPnAggregatedRequestState32
+s:NankaiAtsPnAggregatedRequestState64
+s:NankaiLegacyAtsNEmergencyRequestState32
+s:NankaiLegacyAtsPnDirectRequestState
+s:NankaiLegacyAtsPnDirectRequestState32
+s:NnnCats2CommonX64RequestState
+s:NnnCats2CommonX86RequestState
+s:NnnCats2Toei5300X86RequestState
+s:NnnCatsRequestState
+s:NotchInfo
+s:OFFTGT
+s:OFFTGT:
+s:ObjectBackedBrakeOutputSelector
+s:OddEmergencyCandidate:{0},
+s:OneLever
+s:OriginalFilename
+s:Output:{0},
+s:OutputBrakeHandle:{0},
+s:OutputDiffersFromPhysical:
+s:OutputIsEmergency:{0},
+s:OutputMatchesCandidate:{0},
+s:OutputMatchesRequest:{0},
+s:OutputReducedFromServiceMaximum:
+s:OutputRva:0x{0:X},
+s:OutputState:
+s:OwnerIsNull
+s:PAUSED
+s:PTPAIR
+s:PTPAIR:
+s:PanelArray
+s:Panel[{0}] changed:
+s:ParameterCount={0}
+s:Parameter[{0}]=
+s:Physical
+s:Physical:{0},
+s:PhysicalServiceEmergencyOutputComparison
+s:PhysicalSrc.b:
+s:Plausibility
+s:PointerRva:0x{0:X},
+s:PowerNotch
+s:PowerTexts
+s:Pressure
+s:PressureRates
+s:Previous:{0},
+s:ProcessPointerSize:{0},
+s:ProductName
+s:ProductVersion
+s:ProfileRegistered:{0},
+s:Property:
+s:RUNNING
+s:RawSafetyRequest
+s:ReadSucceeded:{0},
+s:RegenerativeBrakeAdjustmentState:
+s:Request:{0},
+s:RequestActiveRaw:{0},
+s:RequestActiveRva:0x{0:X},
+s:RequestBrake:{0},
+s:RequestBrakeCandidate:{0},
+s:RequestIsActive:{0},
+s:RequestKind:
+s:RequestKindCandidate:
+s:RequestSource:
+s:RequestStateAddress:0x{0:X},
+s:RequestStatePointerRead:{0},
+s:RequestedBrake:{0},
+s:RequestedBrakeNotch
+s:RequestedBrakeRva:0x{0:X},
+s:ResolvedCount:{0},
+s:ResolvedObjectCount:{0},
+s:ReturnType=
+s:ReturnedBrake:{0},
+s:ReverserPosition
+s:ReverserTexts
+s:Root:0x{0:X},
+s:RootPointer
+s:RouteTitle
+s:Runtime profile catalog is empty or invalid.
+s:RuntimeType:
+s:SCENARIO_ID:{0},SPEED:{1},TIME:{2},LOCATION:{3},GRADIENT:{4},NEXTLOC:{5},NEXTTIME:{6},ISPASS:{7},ISTIMING:{8},MARGINB:{9},MARGINF:{10},REV:{11}:{12},POW:{13}:{14},BRK:{15}:{16}:{17},HTYPE:{18},ALLTXT:{19}:{20}:{21}:{22},DREV:{23}:{24},DPOW:{25}:{26},DBRK:{27}:{28}:{29},DALLTXT:{30}:{31}:{32}:{33},SIGLIMIT:{34},TRAINLEN:{35},MAPLIMITS:{36},FWDSIGLIMIT:{37},FWDSIGLOC:{38},DOOR:{39},DOORDIR:{40},TERM:{41},MAPHEAD:{42},MAPTAIL:{43},CLEARDIST:{44}{45},BTYPE:{46},JUMP:{47},CAB:{48}:{49},BCP:{50:F1},PRATES:{51}:{52:F1},BPP:{53:F1}:{54:F1},STATNAME:{55},DOORTIME:{56}
+s:STALIST:
+s:STATUS:LOADED:
+s:STIDX:
+s:SafetyEmergency
+s:SafetyEmergencyRequestState
+s:SafetyEmergencyRequested:
+s:SafetyEmergencySource:
+s:SafetyFlag:{0},
+s:SafetyRequest:{0},
+s:SafetyServiceMaximumRequested:
+s:ScenarioCreated
+s:ScenarioCreated@
+s:ScenarioGeneration={0}
+s:ScenarioIdentity=
+s:ScenarioInfo
+s:ScenarioOpened:null
+s:ScenarioOpened@
+s:ScenarioResetFixV2
+s:SchemaVersion:{0},
+s:ScoringEnabled:False
+s:SecondaryEmergencySource:
+s:SectionManager
+s:Sections
+s:SecurityEmgBrake:{0},
+s:SelectedRequestState:
+s:SelectedRequestStateRead:{0},
+s:SemanticRole:
+s:Service
+s:ServiceFlags:
+s:ServiceMax:{0},
+s:ServiceMaximum
+s:ServiceMaximum:{0},
+s:ServiceMaximumCandidate
+s:ServiceMaximumCandidate:{0},
+s:ServiceMaximumMinus3
+s:ServiceMaximumMinus3Flag:
+s:ServiceMaximumOutput
+s:ServiceMaximumRequested:{0},
+s:ServiceMaximumRequestedRaw:{0},
+s:ServiceMaximumSourceA:
+s:ServiceMaximumSourceB:
+s:ServiceSourceA:{0},
+s:ServiceSourceARva:0x{0:X},
+s:ServiceSourceB:{0},
+s:ServiceSourceBRva:0x{0:X},
+s:ServiceSourceC:{0},
+s:ServiceSourceCRva:0x{0:X},
+s:SoundArray
+s:Sound[{0}] changed:
+s:Source:AggregatedFourSystems, ScoringEnabled:False
+s:Source:NamedValueMap,AtsPWorkBrake:
+s:SpeedLimits
+s:Startup
+s:StaticConfirmedDynamicVerificationPending
+s:Stations
+s:StoppageTime
+s:StoppageTimeMilliseconds
+s:StringFileInfo
+s:Swp2DeviceAggregatedRequest
+s:Swp2GroupA7Ee1DeviceAggregatedRequest
+s:Swp2GroupADeviceAggregatedRequest
+s:Swp2GroupBBab4DeviceAggregatedRequest
+s:Swp2GroupBDeviceAggregatedRequest
+s:Swp2GroupC6E25DeviceAggregatedRequest
+s:Swp2GroupCDdb4DeviceAggregatedRequest
+s:Swp2X64NamedValueAggregatedRequest
+s:System.Boolean
+s:System.Int32
+s:TSJUMP2
+s:TSScoring-CurrentTelemetry-P
+s:TScoring
+s:TScoring Telemetry B
+s:TScoring telemetry sender for the current extension path (DLL suffix B): sends the vehicle and track telemetry to the TScoring application.
+s:TScoring.TelemetryB.dll
+s:Target
+s:Target=
+s:TargetIdentity:
+s:TargetRuntimeType:
+s:ThreeStateBrakeIntervention
+s:TimeManager
+s:ToDouble
+s:ToInt32
+s:TrackAlignment
+s:Translation
+s:Type:{0},
+s:Type=<NULL>
+s:TypeCount:{0}
+s:TypeCount:{0},
+s:UdpClient
+s:Uninitialized
+s:Unknown
+s:VS_VERSION_INFO
+s:Value:<NULL>
+s:Value:{0},
+s:VarFileInfo
+s:VehicleLength
+s:VehicleTitle
+s:Verification:
+s:Vibration
+s:[ATSPT_APPDOMAIN] ASSEMBLY Name:
+s:[ATSPT_APPDOMAIN] ATSMAIN Assembly:
+s:[ATSPT_APPDOMAIN] END
+s:[ATSPT_APPDOMAIN] ERROR Type:
+s:[ATSPT_APPDOMAIN] INSTANCE_CANDIDATE DeclaringType:
+s:[ATSPT_APPDOMAIN] START
+s:[ATSPT_APPDOMAIN] STATIC_FIELD DeclaringType:
+s:[ATSPT_APPDOMAIN] STATIC_PROPERTY DeclaringType:
+s:[ATSPT_APPDOMAIN] TYPE Assembly:
+s:[BVEEX_HOST_REFERENCE] BVEHACKER RuntimeType:<NULL>
+s:[BVEEX_HOST_REFERENCE] BVEHACKER_FIELD
+s:[BVEEX_HOST_REFERENCE] BVEHACKER_PROPERTY
+s:[BVEEX_HOST_REFERENCE] END ScoringEnabled:False
+s:[BVEEX_HOST_REFERENCE] ERROR Type:
+s:[BVEEX_HOST_REFERENCE] INSTANCE_FIELD
+s:[BVEEX_HOST_REFERENCE] INSTANCE_PROPERTY
+s:[BVEEX_HOST_REFERENCE] START ThisType:
+s:[BVEEX_HOST_REFERENCE] TYPE Source:BveHackerHierarchy,
+s:[BVEEX_HOST_REFERENCE] TYPE Source:BveHackerRuntime, Type:
+s:[BVEEX_HOST_REFERENCE] TYPE Source:ThisHierarchy,
+s:[BVEEX_STATIC_PLUGIN_HOST] ASSEMBLY Name:
+s:[BVEEX_STATIC_PLUGIN_HOST] COLLECTION_LIMIT Source:
+s:[BVEEX_STATIC_PLUGIN_HOST] END
+s:[BVEEX_STATIC_PLUGIN_HOST] ERROR Type:
+s:[BVEEX_STATIC_PLUGIN_HOST] FIELD Assembly:
+s:[BVEEX_STATIC_PLUGIN_HOST] ITEM Source:
+s:[BVEEX_STATIC_PLUGIN_HOST] PROPERTY Assembly:
+s:[BVEEX_STATIC_PLUGIN_HOST] START ScoringEnabled:False
+s:[BVEHACKER_EVENT_TARGET] END
+s:[BVEHACKER_EVENT_TARGET] ERROR Type:
+s:[BVEHACKER_EVENT_TARGET] EVENT
+s:[BVEHACKER_EVENT_TARGET] FIELD_ERROR
+s:[BVEHACKER_EVENT_TARGET] INVOCATION EventField:
+s:[BVEHACKER_EVENT_TARGET] START BveHackerType:
+s:[BVEHACKER_EVENT_TARGET] WAIT Reason:BveHackerIsNull, ScoringEnabled:False
+s:[BveTime:{0}]
+s:[CTEL] bve=
+s:[EXTENSION_SET_DIAGNOSTIC] ATSMAIN_CANDIDATE Source:
+s:[EXTENSION_SET_DIAGNOSTIC] COLLECTION Source:Field:
+s:[EXTENSION_SET_DIAGNOSTIC] COLLECTION_LIMIT Source:Field:
+s:[EXTENSION_SET_DIAGNOSTIC] END ScoringEnabled:False
+s:[EXTENSION_SET_DIAGNOSTIC] ENTRY Source:
+s:[EXTENSION_SET_DIAGNOSTIC] ERROR Type:
+s:[EXTENSION_SET_DIAGNOSTIC] FIELD
+s:[EXTENSION_SET_DIAGNOSTIC] ITEM Source:
+s:[EXTENSION_SET_DIAGNOSTIC] KEY_ERROR Source:
+s:[EXTENSION_SET_DIAGNOSTIC] MEMBER_FIELD Source:
+s:[EXTENSION_SET_DIAGNOSTIC] MEMBER_PROPERTY Source:
+s:[EXTENSION_SET_DIAGNOSTIC] OBJECT Source:
+s:[EXTENSION_SET_DIAGNOSTIC] PROPERTY
+s:[EXTENSION_SET_DIAGNOSTIC] START Type:
+s:[EXTENSION_SET_DIAGNOSTIC] TYPE
+s:[EXTENSION_SET_DIAGNOSTIC] VALUE_ERROR Source:
+s:[EXTENSION_SET_DIAGNOSTIC] WAIT Reason:ExtensionsIsNull, ScoringEnabled:False
+s:[HANKYU_REQUEST_STATE] File:
+s:[KINTETSU_EMERGENCY_CANDIDATE] File:
+s:[KINTETSU_SERVICE_EMERGENCY_CANDIDATE] File:
+s:[Loc:{0:F3}]
+s:[MANAGED_RUNTIME] ERROR Type:
+s:[MANAGED_RUNTIME] MEMBERS_VALIDATED Profile:
+s:[MANAGED_RUNTIME] MEMBER_ERROR Profile:
+s:[MANAGED_RUNTIME] MEMBER_READ_ERROR Profile:
+s:[MANAGED_RUNTIME] MEMBER_RESOLVED Profile:
+s:[MANAGED_RUNTIME] MEMBER_VALUE Profile:
+s:[MANAGED_RUNTIME] PATH_ERROR Profile:
+s:[MANAGED_RUNTIME] PRIMARY_STATE Profile:
+s:[MANAGED_RUNTIME] RESOLVED Profile:
+s:[MANAGED_RUNTIME] STATE Profile:
+s:[METRO_REQUEST_CANDIDATE] File:
+s:[NANKAI_ATS_N_REQUEST_STATE] File:
+s:[NANKAI_ATS_PN_REQUEST_STATE] File:
+s:[NANKAI_LEGACY_ATS_PN_REQUEST_STATE] File:
+s:[NANKAI_MODULE_DISCOVERY] File:
+s:[NNN_CATS_MODULE_DISCOVERY] File:
+s:[NNN_CATS_REQUEST_STATE] File:
+s:[PLUGIN_HOST_APP] COLLECTION_LIMIT Source:
+s:[PLUGIN_HOST_APP] END
+s:[PLUGIN_HOST_APP] ERROR Type:
+s:[PLUGIN_HOST_APP] FIELD
+s:[PLUGIN_HOST_APP] ITEM Source:
+s:[PLUGIN_HOST_APP] PROPERTY
+s:[PLUGIN_HOST_APP] START Type:
+s:[PLUGIN_HOST_APP] TYPE
+s:[PLUGIN_HOST_APP] WAIT Reason:AppInstanceIsNull, ScoringEnabled:False
+s:[PLUGIN_HOST_APP] WAIT Reason:AppTypeNotFound, ScoringEnabled:False
+s:[PLUGIN_HOST_APP] WAIT Reason:PluginHostAssemblyNotFound, ScoringEnabled:False
+s:[RUNTIME_INTERVENTION] Event:
+s:[RUNTIME_PROFILE] CATALOG LOADED
+s:[RUNTIME_PROFILE] ERROR Type:
+s:[RUNTIME_PROFILE] FILE NOT FOUND Path:
+s:[RUNTIME_PROFILE] MATCH File:
+s:[RUNTIME_PROFILE_MODE] File:
+s:[RUNTIME_PROFILE_STATE] File:
+s:[RUNTIME_REQUEST_FLAGS] File:
+s:[SWP2_DEVICE_AGGREGATED_REQUEST] File:
+s:[Spd:{0:F1}]
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] END
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] ENTRY
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] ERROR Type:
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] FIELD
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] PROPERTY
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] START CollectionType:
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] WAIT Reason:PluginsIsNull, ScoringEnabled:False
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] WAIT Reason:VehiclePluginsIsEmpty, CollectionType:
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] WAIT Reason:VehiclePluginsIsNotEnumerable, VehiclePluginsType:
+s:[VEHICLE_PLUGINS_DIAGNOSTIC] WAIT Reason:VehiclePluginsIsNull, PluginsType:
+s:[{0:HH:mm:ss.fff}]
+s:] = <ERROR:
+s:] = <INDEXED>
+s:act_loc=
+s:address-family
+s:api-missing
+s:app-directory-invalid
+s:app-directory-missing
+s:app-directory-not-ready
+s:app-directory-torn
+s:app-instance-mismatch
+s:app-pid-mismatch
+s:ats_brake
+s:avgUs=
+s:block-size
+s:builder
+s:built=
+s:bve-pid-mismatch
+s:bvePid
+s:bytes=
+s:capabilities
+s:capability-missing
+s:change=
+s:clockMs
+s:closed
+s:closed-fields
+s:completion-format
+s:completion-unreadable
+s:count-mismatch
+s:count-range
+s:count-syntax
+s:current_count=
+s:detail=
+s:duplicate-request-id
+s:emergencyState
+s:enabled-seen
+s:endpoint
+s:endpoint-adopted
+s:endpoint-changed
+s:envelope-
+s:event=
+s:event=current-jump-aborted id=
+s:event=current-jump-complete id=
+s:event=current-jump-refused id=
+s:event=current-station-list-rejected scn=
+s:event=disconnected reason=
+s:event=first-send-managed type=
+s:event=first-send-plain type=
+s:event=first-tick
+s:event=heartbeat-init-failed error=
+s:event=init pid=
+s:event=jump-command-first-accept type=0x
+s:event=jump-command-reject reason=
+s:event=jump-complete-excluded reason=capability-missing
+s:event=jump-complete-excluded reason=pid-d6-request-id
+s:event=jump-complete-sent id=
+s:event=jump-endpoint-failed error=
+s:event=jump-endpoint-published port=
+s:event=jump-endpoint-summary accepted=
+s:event=jump-receiver-bind-failed error=
+s:event=pause-pulse-init-failed error=
+s:event=pause-pulse-stats n=
+s:event=payload-too-large type=
+s:event=send-failed port=
+s:event=sender-init-failed error=
+s:event=summary mode=
+s:failclosed=
+s:field-count
+s:final-structure
+s:first-evaluate
+s:gateCoal=
+s:gateDisp=
+s:gateEnter=
+s:gateExp=
+s:gateNotReady=
+s:gateReent=
+s:gateReq=
+s:gateStale=
+s:gateTick=
+s:generation
+s:generation-mismatch
+s:header-size
+s:holdOffMs
+s:identity
+s:index-out-of-range
+s:instance
+s:integer
+s:jump-complete-capability-missing
+s:jump-complete-normal-mode
+s:jump-count-range
+s:jump-count-syntax
+s:jump-exception
+s:jump-request-v2,jump-completion-v2,current-selected-idx,legacy-selected-idx,python-completion-settlement,stationindex-transaction,target-reinitialization,retry-history-settlement,legacy-r1b,current-station-range-fail-closed,whole-list-reject,partial-list-not-published
+s:jumpcomplete-excluded=
+s:jumpcomplete-sent=
+s:keisei
+s:legacyDestination
+s:list-id
+s:list-id-syntax
+s:list-inconsistent
+s:list-mismatch
+s:list-not-ready
+s:loaded
+s:location-mismatch
+s:location-precision
+s:location-range
+s:location-syntax
+s:malformed
+s:max-invalid
+s:max-read
+s:maxUs=
+s:message-type
+s:message-type-not-allowed
+s:min-invalid
+s:min-read
+s:mode=managed
+s:mode=normal holdoff-ms=
+s:overlap
+s:owner-
+s:pIsEmgBrake
+s:pOutputBrakeHandle
+s:pSecurityEmgBrake
+s:payload
+s:payload-grammar
+s:payload-length
+s:payload-size
+s:payload-too-large
+s:plain=
+s:plugin
+s:prefix
+s:ready-seen
+s:reason=
+s:reasons=
+s:reinit-index-range
+s:reinit-location-mismatch
+s:rejected=
+s:reports
+s:req_count=
+s:req_idx=
+s:req_loc=
+s:request-id
+s:requestBrake
+s:requestId
+s:reserved
+s:resolve-error
+s:router-error
+s:runtime-profile-candidates.json
+s:scenario-changed
+s:scenario-id-range
+s:scenario-id-syntax
+s:scenario-mismatch
+s:scenario-missing
+s:scope-incomplete
+s:scope=
+s:scope=ok req_loc=
+s:securityEmergencyState
+s:sel_idx=
+s:selected-idx-range
+s:selected-idx-syntax
+s:send-failed
+s:sender-pid-mismatch
+s:sendfail=
+s:sequence
+s:source
+s:stage=
+s:state-closed
+s:state-flags
+s:state-not-usable
+s:state-ready
+s:state-withdrawing
+s:station range rejected
+s:station-count
+s:station-index-range
+s:station-index-syntax
+s:status=handed
+s:superseded
+s:telemetry-directory-invalid
+s:telemetry-directory-missing
+s:telemetry-directory-torn
+s:telemetry-not-ready
+s:time-field-missing
+s:time-range
+s:time-syntax
+s:token-mismatch
+s:toolarge=
+s:transport
+s:types=
+s:unresolved
+s:unsupported-version
+s:v=2 kind=
+s:vehicle
+s:verdict=rejected retry=scenario-change action=hold
+s:version
+s:wrapped=
+s:yyyy-MM-dd'T'HH:mm:ss.fff'Z'
+s:{0:F1}={1:F1}
+s:{0}={1}=
+s:{0}={1}={2}=

@@ -1,0 +1,125 @@
+{
+ "schema": "ts-artifact-baselines/1",
+ "updated": "2026-11-18",
+ "note": "The single source of truth for the deployed TScoring artifact baselines. Raised only through package/baseline_check.py (plan -> promote). TelemetryA is also governed by artifact_guard.py (capability ledger).",
+ "artifacts": [
+  {
+   "name": "TScoring.TelemetryB.dll",
+   "kind": "extension",
+   "deploy": [
+    "C:\\Users\\Public\\Documents\\BveEx\\2.0\\Extensions\\TScoring.TelemetryB.dll"
+   ],
+   "baseline": {
+    "sha256": "8097D3284D283305543D00E9CDFE93E12461155AD98AC375834F700C19AAD919",
+    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+    "promotedAt": "2026-11-18",
+    "size": 214528,
+    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed b75575a, remote verified"
+   },
+   "rollback": [
+    {
+     "sha256": "7977259D21C6C3022A45801BDA74F8D0EA3C753F3F1505B60EF99660F633B938",
+     "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+     "promotedAt": "2026-11-16",
+     "note": "previous baseline (ordinary rollback target)"
+    }
+   ],
+   "fingerprint": "baselines/TScoring.TelemetryB.dll.8097D328.strings",
+   "pair": "Current"
+  },
+  {
+   "name": "TScoring.BridgeB.dll",
+   "kind": "extension",
+   "deploy": [
+    "C:\\Users\\Public\\Documents\\BveEx\\2.0\\Extensions\\TScoring.BridgeB.dll"
+   ],
+   "baseline": {
+    "sha256": "D6388696BAD51F03549E47ED44604B9C57D7344CEEA17EC20C48CC26CD6C40BF",
+    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+    "promotedAt": "2026-11-18",
+    "size": 61952,
+    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed b75575a, remote verified"
+   },
+   "rollback": [
+    {
+     "sha256": "E35A19BF7D0E8ED0E263D23C0884BB2410635B860035EF5FCD67FE16A558B01B",
+     "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+     "promotedAt": "2026-11-16",
+     "note": "previous baseline (ordinary rollback target)"
+    }
+   ],
+   "fingerprint": "baselines/TScoring.BridgeB.dll.D6388696.strings",
+   "pair": "Current"
+  },
+  {
+   "name": "TScoring.TelemetryA.dll",
+   "kind": "extension",
+   "deploy": [
+    "C:\\Users\\Public\\Documents\\BveEx\\Legacy\\Extensions\\TScoring.TelemetryA.dll"
+   ],
+   "baseline": {
+    "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
+    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+    "promotedAt": "2026-11-18",
+    "size": 184320,
+    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed b75575a, remote verified"
+   },
+   "rollback": [
+    {
+     "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
+     "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+     "promotedAt": "2026-11-16",
+     "note": "previous baseline (ordinary rollback target)"
+    }
+   ],
+   "fingerprint": "baselines/TScoring.TelemetryA.dll.3FB6D2A2.strings",
+   "pair": "Legacy"
+  },
+  {
+   "name": "TScoring.BridgeA.dll",
+   "kind": "extension",
+   "deploy": [
+    "C:\\Users\\Public\\Documents\\BveEx\\Legacy\\Extensions\\TScoring.BridgeA.dll"
+   ],
+   "baseline": {
+    "sha256": "E21DAA52791B34763FD7AB5806F31973F9D9B220D7B4446BC3C35E6DF0DD0621",
+    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+    "promotedAt": "2026-11-18",
+    "size": 61440,
+    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed b75575a, remote verified"
+   },
+   "rollback": [
+    {
+     "sha256": "FE6EEA1B90011BEC10276ABC46BF187FE721A98A297ED38A25C7672E26F6861A",
+     "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+     "promotedAt": "2026-11-16",
+     "note": "previous baseline (ordinary rollback target)"
+    }
+   ],
+   "fingerprint": "baselines/TScoring.BridgeA.dll.E21DAA52.strings",
+   "pair": "Legacy"
+  },
+  {
+   "name": "TScoring.InputDevice.dll",
+   "kind": "input-device",
+   "deploy": [
+    "C:\\Program Files\\mackoy\\BveTs6\\Input Devices\\TScoring.InputDevice.dll",
+    "C:\\Program Files (x86)\\mackoy\\BveTs5\\Input Devices\\TScoring.InputDevice.dll"
+   ],
+   "baseline": {
+    "sha256": "0EA518A05AF821295D2BBC487190F91629D21ECE04DFEEC4A35CD72456E4E4D2",
+    "sourceCommit": "9e55dbc73c491810051ffe751e33589812a75dd8",
+    "promotedAt": "2026-11-16",
+    "size": 97280,
+    "evidence": "case C (Caller requests the Python start at the first ScenarioOpened), Owner live acceptance; both Input Devices folders hold the same file"
+   },
+   "rollback": [
+    {
+     "sha256": "0C39B182 (full SHA not stored; previous baseline before case C, kit backup)",
+     "note": "ordinary rollback target (caller-early-start-v1 kit backup)"
+    }
+   ],
+   "fingerprint": "baselines/TScoring.InputDevice.dll.0EA518A0.strings"
+  }
+ ]
+}
