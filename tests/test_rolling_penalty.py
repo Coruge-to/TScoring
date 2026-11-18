@@ -185,6 +185,22 @@ class C_SettingAndDoor(Base):
         self.assertEqual(s.o.roll_penalty_count, 0)
 
 
+class E_OwnerExample(Base):
+    def test_R14_the_owner_example_17cm_then_9cm_accumulates_to_minus_2500(self):
+        """Owner 2026-11-18: rolling 17 cm, a stop, then 9 cm more. Every 5 cm FROM THE DOOR-OPEN POSITION costs 500, cumulative: -1500 for the first 17 cm, the 2 cm left over
+        carry on (3 cm more = the 4th step, -2000), and 9 cm in all after the stop (26 cm from the door-open position) = the 5th step: -2500 in total, one popup per event."""
+        s, ref = self.doors_open_at_a()
+        self.roll_to(s, ref, 0.17, speed=0.3)            # first roll 17 cm: int(17 / 5) = 3 steps
+        self.assertEqual(self.roll_score(s), -1500)
+        self.roll_to(s, ref, 0.17, speed=0.0)            # a complete stop: the event ends
+        self.roll_to(s, ref, 0.20, speed=0.3)            # only 3 cm more: the 2 cm that were left over carry on -> the 4th step
+        self.assertEqual(self.roll_score(s), -2000)
+        self.roll_to(s, ref, 0.26, speed=0.3)            # 9 cm in all after the stop: 26 cm -> the 5th step
+        self.assertEqual(self.roll_score(s), -2500)
+        self.assertEqual(sorted(p["text"] for p in self.rolls(s)), ["転動 -1000", "転動 -1500"])      # one popup per event: -1500 and -1000
+        self.assertEqual(len(self.rolls(s)), 2)
+
+
 class D_Source(unittest.TestCase):
     def test_P01_the_step_the_penalty_and_the_gate_are_the_ones_pinned_here(self):
         with open(os.path.join(ROOT, "scoring_logic.py"), encoding="utf-8") as f:
