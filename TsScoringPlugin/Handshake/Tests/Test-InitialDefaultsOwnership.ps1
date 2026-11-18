@@ -364,6 +364,9 @@ try {
     Rearm
 
     # ---------------------------------------------------------------- R13 with the REAL product (real Qt dialog) started by the REAL Caller code (owner ruling 2026-11-12: standard owned-window behaviour, no taskbar button, minimise, re-press restores the SAME window)
+    # 2026-11-18: this block opens REAL windows (the real Qt dialog on the Owner's desktop) and needs an interactive session, so it is not part of the headless regression.
+    # It runs only on request ($env:TSCORING_REAL_UI = '1'); the autonomous F1 / initial-defaults test (first completion WP2) is its home.
+    if ($env:TSCORING_REAL_UI -eq '1') {
     $titleChars = [char[]](0x521D, 0x671F, 0x5024, 0x8A2D, 0x5B9A)
     $dialogTitle = -join $titleChars
     $realCfgPath = Join-Path $fix 'launcher-real.json'
@@ -400,6 +403,7 @@ try {
     }
     elseif ($realPid -ne 0) { Stop-Process -Id $realPid -Force -ErrorAction SilentlyContinue }
     Check 'R13 real product: nothing was saved by the test (temporary profile only)' (-not (Test-Path (Join-Path $profileDir 'Coruge-to\TS Scoring\initial-defaults.json')))
+    } else { Write-Host 'SKIP (REAL UI): R13 real product checks run only with TSCORING_REAL_UI=1 (they open real windows)' }
     $ldrT.GetProperty('TestPath', $nps).SetValue($null, $cfgPath)
     # ---------------------------------------------------------------- Configure never throws (the owner object is an IWin32Window with a handle of another pid)
     $showProp = $deviceT.GetProperty('ShowNotice', $nps)

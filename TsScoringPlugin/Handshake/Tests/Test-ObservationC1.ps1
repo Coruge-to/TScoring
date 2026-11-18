@@ -207,7 +207,7 @@ try {
     LogW $cLog 'B' 'L2_SECOND' 'k=10'
     $l2 = ReadLog $pL1
     Check 'L2 new run truncated the old run (no old lines)' ((-not (($l2 -join "`n") -match 'L1_')) -and (($l2 -join "`n") -match 'L2_NEW_RUN') -and (($l2 -join "`n") -match 'L2_SECOND'))
-    Check 'L2 new run header says initialised by the Bridge and has a single header' ((@($l2 | Where-Object { $_ -like '# TS Scoring Phase C1*' }).Count -eq 1) -and (($l2 -join "`n") -match 'initializedBy=Bridge'))
+    Check 'L2 new run header says initialised by the Bridge and has a single header' ((@($l2 | Where-Object { $_ -like '# TScoring Phase C1*' }).Count -eq 1) -and (($l2 -join "`n") -match 'initializedBy=Bridge'))
     Check 'L2 only the new PID appears in event lines' (@($l2 | Where-Object { $_ -match '^\d\d:' -and $_ -notmatch ' P=930002 ' }).Count -eq 0)
 
     # L3: failure safety - nothing may throw
@@ -244,10 +244,11 @@ try {
     [LogHammer]::Run($cLog.GetMethod('Write', $NPS), $bLog.GetMethod('Write', $NPS), 2, 100)
     $l5 = ReadLog $pCon
     $ev5 = @($l5 | Where-Object { $_ -match '^\d' })
-    Check 'L5 four threads across both DLLs: 400 intact lines, none interleaved, one header' (($ev5.Count -eq 400) -and (@($ev5 | Where-Object { $_ -notmatch '^\d\d:\d\d:\d\d\.\d{3} q=\d+\.\d P=930008 S=(Caller|Bridge) T=B th=\d+ L5_WRITE k=\d+$' }).Count -eq 0) -and (@($l5 | Where-Object { $_ -like '# TS Scoring*' }).Count -eq 1))
+    Check 'L5 four threads across both DLLs: 400 intact lines, none interleaved, one header' (($ev5.Count -eq 400) -and (@($ev5 | Where-Object { $_ -notmatch '^\d\d:\d\d:\d\d\.\d{3} q=\d+\.\d P=930008 S=(Caller|Bridge) T=B th=\d+ L5_WRITE k=\d+$' }).Count -eq 0) -and (@($l5 | Where-Object { $_ -like '# TScoring*' }).Count -eq 1))
 
     # L6: default path is the fixed Downloads file (nothing is written here)
     $expectedDefault = Join-Path (Join-Path ([Environment]::GetFolderPath('UserProfile')) 'Downloads') ('TSScoring-Phase-C1-Observation-P' + $PID + '.log')   # PID-S3 (on purpose): one file per BVE process; the reflected DefaultPath() uses this process id
+    LogCfgBoth '' 0                                  # L5 left its fake pid (930008) in the test hook; clear it so DefaultPath() reports this process id (2026-11-18)
     $defC = $cLog.GetMethod('DefaultPath', $NPS).Invoke($null, @())
     $defB = $bLog.GetMethod('DefaultPath', $NPS).Invoke($null, @())
     Check 'L6 both DLLs resolve the per-PID log path Downloads\TSScoring-Phase-C1-Observation-P<pid>.log (PID-S3)' (($defC -eq $expectedDefault) -and ($defB -eq $expectedDefault) -and ($defC -like ('*\Downloads\TSScoring-Phase-C1-Observation-P' + $PID + '.log')))
