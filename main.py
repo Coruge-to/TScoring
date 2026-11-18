@@ -46,7 +46,7 @@ from scoring_logic import (
 )
 from menu_ui import draw_menu
 from hud_ui import draw_hud
-from utils import write_desktop_log, NumericKeyInputRouter
+from utils import write_desktop_log, NumericKeyInputRouter, warm_font_fallbacks
 import pseudo_turnback_machine
 import route_pairset
 import managed_input
@@ -106,6 +106,7 @@ class Overlay(QWidget):
         # for the HUD and every menu screen) and the same advances at 125% / 150% (218 px; 217 px at 175%).
         for _font in (self.font_normal, self.font_big, self.font_ui, self.font_menu, self.font_desc):
             _font.setHintingPreference(QFont.HintingPreference.PreferFullHinting)
+        warm_font_fallbacks(self.font_desc)          # Phase FW-1: the fallback-font search for the subscript digits of page 3/3 happens here, once, not at its first paint
 
         self.popups = []
         self.score = 0

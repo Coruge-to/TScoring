@@ -3,7 +3,7 @@ import datetime
 from collections import deque
 import os
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QFontMetrics, QPainterPath, QPen, QTransform
+from PyQt6.QtGui import QColor, QFontMetrics, QImage, QPainter, QPainterPath, QPen, QTransform
 from config import *
 
 # ★ ネットワークファイル用のログ関数
@@ -320,3 +320,21 @@ class NumericKeyInputRouter:
             except IndexError:
                 break
         return drained
+
+# Phase FW-1 (Owner 2026-11-18, "the scoring settings page 3/3 is sometimes slow to appear"): the first paint of that page took 0.3 s on a quiet PC and 1.6 s while BVE was
+# busy (measured with the real Windows platform plugin; offscreen cannot show it). The whole cost sat in ONE text, "(* theoretical value = n1 x 500 + ...)": the bundled font has no
+# subscript digits (U+2081..U+2083), so the first drawText that meets them makes Windows search a fallback font - once per process (the later lines with n1 / n2 / n3 took 4 ms).
+# Drawing those glyphs once, at start-up (the BVE scenario is still loading; nothing is shown yet), moves the cost there: page 3/3 then paints in about 40 ms the first time.
+# FALLBACK_WARM_TEXT = the characters of the menu texts that the bundled font lacks. A text that gains a new such character must be added here (tests pin the page 3/3 characters).
+FALLBACK_WARM_TEXT = "n₁₂₃ × ＝ ※"
+
+
+def warm_font_fallbacks(font, text=FALLBACK_WARM_TEXT):
+    """Draws `text` once into a 8x8 image with `font`, so the fallback-font search for its glyphs happens now and not at the first paint of a menu page."""
+    image = QImage(8, 8, QImage.Format.Format_ARGB32)
+    painter = QPainter(image)
+    try:
+        painter.setFont(font)
+        painter.drawText(0, 6, text)
+    finally:
+        painter.end()
