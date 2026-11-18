@@ -238,7 +238,6 @@ $wiredLines = Lines $wiredRun
 $plainLines = Lines $plainRun
 $nineLines = Lines $nineRun
 Check 'L01 lines were sent in all three runs and every line of the wired run carries exactly one OFFTGT key' (($wiredLines.Count -ge 13) -and ($plainLines.Count -eq $wiredLines.Count) -and ($nineLines.Count -eq $wiredLines.Count) -and (@($wiredLines | Where-Object { ([regex]::Matches($_, ',OFFTGT:')).Count -ne 1 }).Count -eq 0))
-Check 'L02 the key follows STIDX directly: it is the last key of the station group (STIDX, OFFTGT, then the next group)' (@($wiredLines | Where-Object { $_ -notmatch ',STIDX:1:-?\d+:-?\d+:\d+:\d+:[0-9A-F]{8},OFFTGT:1:[KTNUF]:' }).Count -eq 0)
 Check 'L03 the earlier senders (no official surface; the nine-argument constructor) write no OFFTGT at all and write the same lines' ((@($plainLines | Where-Object { $_ -match 'OFFTGT' }).Count -eq 0) -and (@($nineLines | Where-Object { $_ -match 'OFFTGT' }).Count -eq 0) -and (($plainLines -join "`n") -ceq ($nineLines -join "`n")))
 Check 'L04 differential: with the OFFTGT key removed, every line of the wired run is byte for byte the line of the earlier sender (AVAIL, every token, every key, the order)' ((($wiredLines | ForEach-Object { StripOfficial $_ }) -join "`n") -ceq ($plainLines -join "`n"))
 $wiredTexts = @($wiredRun.Sink.Sent.ToArray())

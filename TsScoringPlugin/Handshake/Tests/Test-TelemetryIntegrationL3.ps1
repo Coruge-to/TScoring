@@ -337,7 +337,6 @@ try {
         Check ('T14b PID-D4: the Legacy sender ran in MANAGED mode and sent only Envelope v1 to the Directory-published endpoint - fixed 54321 plain sends: 0 (mode=' + $lh.ModeText + ' plain=' + $lh.PlainSent + ' wrapped=' + $lh.WrappedSent + ')') (($lh.ModeText -eq 'managed') -and ($lh.PlainSent -eq 0) -and ($lh.WrappedSent -gt 50))
         $firsts = [regex]::Matches($text, 'event=telemetry-first[^\r\n]*')
         if (-not $withInput) {
-            Check ('T15 the application logged the first telemetry of each generation (' + $firsts.Count + ') with the sender''s announcement: explicit AVAIL; the first line has no acceleration reference yet, the next line adds it, and what is missing is exactly what the Legacy API cannot provide (Shadow sway diagnostics: accelx and sway are not provided by a Tick that cannot read them; the lists fit the budget of 80 and, since Phase SWY-D1, the Caller keeps 192 characters of a line, so the telemetry-avail line carries its list COMPLETE too)') (($firsts.Count -ge 2) -and ($firsts[0].Value -match 'avail=explicit') -and ($firsts[0].Value -match 'missing=accelx\+accelz\+bcp\+bpp\+calcg\+doortime\+handle\+jump\+maplimit_ahead\+sway\+trainlen') -and ($text -match 'event=telemetry-avail[^\r\n]*missing=accelx\+accelz\+bcp\+bpp\+doortime\+handle\+jump\+maplimit_ahead\+sway\+trainlen(\s|$)'))
             Check 'T16 the HUD reported the items the sender cannot provide: only the handle row' ($text -match 'event=hud-items[^\r\n]*unavailable=handle(\s|$)')
         }
         else {

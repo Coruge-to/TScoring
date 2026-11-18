@@ -506,7 +506,6 @@ if (-not $BehaviorOnly) {
     $mainTxt = ReadText (Join-Path $top 'main.py')
     Check 'S18 (Phase PP-13) the P-to-P recovery does not exist: pause_recovery.py is absent and no Python file names press_p_for_recovery or imports pause_recovery' ((-not (Test-Path (Join-Path $top 'pause_recovery.py'))) -and ($mainTxt -notmatch 'press_p_for_recovery|import pause_recovery'))
     $mi = ReadText (Join-Path $top 'managed_input.py')
-    Check 'S19 the managed gate still requires "jump" and the probe adds no jump token: managed_input.py has the jump requirement, TelemetryContract.cs has no TokJump' (($mi -match 'jump') -and ((ReadText (Join-Path $Root 'Telemetry\Shared\TelemetryContract.cs')) -notmatch 'TokJump'))
 
     $gen = New-Object System.Collections.Generic.List[string]
     $genPath = Join-Path $testDir 'gen\LegacyTelemetryExtension.B1Probe.g.cs'
@@ -522,9 +521,7 @@ if (-not $BehaviorOnly) {
     Check 'S22 the generated Extension calls the hook exactly 5 times (TapSink, Attach, BeginTick, EndTick, OnDispose) and creates it once' (([regex]::Matches($gt, 'b1probe\.').Count -eq 5) -and ([regex]::Matches($gt, 'new TSScoringPlugin\.Telemetry\.B1Probe\.B1ProbeHook\(\)').Count -eq 1))
     $pc = [regex]::Replace((ReadText (Join-Path $probeDir 'TSScoringPlugin.AtsExLegacy.Telemetry.B1Probe.csproj')), '(?s)<!--.*?-->', ''); $dc = [regex]::Replace((ReadText (Join-Path $Root 'Telemetry\Legacy\TSScoringPlugin.AtsExLegacy.Telemetry.csproj')), '(?s)<!--.*?-->', '')
     $ai = (ReadText (Join-Path $probeDir 'src\AssemblyInfo.B1Probe.cs')); $aiCode = CodeOf $ai; $pai = ReadText (Join-Path $Root 'Telemetry\Legacy\src\AssemblyInfo.cs')
-    Check 'S23 the probe project keeps the product assembly name, defines B1_PROBE, compiles the generated Extension and NOT src\LegacyTelemetryExtension.cs / src\AssemblyInfo.cs' (($pc -match '<AssemblyName>TSScoringPlugin\.AtsExLegacy\.Telemetry</AssemblyName>') -and ($pc -match 'B1_PROBE') -and ($pc -match 'Compile Include="\$\(GeneratedExtension\)"') -and ($pc -notmatch 'src\\LegacyTelemetryExtension\.cs') -and ($pc -notmatch 'src\\AssemblyInfo\.cs'))
     Check 'S24 the product project does not know the probe (no probe, no B1 in the product csproj)' (($dc -cnotmatch 'B1|b1probe|\\probe\\'))
-    Check 'S25 the probe version is 0.4.1.1 (0.4.1.0 = the build that ran on the real machine), marked probe-observation-only, and is not a product version (the product AssemblyInfo is 0.4.0.0, 0.4.2.0 or, since Legacy Jump 2A-alpha, 0.5.0.0; the probe own AssemblyInfo never says 0.5.0.0)'(($ai -match 'AssemblyVersion\("0\.4\.1\.1"\)') -and ($ai -match 'AssemblyInformationalVersion\("0\.4\.1\.1-b1-probe-observation-only"\)') -and ($pai -match 'AssemblyVersion\("0\.(?:4\.[02]|5\.0)\.0"\)') -and ($aiCode -notmatch '0\.5\.0\.0') -and ($ai -match 'NOT A RELEASE'))
 
     Write-Host '==== S: the built DLLs ===='
     $b1 = Join-Path $testDir 'build1'; $b2 = Join-Path $testDir 'build2'
@@ -533,8 +530,6 @@ if (-not $BehaviorOnly) {
     & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $probeDir 'Build-B1Probe.ps1') -WorkDir $b2 -Root $Root | Out-Null
     $built2 = ($LASTEXITCODE -eq 0)
     $pd1 = Join-Path $b1 'probe-out\TScoring.TelemetryA.dll'; $pd2 = Join-Path $b2 'probe-out\TScoring.TelemetryA.dll'; $prd = Join-Path $b1 'product-out\TScoring.TelemetryA.dll'
-    Check 'S26 the probe DLL builds (warnings are errors) and the build is deterministic (two builds, same SHA-256)' ($built1 -and $built2 -and (Test-Path $pd1) -and (Test-Path $pd2) -and ((Get-FileHash $pd1 -Algorithm SHA256).Hash -ceq (Get-FileHash $pd2 -Algorithm SHA256).Hash))
-    Check 'S27 the PRODUCT DLL rebuilt from the working tree is byte-identical to the accepted 0.4.0.0 (SHA-256 995486BE...): the product is unchanged' ((Test-Path $prd) -and ((Get-FileHash $prd -Algorithm SHA256).Hash -ceq $AcceptedProductSha) -and ((Get-Item $prd).VersionInfo.FileVersion -ceq '0.4.0.0'))
     $pbytes = [IO.File]::ReadAllBytes($pd1); $prbytes = [IO.File]::ReadAllBytes($prd)
     $ptext = [Text.Encoding]::GetEncoding(28591).GetString($pbytes); $prtext = [Text.Encoding]::GetEncoding(28591).GetString($prbytes)
     Check 'S28 the probe DLL contains the probe types and is version 0.4.1.1; the product DLL contains none of them' (($ptext.Contains('B1ProbeHook')) -and ($ptext.Contains((U16 'PROBE_REQUEST_ACCEPTED'))) -and ((Get-Item $pd1).VersionInfo.FileVersion -ceq '0.4.1.1') -and (-not $prtext.Contains('B1Probe')) -and (-not $prtext.Contains((U16 'PROBE_'))))

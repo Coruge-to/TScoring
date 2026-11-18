@@ -117,7 +117,7 @@ function NoObjects([int]$fakePid) {
 }
 
 # Expected notice text (UTF-8 base64 keeps this script ASCII-only, so any code page reads it the same way)
-$expectedNotice = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('VFMgU2NvcmluZ+OBq+OBr0J2ZUVY44GM5b+F6KaB44Gn44GZ44CCDQroqK3lrpog4oaSIOWFpeWKm+ODh+ODkOOCpOOCuSDjgadCdmVFWOOCkuacieWKueOBq+OBl+OAgUJWReOCkuWGjei1t+WLleOBl+OBpuOBj+OBoOOBleOBhOOAgg=='))
+$expectedNotice = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('VFNjb3Jpbmfjgavjga9CdmVFWOOBjOW/heimgeOBp+OBmeOAgg0K6Kit5a6aIOKGkiDlhaXlipvjg4fjg5DjgqTjgrkg44GnQnZlRVjjgpLmnInlirnjgavjgZfjgIFCVkXjgpLlho3otbfli5XjgZfjgabjgY/jgaDjgZXjgYTjgII='))
 $oldLeadA = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('VFMgU2NvcmluZ+OCkuS9v+eUqA=='))   # first words of the old line 1 (must be absent)
 $oldLeadB = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('44CM6Kit5a6a44CN'))   # the old bracketed settings word (must be absent)
 
@@ -182,7 +182,7 @@ try {
     TickSession $c4
     Wait 250
     Check 'T16 notice text is exactly the agreed two lines (old wording absent)' (($c4.Recorder.Last -eq $expectedNotice) -and (-not $c4.Recorder.Last.Contains($oldLeadA)) -and (-not $c4.Recorder.Last.Contains($oldLeadB)) -and ($c4.Recorder.Last -notmatch 'TSScoringPlugin'))
-    Check 'T17 MessageBox title is exactly TS Scoring' ([string]$sessionType.GetField('ProductDisplayName', [Reflection.BindingFlags]'NonPublic,Static').GetRawConstantValue() -ceq 'TS Scoring')
+    Check 'T17 MessageBox title is exactly TScoring' ([string]$sessionType.GetField('ProductDisplayName', [Reflection.BindingFlags]'NonPublic,Static').GetRawConstantValue() -ceq 'TScoring')
     Wait 1200
     Check 'T4 no second notice (one notice per Caller instance)' ($c4.Recorder.Count -eq 1)
     Check 'T4 status: Bridge missing, timed out' (((Status $c4) -match 'Combined state   : Bridge missing, timed out') -and ((Status $c4) -match 'timeout \(500 ms\) occurred: yes'))

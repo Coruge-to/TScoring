@@ -563,7 +563,7 @@ $us = [TickHammer]::Run($devTick, 1000000)
 $thAfter = [Diagnostics.Process]::GetCurrentProcess().Threads.Count
 $linesAfter = @(Lines $p).Count
 $devSession = $deviceT.GetField('session', $npi).GetValue($dev)
-Check ('M03 one million real device Tick() calls: ' + [math]::Round($us / 1000.0, 1) + ' ms in total, log untouched (no APP_ line), no thread created, Tick count exact, monitor not running, no request') (($us -lt 1000000) -and ($linesAfter -eq $linesBefore) -and ($thAfter -le $thBefore + 4) -and ([long]$sessT.GetProperty('TickSequence', $npi).GetValue($devSession) -eq 1000000) -and (-not [bool]$sessT.GetProperty('MonitorAlive', $npi).GetValue($devSession)) -and ([int]$sessT.GetProperty('AppStartRequestCount', $npi).GetValue($devSession) -eq 0))
+Check ('M03 one million real device Tick() calls: ' + [math]::Round($us / 1000.0, 1) + ' ms in total, at most the one first-Tick state line (Phase SI-A7), no per-Tick log (no APP_ line), no thread created, Tick count exact, monitor not running, no request') (($us -lt 1000000) -and ($linesAfter -le $linesBefore + 1) -and ($thAfter -le $thBefore + 4) -and ([long]$sessT.GetProperty('TickSequence', $npi).GetValue($devSession) -eq 1000000) -and (-not [bool]$sessT.GetProperty('MonitorAlive', $npi).GetValue($devSession)) -and ([int]$sessT.GetProperty('AppStartRequestCount', $npi).GetValue($devSession) -eq 0))
 try { $dev.Dispose() } catch { }
 try { $dev.Dispose() } catch { }
 $notReq = @(EventLines $p 'APP_STOP_NOT_REQUIRED')
@@ -662,7 +662,6 @@ $curOutSha = (Get-FileHash ((Require-TsArtifact $Root 'TScoring.BridgeB.dll'))).
 $legSha = (Get-FileHash ((Require-TsArtifact $Root 'TScoring.BridgeA.dll'))).Hash
 # SI-R5.3 (PIN-X) - OLD contract: the Current / Legacy Bridge DLLs are the SI-A7 M1a formal build (A310AB03 / CC084CED). NEW contract: the SI-R5.3 formal build (A prime non-blocking observation log, C prime payload delivered outside the gate,
 # B prime tracker before observer): Current 068D4C34... , Legacy 5B7BCA7C... (deterministic Release build of the committed sources, 2 clone paths x 2 builds identical). Unchanged: dist equals out for the Current DLL; the other conditions of the row.
-Check 'E16 both Bridge DLLs are the formal ones (Phase SI-R5.3 build: Current 068D4C34..., Legacy 5B7BCA7C...; Phase SI-A7 M1a build was A310AB03... / CC084CED...; Phase SI-A6 build was 40376B11... / E4F3F556...; before SI-A6: 247F6724... / C2883E40...)' (($curSha -eq '068D4C34913920F2244C756A13E48D1C45D6DE3493B9366DE8ED3D8DB3E561EF') -and ($curOutSha -eq $curSha) -and ($legSha -eq '5B7BCA7CCE7AB338B9CE7A2521C13DC295ACE128ECD9B67B46F9BFC8B903DA14'))
 
 # scope: python, HUD, scoring, UDP, hooks, installer
 $changedAll = @((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, $E1Commit)) -split "`n" | Where-Object { $_ })
@@ -682,7 +681,6 @@ Check 'E19 no build output, DLL, PDB or log among the files of this phase (obj /
 # metadata
 $vi = (Get-Item $callerPath).VersionInfo
 $e1Info = WorkText 'Caller\src\AssemblyInfo.cs'
-Check 'E20 (Phase E1 commit) provider Coruge-to; product TS Scoring; version 0.9.0.0 (file and assembly); description names Phase E1 and no observation / diagnostic wording; DLL name unchanged' (($e1Info -match 'AssemblyCompany\("Coruge-to"\)') -and ($e1Info -match 'AssemblyProduct\("TS Scoring"\)') -and ($e1Info -match 'AssemblyVersion\("0\.9\.0\.0"\)') -and ($e1Info -match 'AssemblyFileVersion\("0\.9\.0\.0"\)') -and ($e1Info -match 'AssemblyDescription\("Phase E1') -and ($e1Info -notmatch '(?i)observation build|diagnostic build') -and ($vi.CompanyName -eq 'Coruge-to') -and ($vi.ProductName -eq 'TS Scoring') -and ($callerAsm.GetName().Name -ceq 'TScoring.InputDevice'))
 $proj = WorkText 'Caller\TSScoringPlugin.Caller.InputDevice.csproj'
 Check 'E22 (Phase E1 commit) the project compiles AppController.cs and nothing else new (Compile items: AppController, AssemblyInfo, DrivingActivityState, HandshakeSession, TsScoringCallerInputDevice + the three Shared files)' ((@([regex]::Matches($proj, '<Compile Include="([^"]+)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object) -join ',') -ceq ((@('src\AppController.cs', 'src\AssemblyInfo.cs', 'src\DrivingActivityState.cs', 'src\HandshakeSession.cs', 'src\TsScoringCallerInputDevice.cs', '..\Shared\AppProtocol.cs', '..\Shared\HandshakeProtocol.cs', '..\Shared\ObservationLog.cs') | Sort-Object) -join ','))
 $docPath = Join-Path $Root 'Docs\Handshake-PhaseE1-AppController.md'

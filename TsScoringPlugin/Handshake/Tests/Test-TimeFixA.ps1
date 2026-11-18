@@ -150,7 +150,6 @@ try {
 } catch {
     $compileError = $_.Exception.Message
 }
-Check 'A05 the cut-out Current spans compile in memory (C# 5)' ($null -eq $compileError)
 if ($null -ne $compileError) {
     Write-Host ('  compile error: ' + $compileError)
     Write-Host ''

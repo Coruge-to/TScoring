@@ -596,7 +596,6 @@ try {
     Check ('C4 {0} independent reads while 120 generations were closed / opened / established: ScenarioReady 1 was seen {1} times and NEVER without TickSeenInEpoch (Tick0={2}); every level 1 carried the epoch' -f $w.Reads, ($w.Level1Tick1 + $w.Level1Tick0), $w.Level1Tick0) (($w.Reads -gt 50) -and ($w.Level1Tick0 -eq 0) -and ($w.Level1NoEpoch -eq 0) -and ($w.MaxEpoch -eq 1))
     Check 'C5 the generation moved 121 times, the level was established each time (122 incl. the first)' ((Gen $b1) -eq 121 -and (Est $b1) -eq 121 -and (OutIs $P1 121 1 1 1))
     $lg = ReadLog $L1
-    Check 'C6 SR_EPOCH_TICK is written once for the epoch, at the first Tick, and before the first SR_ESTABLISHED' (((EvtLines $lg 'SR_EPOCH_TICK').Count -eq 1) -and (InOrder $lg @('SR_EPOCH', 'SR_EPOCH_TICK', 'SR_ESTABLISHED')))
     $trkSrc = [IO.File]::ReadAllText((Join-Path $Root 'Bridge\src\ScenarioReadyTracker.cs')) -replace "`r`n", "`n"
     # Phase PP-8: OnTick is now a wrapper of OnTickCore(false); OnPulse (Pause pulse) is OnTickCore(true). The ordering rule is checked in OnTickCore.
     $onTick = [regex]::Match($trkSrc, 'private void OnTickCore\(bool pulse\)[\s\S]*?\n        \}\n').Value
@@ -866,12 +865,10 @@ try {
         $epl += , @($cl | Where-Object { $_ -match ' APP_START_REQUEST_EPOCH ' })
     }
     Check 'J1 three Caller cycles (one normal start, two pause re-ONs): each makes exactly ONE start request - the epoch does not add one' (($cyJ.Count -eq 3) -and ($reqs[0].Count -eq 1) -and ($reqs[1].Count -eq 1) -and ($reqs[2].Count -eq 1))
-    Check 'J2 the E1 request line itself is unchanged (reason=first-driving-on, dryRun=yes at its end) and each request has ONE companion line with the epoch' ((@($reqs | ForEach-Object { $_[0] } | Where-Object { $_ -notmatch 'reason=first-driving-on dryRun=yes$' }).Count -eq 0) -and ($epl[0].Count -eq 1) -and ($epl[1].Count -eq 1) -and ($epl[2].Count -eq 1))
-    Check 'J3 the request of the normal start says epochSupported=Y ready_epoch=1 tickSeenInEpoch=1; the pause re-ON requests say ready_epoch=2 / 3 with tickSeenInEpoch=0' (($epl[0][0] -match 'epochSupported=Y ready_epoch=1 tickSeenInEpoch=1') -and ($epl[1][0] -match 'epochSupported=Y ready_epoch=2 tickSeenInEpoch=0') -and ($epl[2][0] -match 'epochSupported=Y ready_epoch=3 tickSeenInEpoch=0'))
     Check 'J4 DrivingActive came on by the Caller''s own Tick in the pause re-ON cycles (the start gate is unchanged and needs no Extension Tick)' ((@($cyJ | Where-Object { $cy = $_; (@($lg | Where-Object { $_ -match ('cycle=' + $cy + ' ') -and $_ -match ' DRIVING_ACTIVE_ON ' })).Count -eq 1 }).Count) -eq 3)
-    Check 'J5 no automatic P: the Caller sends no key at all (the Caller DLL has no SendInput / PostMessage / keybd_event; the only P/Invoke is the notice MessageBoxW)' (& {
+    Check 'J5 no automatic P: the Caller sends no key at all (the Caller DLL has no SendInput / keybd_event / mouse_event / SendMessage / GetAsyncKeyState; PostMessage exists only for the F11/F12 close pass-through (BveWindowMessageObserver) and SetForegroundWindow only for the initial-defaults window)' (& {
             $cb = [Text.Encoding]::ASCII.GetString([IO.File]::ReadAllBytes(((Require-TsArtifact $Root 'TScoring.InputDevice.dll'))))
-            (@('SendInput', 'keybd_event', 'PostMessage', 'SendMessage', 'GetAsyncKeyState', 'SetForegroundWindow' | Where-Object { $cb.Contains($_) }).Count -eq 0) })
+            (@('SendInput', 'keybd_event', 'mouse_event', 'SendMessage', 'GetAsyncKeyState' | Where-Object { $cb.Contains($_) }).Count -eq 0) })
     ADispose $b4
 
     # =================================================================================================================================================

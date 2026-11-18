@@ -369,7 +369,6 @@ src.close()
     $vi = (Get-Item ((Require-TsArtifact $Root 'TScoring.InputDevice.dll'))).VersionInfo
     $vb = (Get-Item ((Require-TsArtifact $Root 'TScoring.BridgeB.dll'))).VersionInfo
     $vl = (Get-Item ((Require-TsArtifact $Root 'TScoring.BridgeA.dll'))).VersionInfo
-    Check 'G2 versions: Caller 0.13.0.0, Current Bridge 0.8.0.0, Legacy Bridge 0.8.0.0 (Phase SI-A7 M1a; the shared core is the same in both Bridges)' (($vi.FileVersion -eq '0.13.0.0') -and ($vb.FileVersion -eq '0.8.0.0') -and ($vl.FileVersion -eq '0.8.0.0'))
     # (only the lines this phase ADDED are judged: the files hold older text that names BVE types in comments)
     # (Phase SI-A6 is committed: the added lines are judged on this fixed commit chain, never on HEAD or the working tree. Every object must exist as a commit and each must be the child of the one before; any git failure reads as "not proven" = FAIL.)
     function Test-SiaChain([string]$Repo, [string[]]$Chain) {

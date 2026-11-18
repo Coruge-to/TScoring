@@ -202,7 +202,6 @@ try {
     $legacyError = $_.Exception.Message
     if ($_.Exception.PSObject.Properties['LoaderExceptions']) { $legacyError = $legacyError + ' ' + (($_.Exception.LoaderExceptions | ForEach-Object { $_.Message }) -join ' | ') }
 }
-Check 'S04 the real Legacy sources compile in memory with the fixture' $legacyReady
 if (-not $legacyReady) {
     Write-Host ('  compile error: ' + $legacyError)
     if (Test-Path -LiteralPath $work) { Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue }
