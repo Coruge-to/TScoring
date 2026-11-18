@@ -11,7 +11,7 @@
   7  the state is dropped by: Jump success, scoring end / abort, Retry, F5, generation, RunPairSet, another station's arrival, arrival at B by driving, chain expiry
   8  arrival at B by driving: no Jump to B afterwards, the chain is closed as a FAILURE, B is not scored as an ordinary arrival, the scoring is aborted (fail-closed, reason pseudo-turnback-self-drive-b)
 
-Door state, the indicator lamp and signalFlag are NOT inputs of any decision (A open and A closed decide the same). RED = fails on the baseline c66445e; GUARD = already true on the baseline and must stay true.
+Door state, the indicator lamp and signalFlag are NOT inputs of any decision (A open and A closed decide the same). RED = fails on the baseline d7c8d0b; GUARD = already true on the baseline and must stay true.
 The product is driven through the REAL update_physics_and_scoring (tests/pt_scene.py, tests/tbg_c01_rig.py); only the seams of the rig are replaced."""
 import ast
 import inspect

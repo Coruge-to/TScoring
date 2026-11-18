@@ -45,7 +45,7 @@ SINK = os.path.join(LEGACY_SRC, "LegacyDataPlaneSink.cs")
 CONTRACT = os.path.join(SHARED_DIR, "TelemetryContract.cs")
 RED_ST0 = os.path.join(HERE, "red_st0_stationindex_contract.py")
 
-# the files that ST-3c does not touch, as committed by ST-3b (9d8ef74): git blob ids. Phase ST-3d changes three of the Python ones on purpose (main.py, scoring_logic.py, managed_input.py: their rows are gone;\n# the Python side of the transaction is held by tests/test_stationindex_python_st3d.py now); station_identity.py, jump_wire.py, current_jump_client.py and dataplane_contract.py stay byte-identical.
+# the files that ST-3c does not touch, as committed by ST-3b (c244a7e): git blob ids. Phase ST-3d changes three of the Python ones on purpose (main.py, scoring_logic.py, managed_input.py: their rows are gone;\n# the Python side of the transaction is held by tests/test_stationindex_python_st3d.py now); station_identity.py, jump_wire.py, current_jump_client.py and dataplane_contract.py stay byte-identical.
 UNTOUCHED = {
     # Phase U10 changed Class1.cs on purpose (the stop range of the station list builder, tests\test_stationindex_station_range_u10.py): the blob moved from a1c34ae7... (ST-3b); ST-3c itself still does not touch it
     # Time Fix A changed Class1.cs on purpose (the arrival fill-in of the station list builder, tests\test_timefix_a_terminal_arrival.py): the blob moved from a9b420a0... (U10)
@@ -59,7 +59,7 @@ UNTOUCHED = {
     "TsScoringPlugin/TsScoringPlugin/CurrentJumpExecution.cs": "8a54d6a14100e0021ca248d28369c335f965fafe",
     "TsScoringPlugin/TsScoringPlugin/CurrentDataPlane.cs": "71b0ebaa6f52871ceb2a59456a2b527041241c46",
     # Phase ST-3e0 changes both projects on purpose (exactly one Compile item of Shared\PackageContract.cs each; the blobs moved from 61092229... / defbe148...): their rows are gone; the projects are held by
-    # tests/test_stationindex_package_st3e0.py (E0-25: each differs from the blob of 0b8e511 by that one item only) and by the compile lists of this file and of test_jf1_current_csharp_source_pins.py
+    # tests/test_stationindex_package_st3e0.py (E0-25: each differs from the blob of 34f92c1 by that one item only) and by the compile lists of this file and of test_jf1_current_csharp_source_pins.py
     "TsScoringPlugin/TsScoringPlugin/AtsLoggerPlugin.cs": "22209df3e50762dd17c68c9bb788af6f8faf98b7",
     "TsScoringPlugin/TsScoringPlugin/Properties/AssemblyInfo.cs": "9ae1be9509ef29f08b41350ceab4975a5d9210c4",
     "TsScoringPlugin/Handshake/Telemetry/Shared/JumpWire.cs": "dff2a85a25ff22f76892b3d19209b1da9c089387",

@@ -318,8 +318,8 @@ $frozen = @(
     'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyApi.cs', 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyStationTimeline.cs', 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyInputProbe.cs',
     'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyHandleContract.cs', 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyInputTelemetry.cs', 'tests/legacy_input_matrix24.json', 'tests/legacy_input_reference.py'
 )
-# G09 / G10 describe what THIS phase changed: the SI-0 work is committed (f9b2ed5, parent 3158ce2), so they are pinned to that commit pair in history (the same assertion as while the work was uncommitted, no longer dependent on a LATER phase's working tree).
-$si0Commit = 'f9b2ed5d7a3c0c7479d5798e2826b58bbdd9180b'; $si0Parent = '3158ce2fc073b4ef6232ab398733b82ecd73c896'
+# G09 / G10 describe what THIS phase changed: the SI-0 work is committed (407a438, parent 5c55b8d), so they are pinned to that commit pair in history (the same assertion as while the work was uncommitted, no longer dependent on a LATER phase's working tree).
+$si0Commit = '407a438383041e82268180cecfa38b854ad4f9e7'; $si0Parent = '5c55b8d3d8e290e51dabb7efa76125c1a53252fe'
 $changedFrozen = @((RunGit (@('-C', $top, 'diff', '--name-only', $si0Parent, $si0Commit, '--') + $frozen)) -split "`n" | Where-Object { $_ })
 Check ('G09 frozen and byte-identical between the SI-0 parent commit and the SI-0 commit (history): the Current sender, the Caller, both Bridges, the Handshake protocol and shared contract, every production Python file (no Legacy branch, no update_logic change), the Legacy API seam, the station timeline, the input probe, the handle contract and the input telemetry (' + $changedFrozen.Count + ' changed) ' + ($changedFrozen -join ',')) ($changedFrozen.Count -eq 0)
 $changed = @((RunGit @('-C', $top, 'diff', '--name-only', $si0Parent, $si0Commit)) -split "`n" | Where-Object { $_ })

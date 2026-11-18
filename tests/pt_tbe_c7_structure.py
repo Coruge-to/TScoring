@@ -15,7 +15,7 @@ SESSION = "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyTelemetrySession
 TIMELINE = "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyStationTimeline.cs"
 CURRENT = "TsScoringPlugin/TsScoringPlugin/Class1.cs"
 CODEC = "TsScoringPlugin/Handshake/Telemetry/Shared/PseudoTurnbackPairCodec.cs"
-BASE_COMMIT = "cbebfd3"
+BASE_COMMIT = "4650073"
 
 _TOKEN = re.compile(r'//[^\n]*|/\*.*?\*/|"(?:\\.|[^"\\])*"', re.S)
 

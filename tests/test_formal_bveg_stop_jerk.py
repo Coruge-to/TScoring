@@ -7,7 +7,7 @@ THE CONTRACT (Owner, 2026-11-08)
   * CalcG, the n values and the sway path are retired from the product: no symbol, no wire token (CALCG, ACCELX, SWAY, SWAYR), no F2 text, no log field.
   * F2 shows ONE line: "BveG: +0.000 G    LastStop BveG: 0.000 G" ("BveG: ---    LastStop BveG: ---" when unavailable); no graph, no MaxG.
   * The user text of the stop-jerk row names 0.5 s, 0.065G, 2.3km/h/s, 0.100G, 3.5km/h/s; the two boundary spans are coloured (white outline), the rest is normal.
-RED rows fail on the baseline 86b7b6e for a declared reason (the first word of the failure message); GUARD rows pass on both. PyQt6 is needed for the executable rows.
+RED rows fail on the baseline 71e4f80 for a declared reason (the first word of the failure message); GUARD rows pass on both. PyQt6 is needed for the executable rows.
 """
 import importlib.util
 import json
@@ -663,7 +663,7 @@ class G_Display(Direct):
         self.assertIn("BveG: +0.051 G    LastStop BveG: ---", texts)
 
 
-F2_LINES_IN_THIS_SCENE = 15  # measured in this scene; the baseline 86b7b6e draws 17 (CalcG/BveG row, LastStop row and the n row became ONE row)
+F2_LINES_IN_THIS_SCENE = 15  # measured in this scene; the baseline 71e4f80 draws 17 (CalcG/BveG row, LastStop row and the n row became ONE row)
 
 
 class H_Text(Direct):

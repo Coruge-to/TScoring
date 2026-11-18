@@ -11,15 +11,15 @@
    ],
    "baseline": {
     "sha256": "8097D3284D283305543D00E9CDFE93E12461155AD98AC375834F700C19AAD919",
-    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+    "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
     "promotedAt": "2026-11-18",
     "size": 214528,
-    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed b75575a, remote verified"
+    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed 124a5c3, remote verified"
    },
    "rollback": [
     {
      "sha256": "7977259D21C6C3022A45801BDA74F8D0EA3C753F3F1505B60EF99660F633B938",
-     "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+     "sourceCommit": "cfb66e1d10e0f6b254796a3e09705628cabdef75",
      "promotedAt": "2026-11-16",
      "note": "previous baseline (ordinary rollback target)"
     }
@@ -35,15 +35,15 @@
    ],
    "baseline": {
     "sha256": "D6388696BAD51F03549E47ED44604B9C57D7344CEEA17EC20C48CC26CD6C40BF",
-    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+    "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
     "promotedAt": "2026-11-18",
     "size": 61952,
-    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed b75575a, remote verified"
+    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed 124a5c3, remote verified"
    },
    "rollback": [
     {
      "sha256": "E35A19BF7D0E8ED0E263D23C0884BB2410635B860035EF5FCD67FE16A558B01B",
-     "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+     "sourceCommit": "cfb66e1d10e0f6b254796a3e09705628cabdef75",
      "promotedAt": "2026-11-16",
      "note": "previous baseline (ordinary rollback target)"
     }
@@ -59,15 +59,15 @@
    ],
    "baseline": {
     "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
-    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+    "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
     "promotedAt": "2026-11-18",
     "size": 184320,
-    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed b75575a, remote verified"
+    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed 124a5c3, remote verified"
    },
    "rollback": [
     {
      "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
-     "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+     "sourceCommit": "cfb66e1d10e0f6b254796a3e09705628cabdef75",
      "promotedAt": "2026-11-16",
      "note": "previous baseline (ordinary rollback target)"
     }
@@ -83,15 +83,15 @@
    ],
    "baseline": {
     "sha256": "E21DAA52791B34763FD7AB5806F31973F9D9B220D7B4446BC3C35E6DF0DD0621",
-    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+    "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
     "promotedAt": "2026-11-18",
     "size": 61440,
-    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed b75575a, remote verified"
+    "evidence": "Live PASS 2026-11-18 (Current 137M 12/12, Iida 25/25; Legacy 920T 10/10; 0 new WER/dump): s05-settle100-h1-promotion-v1-20261118/09-live-results.md; pushed 124a5c3, remote verified"
    },
    "rollback": [
     {
      "sha256": "FE6EEA1B90011BEC10276ABC46BF187FE721A98A297ED38A25C7672E26F6861A",
-     "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+     "sourceCommit": "cfb66e1d10e0f6b254796a3e09705628cabdef75",
      "promotedAt": "2026-11-16",
      "note": "previous baseline (ordinary rollback target)"
     }
@@ -108,7 +108,7 @@
    ],
    "baseline": {
     "sha256": "0EA518A05AF821295D2BBC487190F91629D21ECE04DFEEC4A35CD72456E4E4D2",
-    "sourceCommit": "9e55dbc73c491810051ffe751e33589812a75dd8",
+    "sourceCommit": "7261ebb273de94435b13c9a56b09a42195995229",
     "promotedAt": "2026-11-16",
     "size": 97280,
     "evidence": "case C (Caller requests the Python start at the first ScenarioOpened), Owner live acceptance; both Input Devices folders hold the same file"

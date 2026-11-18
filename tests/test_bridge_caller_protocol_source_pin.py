@@ -37,7 +37,7 @@ SKIP_DIRS = {"bin", "obj", "out", "dist", ".vs", "packages", "logs"}
 SKIP_EXT = (".log", ".user", ".dll", ".pdb", ".exe", ".cache", ".suo")
 REQUIRED_KEYS = ("stage", "ownerContract", "files", "reason", "newSha", "tests", "liveRequired", "commit")
 
-# The pinned sources at the formal tree f96a618 (taken 2026-11-16; unchanged by the KF-FIX commits).
+# The pinned sources at the formal tree 925138a (taken 2026-11-16; unchanged by the KF-FIX commits).
 PINNED = {
     "Bridge/Legacy/TSScoringPlugin.AtsExLegacy.Bridge.Prototype.csproj": "6144755CA04E73BA78DB7DA711E58A89298988AB1C3AAA3928DCB0E71E3713AD",
     "Bridge/Legacy/src/AssemblyInfo.cs": "9DB7851B675A015624311E5181E54B5B81F454F68388AEC697FF1629DFC1FCB7",
@@ -75,7 +75,7 @@ PIN_UPDATES = [
         "ownerContract": "Owner 2026-11-16, KF-09 option A: a maintained blob SHA-256 source pin for the Bridge / Caller / Handshake protocol sources as a provisional change-control "
                          "contract, replacing the retired SI-A diff test; Caller / Bridge integration into the manifest / package guard / Capability ledger stays a separate stage (KF-FIX-5)",
         "files": sorted(PINNED),
-        "reason": "initial pin of the 27 source files at the formal tree f96a6181 (no product change; the sources are exactly those of the accepted formal baseline)",
+        "reason": "initial pin of the 27 source files at the formal tree 925138ae (no product change; the sources are exactly those of the accepted formal baseline)",
         "newSha": dict(PINNED),
         "tests": ["test_bridge_caller_protocol_source_pin.A_SourcePin"],
         "liveRequired": False,

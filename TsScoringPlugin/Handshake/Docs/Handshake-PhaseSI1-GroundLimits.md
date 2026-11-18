@@ -86,7 +86,7 @@ Python（`scoring_logic.update_physics_and_scoring`）は次のとき点滅す�
 | 送信側（新規） | `Telemetry\Legacy\src\LegacyGroundLimits.cs`（読取り面 `ILegacyGroundApi`、純粋な契約 `LegacyGroundContract`、世代ごとの状態 `LegacyGroundTelemetry`） |
 | 送信側（変更） | `LegacyTelemetrySession.cs`（配線。MAPHEAD の頭化、4 キーは上記ファイルの関数が書く）、`LegacyTelemetryExtension.cs`（`TryCarSpec` と、SI-0 のリスト読取りの再利用）、`AssemblyInfo.cs`（0.4.0.0）、`TSScoringPlugin.AtsExLegacy.Telemetry.csproj`（新規ソース 1 件）、共通契約 `Shared\TelemetryContract.cs`（トークン名 2 件の追加のみ） |
 | 試験 | `Tests\Test-GroundLimitsSI1.ps1`（新規）、`Tests\TelemetryTestFixture.cs`（偽物と Current の文字どおりの移植を追加）、`tests\test_ground_limits_si1.py`、`tests\si1_flash_probe.py`（新規） |
-| 既存試験の更新（弱めない） | 版数の許容に 0.4.0.0 を追加: LI0／LI1／LI2／SI-0／`Verify-PhaseL3.ps1`。LI1 の共有契約ガードは「HEAD と同一、または SI-1 の 2 トークンの追加だけ」。SI-0 の G09／G10 は SI-0 コミット（`3158ce2` → `f9b2ed5`）の履歴に固定。「送信しないトークン」の期待は `doortime,jump` へ（`trainlen` と `maplimit_ahead` が送信側の語彙に入った）。スコープ許可リストに SI-1 のファイルを追加: M1／`Verify-PhaseL1.ps1`／`Verify-PhaseL3.ps1` |
+| 既存試験の更新（弱めない） | 版数の許容に 0.4.0.0 を追加: LI0／LI1／LI2／SI-0／`Verify-PhaseL3.ps1`。LI1 の共有契約ガードは「HEAD と同一、または SI-1 の 2 トークンの追加だけ」。SI-0 の G09／G10 は SI-0 コミット（`5c55b8d` → `407a438`）の履歴に固定。「送信しないトークン」の期待は `doortime,jump` へ（`trainlen` と `maplimit_ahead` が送信側の語彙に入った）。スコープ許可リストに SI-1 のファイルを追加: M1／`Verify-PhaseL1.ps1`／`Verify-PhaseL3.ps1` |
 | 不変 | Current 送信側、Caller、両 Bridge、Handshake の共有プロトコル、Python 本番コード全部、`LegacyApi.cs`、ハンドル契約、入力テレメトリ、SI-0 の観測（`LegacyScoringProbe.cs`）、駅タイムライン |
 
 ## 7. 設計判断（確認してほしいもの）

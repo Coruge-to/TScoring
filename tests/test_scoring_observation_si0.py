@@ -468,7 +468,7 @@ class FakeGui:
         self.hwnd = hwnd
         self.foreground = hwnd
         self.diag = 0                       # the hwnd of the "time and position" window, 0 = none
-        self.enabled_by_hwnd = {}           # KF-FIX (on purpose): the window has three child controls diag+1..diag+3 (the product locks the CHILDREN, never the window: 7f8edc6 / e485965)
+        self.enabled_by_hwnd = {}           # KF-FIX (on purpose): the window has three child controls diag+1..diag+3 (the product locks the CHILDREN, never the window: 8644db2 / 0bdd7d4)
         self.calls = []
 
     @property
@@ -762,7 +762,7 @@ class F_UpdateLogicCharacterization(unittest.TestCase):
         self.assertEqual(self.kb.active(), [])
 
     # -- the "time and position" window -----------------------------------------------------------------------------------------------------
-    # KF-FIX (on purpose; the current formal contract, Owner 2026-11-15 P-7; 7f8edc6 / e485965): the window ITSELF is never disabled (it can be closed), only its child controls are
+    # KF-FIX (on purpose; the current formal contract, Owner 2026-11-15 P-7; 8644db2 / 0bdd7d4): the window ITSELF is never disabled (it can be closed), only its child controls are
     # locked, only during an active scoring run, and an open menu alone locks nothing. The characterization of the older whole-window lock (EnableWindow(777, ...)) is retired.
     def test_the_time_and_position_window_children_are_disabled_while_scoring_and_enabled_again_after(self):
         self.gui.diag = 777

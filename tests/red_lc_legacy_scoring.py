@@ -2,7 +2,7 @@
 name does not start with test_).
 
 Usage:   python -B tests/red_lc_legacy_scoring.py [--expect red|green] [--only LC-A09,LC-A11]      (needs PyQt6: do NOT use `python -I`)
-  --expect red   (default, the state of cab7dce): every row must show its PREDICTED verdict. RED rows must FAIL by an AssertionError that contains the declared reason (a RED that fails for
+  --expect red   (default, the state of 15e2d9d): every row must show its PREDICTED verdict. RED rows must FAIL by an AssertionError that contains the declared reason (a RED that fails for
                  another reason, or errors, is INVALID); CHAR / GUARD rows must PASS.
   --expect green (after the LC implementation): every row except the RED-CONDITIONAL ones must PASS.
 Kinds:  RED = fails today for the stated reason; CHAR = pins what the code does today (passes, never inverted); GUARD = an invariant that must keep holding;
@@ -527,17 +527,17 @@ class C_RetryJump(ManagedBase):
 
 
 # ===================================================================================================================================================
-# D. GUARDs of the boundaries (static, against the Git blobs of cab7dce)
+# D. GUARDs of the boundaries (static, against the Git blobs of 15e2d9d)
 # ===================================================================================================================================================
 X_PATHS = ("station_identity.py", "official_target_contract.py", "hud_target_contract.py", "station_index_contract.py",
            "TsScoringPlugin/Handshake/Shared/ObservationLog.cs", "TsScoringPlugin/Handshake/Telemetry/Shared/StationListIdentity.cs",
            "TsScoringPlugin/Handshake/Bridge/Legacy/src/TsScoringLegacyBridge.cs", "TsScoringPlugin/Handshake/Bridge/src/ScenarioObserver.cs",
            "TsScoringPlugin/Handshake/Bridge/src/ScenarioReadyTracker.cs")
-BASE_HEAD = "cab7dce265429ee43775ecbaa4c42f450058a653"
+BASE_HEAD = "15e2d9d1751f1bd26f9c68bec485809c05c43090"
 
 
 class D_Guards(unittest.TestCase):
-    @lc("LC-A25", "GUARD", note="StationIndex non-interference: no distance search in scoring_logic.py; the Season 2 files are byte-identical to the base blobs (BASE=cab7dce, or LC_BASE env after Season 2 push)")
+    @lc("LC-A25", "GUARD", note="StationIndex non-interference: no distance search in scoring_logic.py; the Season 2 files are byte-identical to the base blobs (BASE=15e2d9d, or LC_BASE env after Season 2 push)")
     def test_A25_station_index_untouched(self):
         text = open(os.path.join(ROOT, "scoring_logic.py"), encoding="utf-8").read()
         import re

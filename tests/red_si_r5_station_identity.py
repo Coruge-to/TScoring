@@ -2,8 +2,8 @@
 
 NOT a discovery test (the name starts with red_): run it as   python -B tests/red_si_r5_station_identity.py [result.tsv]
 Every test carries a kind:
-    RED    must FAIL on the product of fd431b4 (the distance lookups) and must fail by a CONTRACT assertion; it passes on the replacement
-    GUARD  must PASS on fd431b4 and keep passing on the replacement (non-regression, ownership, hold, boundaries)
+    RED    must FAIL on the product of cda9a3a (the distance lookups) and must fail by a CONTRACT assertion; it passes on the replacement
+    GUARD  must PASS on cda9a3a and keep passing on the replacement (non-regression, ownership, hold, boundaries)
 The runner prints RED-VALID / RED-INVALID / GUARD-OK / GUARD-BROKEN / FIXTURE-INVALID / OLD-EXPECTATION / ERROR (as tests/red_close_range_contract.py).
 
 THE CONTRACT (the scenes are in tests/si_r5_scene.py):
@@ -611,7 +611,7 @@ class F_Diagnostics(Base):
 # ======================================================================================================================================================
 @unittest.skipUnless(HAS_QT, "PyQt6 is not importable by this interpreter")
 class H_Characterization(Base):
-    """One RED per CHANGED row: the observation of the scene equals the NEW pin (fails on fd431b4 by the HEAD answer)."""
+    """One RED per CHANGED row: the observation of the scene equals the NEW pin (fails on cda9a3a by the HEAD answer)."""
 
     @classmethod
     def setUpClass(cls):

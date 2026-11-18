@@ -11,8 +11,8 @@
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
     [string]$PythonExe = '',
-    [string]$E2Commit = '6d20650395262e62c10916a4bdb0653947149a8a',
-    [string]$E3Commit = 'b9611dad47e2c95f8fa1c89a8bd0286896c75cea',
+    [string]$E2Commit = 'b33661a7b312e527fed276759e7d11616f444f5b',
+    [string]$E3Commit = '60794f2caf3d7643d9a29723e5fe0d2674e44d53',
     [switch]$Probe32,
     [string]$Fixtures = ''
 )

@@ -38,7 +38,7 @@ CURRENT_CSPROJ = os.path.join(CURRENT_DIR, "TsScoringPlugin.csproj")
 LEGACY_DIR = os.path.join(PLUGIN, "Handshake", "Telemetry", "Legacy")
 LEGACY_CSPROJ = os.path.join(LEGACY_DIR, "TSScoringPlugin.AtsExLegacy.Telemetry.csproj")
 JUMPWIRE = os.path.join(PLUGIN, "Handshake", "Telemetry", "Shared", "JumpWire.cs")
-JUMPWIRE_ST3A_SHA256 = "8C444AB61096F8D0F372B761B2A848F30C5B66979CCFC0313AF8F68C0B086BCA"      # the file as committed by ST-3a (a435a44): ST-3b links it, it does not change it
+JUMPWIRE_ST3A_SHA256 = "8C444AB61096F8D0F372B761B2A848F30C5B66979CCFC0313AF8F68C0B086BCA"      # the file as committed by ST-3a (15c9975): ST-3b links it, it does not change it
 
 
 class ContractViolation(AssertionError):
@@ -535,10 +535,10 @@ class H_RefusalDiagnostic(unittest.TestCase):
 
 
 # ==============================================================================================================================================
-SENTINEL_CURRENT_SHA256 = "EA760E47C560B6ACD1FDC6457F9DA4594B11B84BEA3074D955108CC316783301"      # the builder of one Current station up to the three RawDepTime / IsTerminal sentinel branches: as committed by SI-R2.3 (0e4622d)
+SENTINEL_CURRENT_SHA256 = "EA760E47C560B6ACD1FDC6457F9DA4594B11B84BEA3074D955108CC316783301"      # the builder of one Current station up to the three RawDepTime / IsTerminal sentinel branches: as committed by SI-R2.3 (50f1448)
 # Stage TB-E (the pin moved, an intended change, not a drift; was 29D463C6...): the region of the Legacy Build gained ONE inserted block, the read of the five raw values per station (ptRecords: RawArrTime > 0, RawDepTime > 0, IsTerminal, IsPass),
 # placed before the "none stated" fix-up; it only reads, no statement of the normalisation changed (git diff -U2 of LegacyStationTimeline.cs). The Current region is unchanged (its pin below did not move).
-SENTINEL_LEGACY_SHA256 = "9A72B33963F9EBB07F280A53FAB2525A42199AB2CBC5D969F751ED857812FF1D"       # the Legacy Build up to the terminal fix-up of the list: as committed by SI-R2.3 (0e4622d), plus the TB-E raw-value read
+SENTINEL_LEGACY_SHA256 = "9A72B33963F9EBB07F280A53FAB2525A42199AB2CBC5D969F751ED857812FF1D"       # the Legacy Build up to the terminal fix-up of the list: as committed by SI-R2.3 (50f1448), plus the TB-E raw-value read
 
 
 def region_sha256(code, start, end):

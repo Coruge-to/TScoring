@@ -8,7 +8,7 @@ Owner decisions (2026-11-02):
   * moving away from A alone is recoverable (red cancellation lines, the scoring goes on); the TScoring HUD display target is the pair A (display layer only) from the arrival until the official Jump succeeded AND B is
     established - NOT released by a re-stop, a re-cancellation or the 5 s after a re-stop. The raw target, the scoring target, the C# StationIndex, the score, the history and the checkpoints are never changed. The BVE's own
     station display (the bar '次 ... 停車 あと ... m') is not the application's and is out of scope.
-RED = fails on the baseline (373ecd5..f1288f4), GUARD = already true there."""
+RED = fails on the baseline (7a88da3..49f0a8d), GUARD = already true there."""
 import ast
 import inspect
 import os

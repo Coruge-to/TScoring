@@ -3,7 +3,7 @@
 Owner contract (2026-11-02/03): while the chain of a scoring Run that crosses A -> B waits for the Jump, the remaining-time field is the countdown to the official Jump, derived from the machine's jump_earliest_ms
 (first window arrival + 10 s, after a re-stop + 5 s): display_seconds = max(0, ceil(jump_due - now)). A cancellation / the stops outside the range / the re-stop wait show --:-- at once; a re-stop shows 00:05.
 The pair A / B timetable times are never completed for the display: free driving after the A arrival shows --:--.
-RED = failed on the baseline eb1753e (Overlay.turnback_remaining_view did not exist / the HUD showed the held A timetable), GUARD = already true there. The REAL draw_hud, the REAL machine and the REAL scoring tick are driven."""
+RED = failed on the baseline 14e1f6c (Overlay.turnback_remaining_view did not exist / the HUD showed the held A timetable), GUARD = already true there. The REAL draw_hud, the REAL machine and the REAL scoring tick are driven."""
 import os
 import re
 import sys

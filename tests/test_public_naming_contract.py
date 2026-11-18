@@ -189,7 +189,7 @@ class C_NoOldPublicNameRemains(unittest.TestCase):
                 if "TS-Scoring-Claude-Handoff" in line:
                     continue      # a path into an old evidence folder (historical)
                 if p == "tests/test_stationindex_package_st3e0.py" and "neutralised back" in lines_prev(raw, i):
-                    continue      # the two guard lines that neutralise the NEW AssemblyName back to the 0b8e511 value (they must name the old value)
+                    continue      # the two guard lines that neutralise the NEW AssemblyName back to the 34f92c1 value (they must name the old value)
                 for pat in OLD_NAME_PATTERNS:
                     if re.search(pat + (OLD_NAME_SKIP_SUFFIX if "dll" not in pat else ""), line):
                         hits.append("%s:%d" % (p, i))

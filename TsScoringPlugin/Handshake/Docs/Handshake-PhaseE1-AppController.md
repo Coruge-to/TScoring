@@ -67,13 +67,13 @@ Caller の内部に **AppController の dry-run 状態機械**を追加します
 | `Caller\src\AssemblyInfo.cs`、`Caller\TSScoringPlugin.Caller.InputDevice.csproj` | 0.9.0.0・説明文・ソース追加 |
 | `Tests\Test-AppControllerE1.ps1`（新規） | 状態機械・セッション・32 ビット・静的検査 |
 | `Docs\Handshake-PhaseE1-AppController.md`（新規） | 本書 |
-| `Tests\Test-DrivingActiveD1.ps1`、`Tests\Test-DependencyNoticeM1.ps1`、`Tests\Test-ObservationC1.ps1`、`Tools\Verify-PhaseC3.ps1`、`Tools\Verify-PhaseL1.ps1` | 静的ガードの更新のみ（0.9.0.0／Phase E1 の版識別、E1 の 3 ファイルを範囲に追加、コミット履歴の検査終端を D1 の最終コミット `6018a5b` に固定） |
+| `Tests\Test-DrivingActiveD1.ps1`、`Tests\Test-DependencyNoticeM1.ps1`、`Tests\Test-ObservationC1.ps1`、`Tools\Verify-PhaseC3.ps1`、`Tools\Verify-PhaseL1.ps1` | 静的ガードの更新のみ（0.9.0.0／Phase E1 の版識別、E1 の 3 ファイルを範囲に追加、コミット履歴の検査終端を D1 の最終コミット `837e375` に固定） |
 
 `Shared\AppProtocol.cs` は無変更（250／2000 ms の 2 定数のまま）です。
 
 ### 既存ガードに関する注記
 
-D1 の後に独立した `main.py` の修正コミット（`b000a15`）が入ったため、D1／M1／L1 の旧ベースラインとの「コミット履歴に `.py` が含まれない」検査が E1 以前から失敗していました。E1 の変更ではありませんが、検査の終端を `6018a5b`（Handshake 系の最終コミット）へ固定して修復しました。E1 自身が `main.py` を含め `.py` に触れていないことは `Test-AppControllerE1.ps1` が `b000a15` との blob 一致で検査します。
+D1 の後に独立した `main.py` の修正コミット（`3a9fafa`）が入ったため、D1／M1／L1 の旧ベースラインとの「コミット履歴に `.py` が含まれない」検査が E1 以前から失敗していました。E1 の変更ではありませんが、検査の終端を `837e375`（Handshake 系の最終コミット）へ固定して修復しました。E1 自身が `main.py` を含め `.py` に触れていないことは `Test-AppControllerE1.ps1` が `3a9fafa` との blob 一致で検査します。
 
 ## 変更していないもの
 

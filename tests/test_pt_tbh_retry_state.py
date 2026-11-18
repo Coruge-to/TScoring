@@ -1,5 +1,5 @@
 """Stage TB-H Stage 1 (RED), LAYER A of the Retry to the pseudo-turnback B (Owner ruling R5): the STATE TRANSITION of the Retry landing, kept apart from the scoring contract of pair B
-(tests/test_pt_tbh_pairb_contract.py). Root cause (baseline 2387d17, trace in the stage report): after the first departure from B jump_lock is False; the Retry's own settlement absorbs the sender's JUMP counter,
+(tests/test_pt_tbh_pairb_contract.py). Root cause (baseline 826fd4c, trace in the stage report): after the first departure from B jump_lock is False; the Retry's own settlement absorbs the sender's JUMP counter,
 so the jump rule never takes the lock again; turnback_landing_step ends the landing watch at once because jump_lock is False, the 'B operating time handled' mark is never set, and the departure scores +300.
 These tests must stay GREEN even when pair B is untimed by contract (the contract must not hide a state-transition defect): the layer-A fix is its own commit (Commit 2)."""
 import ast

@@ -1,4 +1,4 @@
-"""INITIAL-DEFAULTS Commit 4 (Owner contract 2026-11-10): rolling (転動) becomes a setting, and the display name 'ATS信号無視' becomes 保安装置介入 (still OFF fixed in the beta). RED = fails on 2c5095f; messages start with 'ID4-RED'.
+"""INITIAL-DEFAULTS Commit 4 (Owner contract 2026-11-10): rolling (転動) becomes a setting, and the display name 'ATS信号無視' becomes 保安装置介入 (still OFF fixed in the beta). RED = fails on 4376704; messages start with 'ID4-RED'.
 
 Contract
   * rolling: builtin ON; F1 (the scoring settings page, row 0) switches ON / OFF BEFORE the scoring start only; the start freezes it in the running snapshot; after the start F1 can not change it and the scoring reads ONLY the snapshot;

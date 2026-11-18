@@ -4,7 +4,7 @@
   state       F1: OFF fixed and not operable (Enter, Left / Right, click zone, Space is not a F1 key); scenario_settings and running_snapshot always False; the presets never turn it on; saved_defaults never hold True
   scope       internal identifiers (pen_ats, ATS_SIGNAL_IGNORE_AVAILABLE, the category key 'ATS信号無視', the score_details key 'ats', JSON key safety_intervention, protocol ids) are NOT renamed in the beta
 
-AUDIT FINDING (reported): at HEAD 467be52 the F1 drawing already shows 保安装置介入 (INITIAL-DEFAULTS Commit 4). Most of this contract therefore already holds and is pinned as GUARD; the only user-visible leftover of the old name
+AUDIT FINDING (reported): at HEAD 5932638 the F1 drawing already shows 保安装置介入 (INITIAL-DEFAULTS Commit 4). Most of this contract therefore already holds and is pinned as GUARD; the only user-visible leftover of the old name
 is the Desktop-log line of the scoring breakdown (scoring_logic.py), which is the PRODUCT-RED of this file. The detector itself is proven by the self-tests at the end (an injected old name MUST be detected)."""
 import os
 import re

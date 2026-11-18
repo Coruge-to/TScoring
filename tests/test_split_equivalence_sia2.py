@@ -1,6 +1,6 @@
 """Phase SI-A2 - the split of Overlay.update_logic changed NOTHING: the same scripted input gives the same Overlay and the same outside effects.
 
-The reference is the main.py of the commit that was HEAD when SI-A started (9f25a26), loaded from git as a module of its own. Both implementations are
+The reference is the main.py of the commit that was HEAD when SI-A started (085e58f), loaded from git as a module of its own. Both implementations are
 built in the test rig (tests/sia_rig.py: every outside effect is a recorder) and driven with the SAME randomized script: key presses and releases, the
 foreground window, the "time and position" window, telemetry values, station lists, jump counters, clock steps, mouse clicks, window invalidation,
 fullscreen completion. After every tick a digest of the whole Overlay state (every plain attribute) and the length and tail of every recorder is taken.
@@ -24,7 +24,7 @@ try:
 except Exception:  # pragma: no cover
     HAS_QT = False
 
-BASELINE = "9f25a26c6bc4a578767c7f306672811bf7bf341c"        # HEAD when Phase SI-A started: the last commit of Phase SI-1
+BASELINE = "085e58fe17e0215fa448c50340b1f1c89ea6f0c9"        # HEAD when Phase SI-A started: the last commit of Phase SI-1
 KEYS = ["f1", "f2", "f11", "f12", "up", "down", "left", "right", "enter", "backspace", "h", "a", "p", "f8", "f5"]
 TELEMETRY = [
     "SCENARIO_ID:%d,SPEED:%s,LOCATION:%s,TIME:%d",
@@ -266,7 +266,7 @@ class SplitIsBehaviourPreserving(unittest.TestCase):
         self.assertGreater(trace[-1][2]["posted"], 5)                       # messages were posted to the BVE window
         self.assertGreater(trace[-1][2]["gui_calls"], 5)                     # window calls were made
 
-    # KF-FIX (Owner 2026-11-15, P-2) retired `test_the_traces_are_identical_for_many_scripts`: the trace equivalence of the OLD module (commit 9f25a26, the start of Phase SI-A) and the
+    # KF-FIX (Owner 2026-11-15, P-2) retired `test_the_traces_are_identical_for_many_scripts`: the trace equivalence of the OLD module (commit 085e58f, the start of Phase SI-A) and the
     # CURRENT main.py over 40 seeded scripts. The split of 2026-10-11 is finished; since then the Overlay legitimately gained state and behaviour, so the OLD module raises
     # AttributeError ('bve_tgt_idx') on the rig while the current one runs. The behaviour of the CURRENT Overlay under scripted ticks is pinned by
     # tests/test_characterization_sia1.py and by tests/test_managed_input_sia3.py / test_pause_ptop_width_sia4.py (the real Overlay with the real controllers).
@@ -413,7 +413,7 @@ class SiAScopeOfMain(unittest.TestCase):
         return {n.name: (ast.dump(n), ast.get_source_segment(src, n)) for n in cls.body if isinstance(n, ast.FunctionDef)}, tree
 
     # KF-FIX (Owner 2026-11-15, P-2) retired `test_the_overlay_members_added_changed_and_removed`, `test_the_module_level_changes` and `test_the_init_of_the_overlay_is_untouched`: the
-    # scope audit of Phase SI-A (what it added / changed / left untouched in main.py against commit 9f25a26, 2026-10-11). They required that main.py differs from that commit
+    # scope audit of Phase SI-A (what it added / changed / left untouched in main.py against commit 085e58f, 2026-10-11). They required that main.py differs from that commit
     # in EXACTLY the SI-A way for ever, which no later intended change (Jump, pseudo-turnback, overlay scaling, ...) can satisfy. Current detectors: the blob identity of main.py and of
     # every runtime module in package/source-package-manifest.json (tests/test_stationindex_package_st3e0.py RED_E0_12 / RED_E0_13 / RED_E0_19, GUARD_E0_25: a change needs a reviewed
     # manifest update), and the behaviour of the Overlay in tests/test_characterization_sia1.py and the managed rigs. NOTE: this is a whole-file control, not a per-member AST freeze;

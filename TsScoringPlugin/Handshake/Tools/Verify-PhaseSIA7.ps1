@@ -5,7 +5,7 @@
 # This script is ASCII-only on purpose.
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
-    [string]$Baseline = '42850d1b897493bef10afc5130ae3d790fb4d5ea',
+    [string]$Baseline = '50fc711519da0e84c5bf56560d2ba54d98817640',
     [string]$ExpectedStash = 'b5f0174', [switch]$Historical
 )
 # Phase-closure verification: it is valid only at the commit of its own Phase, so it is a RECORD, not part of the regression (Owner 2026-11-18, first completion). Run it with -Historical against that Phase's commit.

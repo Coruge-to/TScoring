@@ -2,8 +2,8 @@
 
 NOT a discovery test (the name starts with red_): run it as   python -B tests/red_close_range_contract.py [result.tsv]
 Every test carries a kind:
-    RED    must FAIL on the product that has no close-range handling (aa03924), and must fail by a CONTRACT assertion (the reason is the missing feature)
-    GUARD  must PASS on aa03924 and keep passing after the implementation (non-regression, or a trap that is only live once the feature exists)
+    RED    must FAIL on the product that has no close-range handling (f07689b), and must fail by a CONTRACT assertion (the reason is the missing feature)
+    GUARD  must PASS on f07689b and keep passing after the implementation (non-regression, or a trap that is only live once the feature exists)
 Outcome classes the runner prints:
     RED-VALID        RED that failed by a CONTRACT assertion               GUARD-OK       GUARD that passed
     RED-INVALID      RED that passed (not red)                              GUARD-BROKEN   GUARD that failed

@@ -229,7 +229,7 @@ foreach ($rel in 'Bridge\src\ScenarioObserver.cs', 'Shared\ObservationLog.cs') {
     $h1 = if ($c1Text) { Sha $c1Text } else { 'PHASE-C1-COMMIT-NOT-FOUND' }
     $h3 = Sha (WorkText $rel)
     "$rel sha256 (LF-normalised) now / Phase C1 commit / SI-R5.3 pin: $h3 / $h1 / $($si53Pins[$rel])"
-    Check "$rel is pinned to the SI-R5.3 fix blob (commit 3ca6ddb; the Phase C1 byte identity is replaced, see the comment above)" ($si53Pins[$rel] -eq $h3)
+    Check "$rel is pinned to the SI-R5.3 fix blob (commit 12ad153; the Phase C1 byte identity is replaced, see the comment above)" ($si53Pins[$rel] -eq $h3)
 }
 $sr = SrcHits 'ScenarioReady'
 $srAllowed = 'Bridge\src\ScenarioObserver.cs', 'Bridge\src\ScenarioReadyTracker.cs', 'Bridge\src\ScenarioReadyPublisher.cs', 'Bridge\src\TsScoringBridgePrototype.cs', 'Bridge\src\AssemblyInfo.cs', 'Caller\src\AssemblyInfo.cs', 'Caller\src\HandshakeSession.cs', 'Caller\src\DrivingActivityState.cs', 'Shared\HandshakeProtocol.cs'

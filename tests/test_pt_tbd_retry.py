@@ -1,5 +1,5 @@
 """Stage TB-D, slice D3 (OD-TD-3, entry E10): a Retry accepted while a pseudo-turnback chain is RECOGNIZED / ARMED (the 5.0 s window after the A arrival) must drop that chain and everything that hangs on it.
-Before this slice the chain survived the Retry and, when the BVE time reached the OLD arrival + 5.0 s, the product requested a Jump to B although the train had not arrived at A again (measured at 5f36e62:
+Before this slice the chain survived the Retry and, when the BVE time reached the OLD arrival + 5.0 s, the product requested a Jump to B although the train had not arrived at A again (measured at f38e836:
 Stage 0 raw/probe-out.txt: the request came at the old arrival + 5004 ms). The REAL execute_retry, the REAL update_physics_and_scoring driver and the REAL settlement are used; execute_retry itself is not changed.
 R-9 (what the SENDER does with arr_seq after a Retry) is UNKNOWN and is not guessed here: RT-7 only characterizes what the Python receiver does with a repeated key."""
 import ast

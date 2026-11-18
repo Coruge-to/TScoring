@@ -6,7 +6,7 @@
 # Nothing is written, deployed or started. This script is ASCII-only on purpose.
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
-    [string]$Baseline = 'bc4c1160bf6755776d27525a4928a742c460825e',
+    [string]$Baseline = '93fdc04b20ca8a99b618a4631a5d8b2faef6f700',
     [switch]$SkipDeployedCheck, [switch]$Historical
 )
 # Phase-closure verification: it is valid only at the commit of its own Phase, so it is a RECORD, not part of the regression (Owner 2026-11-18, first completion). Run it with -Historical against that Phase's commit.

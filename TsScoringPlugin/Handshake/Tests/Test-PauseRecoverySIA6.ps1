@@ -394,7 +394,7 @@ src.close()
         }
         catch { return $null }
     }
-    $siaChain = @('9f25a26c6bc4a578767c7f306672811bf7bf341c', '0aa3fa6b5d35dd0e23cfc305213057f05b01677b', 'eec43e3c1a901e414c4a7b69894c634eb80d618f', '71744d6483a772e5f26a7b03675c18285aac71b5')   # SI-1 head -> load marker (C#) -> Python / pause recovery -> docs
+    $siaChain = @('085e58fe17e0215fa448c50340b1f1c89ea6f0c9', 'b20dd70346be550a38c0089671e5ece19d9a8a01', 'a901a90a2f32330b266f533506815146bac0f4bb', 'f19e8374d43a0c63b63fca99c932a1c0d427d883')   # SI-1 head -> load marker (C#) -> Python / pause recovery -> docs
     $markerSources = @('Bridge/src/ScenarioReadyTracker.cs', 'Bridge/src/ScenarioReadyPublisher.cs', 'Shared/HandshakeProtocol.cs', 'Caller/src/AppStatePublisher.cs', 'Caller/src/AppProcessManager.cs', 'Caller/src/HandshakeSession.cs')
     $siaChainOk = Test-SiaChain $Root $siaChain
     $added = ''

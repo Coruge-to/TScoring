@@ -12,7 +12,7 @@ param(
     [string]$DllPath = '',
     [string]$ReferenceDll = '',            # optional: the S5-A reference DLL (pinned by -ReferenceSha256); not given = PD-20 is reported as SKIP
     [string]$ReferenceSha256 = '3943DF3F42ACB16F39AC9005FAC0B3E4151EAF4A28FCFEA2F6635C110A974D23',
-    [string]$BaselineCommit = '87cf543',
+    [string]$BaselineCommit = '7c9804c',
     [string]$BaselineSessionFile = '',     # optional: a byte copy of the baseline Session (for a copy of the tree outside the repository); default = git show of -BaselineCommit
     [ValidateSet('All', 'Dump')][string]$Mode = 'All',
     [string]$OutFile = ''
@@ -276,8 +276,8 @@ public static class DiscDiagResolver
     else {
         $rel = 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyTelemetrySession.cs'
         $prevEap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
-        # Phase LJX-1 (pin moved): the audited edit is the one of the commit bc72cc6 (parent chain: BaselineCommit); the working tree may carry the LJX-1 edit on top of it (audited by Test-LegacyJumpExecLJX1.ps1)
-        $auditedCommit = 'bc72cc6'
+        # Phase LJX-1 (pin moved): the audited edit is the one of the commit c8d6dae (parent chain: BaselineCommit); the working tree may carry the LJX-1 edit on top of it (audited by Test-LegacyJumpExecLJX1.ps1)
+        $auditedCommit = 'c8d6dae'
         if ([string]::IsNullOrEmpty($BaselineSessionFile)) { $diff = @(& git -C $top -c core.autocrlf=false -c core.safecrlf=false diff -U0 --no-color $BaselineCommit $auditedCommit -- $rel 2>$null) }
         else { $diff = @(& git -c core.autocrlf=false -c core.safecrlf=false diff --no-index -U0 --no-color $BaselineSessionFile $sesPath 2>$null) }
         $ErrorActionPreference = $prevEap

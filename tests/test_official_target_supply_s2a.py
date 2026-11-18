@@ -33,7 +33,7 @@ import telemetry_contract as tc  # noqa: E402
 HAS_QT = importlib.util.find_spec("PyQt6") is not None
 OFFICIAL_NAMES = tuple(sorted(C.initial_state()))
 
-# the 13 rows of the RED runners that turn from RED-VALID to GUARD when S2a (the supply of the six values) is implemented; every other row keeps the verdict it had at 6655333
+# the 13 rows of the RED runners that turn from RED-VALID to GUARD when S2a (the supply of the six values) is implemented; every other row keeps the verdict it had at 09cc9bf
 S2A_GREEN_ROWS = {
     "supply": ("R-OFF-05", "R-OFF-06", "R-OFF-07", "R-OFF-08", "R-STATE-3", "R-GEN-2", "R-INIT-1", "R-INIT-5"),
     "ownership": ("R-SEM-01", "R-TERM-2"),

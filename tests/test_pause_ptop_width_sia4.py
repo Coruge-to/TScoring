@@ -43,7 +43,7 @@ class A_PauseKeepsTheScoring(ManagedCase):
         self.assertEqual(r.events("hud-error"), [])
 
     def test_the_keys_are_released_at_once_and_the_time_and_position_lock_is_kept_during_the_pause(self):
-        # KF-FIX (on purpose; the current formal contract, e485965 managed_input.release(release_window=False)): a pause does NOT end the scoring run, so the keys / hooks and an
+        # KF-FIX (on purpose; the current formal contract, 0bdd7d4 managed_input.release(release_window=False)): a pause does NOT end the scoring run, so the keys / hooks and an
         # open TS Scoring menu are released at once, but the child controls of the "time and position" window stay locked (arbitrary BVE time / position changes remain blocked);
         # the lock ends only with the run (Session OFF, a new generation, state loss, shutdown). This used to expect the window ENABLED during the pause.
         r, o = scoring_run(self)

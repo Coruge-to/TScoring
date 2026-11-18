@@ -1,6 +1,6 @@
 """Phase PID-FIX (RED -> GREEN): the owner PID of a window comes from win32process, NOT from win32gui.
 
-Root: the real pywin32 `win32gui` has no GetWindowThreadProcessId (it lives in `win32process`). PID-S1 (d226ad3) was only tested against a fake win32gui that
+Root: the real pywin32 `win32gui` has no GetWindowThreadProcessId (it lives in `win32process`). PID-S1 (2015bb6) was only tested against a fake win32gui that
 carried the function, so on a real Windows every managed step answered `pid-unreadable` and the "time and position" lock never worked.
 
 The fakes here follow the REAL module boundary: the gui fake has NO GetWindowThreadProcessId; the process fake is a separate object with the real

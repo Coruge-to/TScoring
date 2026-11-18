@@ -53,10 +53,10 @@ class A_VocabularyAndScope(unittest.TestCase):
         self.assertEqual((parsed.unknown_tokens, parsed.bad_tokens), (0, 0))
 
     def test_no_python_production_file_changed_for_si1(self):
-        # Phase SI-1 (the two commits after the SI-0 commit f9b2ed5) changed no Python production file. (Phase SI-A changes the working tree on purpose, so the
+        # Phase SI-1 (the two commits after the SI-0 commit 407a438) changed no Python production file. (Phase SI-A changes the working tree on purpose, so the
         # comparison is between the two commits, not against the working tree.)
         try:
-            changed = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", "f9b2ed5d7a3c0c7479d5798e2826b58bbdd9180b", "9f25a26c6bc4a578767c7f306672811bf7bf341c"],
+            changed = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", "407a438383041e82268180cecfa38b854ad4f9e7", "085e58fe17e0215fa448c50340b1f1c89ea6f0c9"],
                                      capture_output=True, text=True, timeout=60).stdout.split()
             tracked = subprocess.run(["git", "-C", ROOT, "ls-files"], capture_output=True, text=True, timeout=60).stdout.split()
         except Exception:

@@ -71,10 +71,10 @@ STALIST5 = ("STALIST:A=1=0.0=-1=-1=-1=15000=0=0,B=1=1000.0=-1=-1=-1=15000=0=0,C=
 STALIST_NEG = ("STALIST:A=1=-5.0=-1=-1=-1=15000=0=0,B=1=1000.0=-1=-1=-1=15000=0=0,C=0=2500.0=-1=-1=-1=15000=0=1")
 STALIST_FAR = ("STALIST:A=1=2000000000.0=-1=-1=-1=15000=0=0,B=1=1000.0=-1=-1=-1=15000=0=0,C=0=2500.0=-1=-1=-1=15000=0=1")           # station A is further than the wire can carry (1e9)
 
-# the files ST-3d does not touch (the C# products of Current and Legacy, the shared codec, the vector table, the Python client and the contract): git blob ids at ea0a3fb
+# the files ST-3d does not touch (the C# products of Current and Legacy, the shared codec, the vector table, the Python client and the contract): git blob ids at 8d1bcaf
 FROZEN = {
     # Phase ST-3e0 changes both projects on purpose (exactly one Compile item of Shared\PackageContract.cs each; the blobs moved from defbe148... / 61092229...): their rows are gone; they are held by
-    # tests/test_stationindex_package_st3e0.py (E0-25: each differs from the blob of 0b8e511 by that one item only)
+    # tests/test_stationindex_package_st3e0.py (E0-25: each differs from the blob of 34f92c1 by that one item only)
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/AssemblyInfo.cs": "1043057942f8d382c756af6dfbf5a9d4b74ef82d",
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyApi.cs": "ad9e2548d2713a72e05ba1a52ffe2a696a0c3b77",       # 2026-11-08 (the pin moved, an intended change: formal LastStop BveG, CalcG / sway retired; was 0a9a9b33...)
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyDataPlaneSink.cs": "f5e11a9579ea5ba12544b9f00c0a48693f638819",
@@ -85,7 +85,7 @@ FROZEN = {
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyJumpCommandQueue.cs": "c9517db9074f45ef447991cd52280ef512047070",
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyJumpControlPlane.cs": "04d3104d1005fca4a8fe4a9c3da835bd79d61309",
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyJumpEndpoint.cs": "eb3a0233d799e8abbeea47e7d01b46034ee68584",
-    # Legacy scoring LC-4 (89b234a) changed LegacyJumpExecutor.cs on purpose (C-LJ-1: the completion payload is bound to the claimed request; C-LJ-2: a failure after the jump moved carries a note without an adopted station; Handshake\Tests\LegacyJumpLcTestCases.cs / Test-LegacyJumpLC1b.ps1): the blob moved from b9575414... (ST-3c)
+    # Legacy scoring LC-4 (4817c61) changed LegacyJumpExecutor.cs on purpose (C-LJ-1: the completion payload is bound to the claimed request; C-LJ-2: a failure after the jump moved carries a note without an adopted station; Handshake\Tests\LegacyJumpLcTestCases.cs / Test-LegacyJumpLC1b.ps1): the blob moved from b9575414... (ST-3c)
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyJumpExecutor.cs": "40caa2f24ea1c2ddf21af65112babdce6ba9b768",
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyScoringProbe.cs": "1f0be23bc1c911e4bf83933a22016613834c2f48",
     # Time Fix A changed LegacyStationTimeline.cs on purpose (the departure reader and the arrival fill-in, tests\test_timefix_a_terminal_arrival.py): the blob moved from 1bae94a1... (ST-3c)

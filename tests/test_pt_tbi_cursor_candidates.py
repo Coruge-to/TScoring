@@ -6,7 +6,7 @@ Owner contract (2026-11-02):
     button leaves it alone. X -> A -> B -> Y: Down on A goes to Y, Up on Y goes to A. A pseudo-turnback A is an ordinary changeable station.
   * basic brake rules (Owner contract 3, 2026-11-02, replaces the first reading 'A and B are both out'): the boundary candidate list holds the A of a crossed pair (selectable; the NEXT rule then starts at its B) and
     not the B (a rule may not end at B). Pairs that the scoring section does not cross are not touched. The effective ranges and the screens: tests/test_pt_tbi_brake_chain.py.
-RED = fails on the baseline 41b3652 for the contract reason (RED-API: the pure helper does not exist yet). GUARD = passes on the baseline and must keep passing. The REAL handlers and the REAL menu_ui.draw_menu are driven."""
+RED = fails on the baseline 2ca9214 for the contract reason (RED-API: the pure helper does not exist yet). GUARD = passes on the baseline and must keep passing. The REAL handlers and the REAL menu_ui.draw_menu are driven."""
 import os
 import sys
 import unittest

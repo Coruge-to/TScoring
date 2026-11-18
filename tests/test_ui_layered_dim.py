@@ -1,4 +1,4 @@
-"""Stage UI-D4 (Owner contract 2026-11-08 after the live Run CUI-C-02). This FILE REPLACES tests/test_ui_single_dim.py (the single-dim contract of af46056, which the Owner withdrew).
+"""Stage UI-D4 (Owner contract 2026-11-08 after the live Run CUI-C-02). This FILE REPLACES tests/test_ui_single_dim.py (the single-dim contract of a27411b, which the Owner withdrew).
 
 Contract (menu_ui.draw_menu), the dims of the F1 screens are LAYERED, one layer per step of the operation hierarchy:
   * F1 common layer alpha 220 (always, first), pop-up panel layer alpha 180, drop-down layer alpha 180, operation help layer alpha 180 - the two alphas are NOT unified, their effects multiply (the Owner's specification).
@@ -8,7 +8,7 @@ Contract (menu_ui.draw_menu), the dims of the F1 screens are LAYERED, one layer 
   * input (the help does not stop input), Cursor-Q3 and the rest of main.py / managed_input.py are unchanged.
 The REAL screen (menu_ui.draw_menu on an offscreen QImage, a flat background, Antialiasing ON as in Overlay.paintEvent, windows of non-integer menu_scale) is driven.
 Stage UI-D5 (commit 1 of 2026-11-08, red_20 .. guard_26): the scroll arrows of a drop-down are glyphs only, no tile background; hit rectangles, scroll, candidates unchanged.
-RED = fails on the baseline af46056; GUARD = passes there. Names: test_red_* / test_guard_*; every RED assertion message starts with 'UI-RED'."""
+RED = fails on the baseline a27411b; GUARD = passes there. Names: test_red_* / test_guard_*; every RED assertion message starts with 'UI-RED'."""
 import ast
 import hashlib
 import os
@@ -385,7 +385,7 @@ class Layered(Base):
         self.assertEqual(text.count("painter.setBrush(QColor(20, 20, 20, 240))"), 1, "UI-RED: the drop-down frame is the only (20,20,20,240) background left (the arrow tiles are gone)")
 
     def test_guard_17_input_and_cursor_q3_code_is_unchanged(self):
-        """the functions of main.py / managed_input.py that handle the help key, the input ownership and the override cursor, as AST hashes of af46056"""
+        """the functions of main.py / managed_input.py that handle the help key, the input ownership and the override cursor, as AST hashes of a27411b"""
         pinned = {
             "main.py": {}, "managed_input.py": {},
         }
@@ -399,7 +399,7 @@ class Layered(Base):
                     if any(k in seg for k in ("show_help", "set_input_ownership", "setOverrideCursor", "restoreOverrideCursor", "dropdown_active", "menu_click_zones")):
                         h[node.name] = hashlib.sha256(seg.encode("utf-8")).hexdigest()[:16]
             got[name] = h
-        self.assertEqual(got, INPUT_PINS, "the input / Cursor-Q3 functions differ from af46056")
+        self.assertEqual(got, INPUT_PINS, "the input / Cursor-Q3 functions differ from a27411b")
 
     def test_guard_18_click_zones_are_unchanged(self):
         o = self.build()
@@ -408,7 +408,7 @@ class Layered(Base):
             state, _ = self.setup(o, name)
             self.render(o, state, 1920, 1080)
             got[name] = hashlib.sha256(repr(sorted((tuple(round(float(v), 1) if isinstance(v, float) else v for v in z) for z in o.menu_click_zones), key=repr)).encode("utf-8")).hexdigest()[:16]
-        self.assertEqual(got, ZONE_PINS, "the input zones (menu_click_zones) differ from af46056")
+        self.assertEqual(got, ZONE_PINS, "the input zones (menu_click_zones) differ from a27411b")
 
     def test_guard_19_the_hint_button_and_the_selected_row_stay_in_the_frame(self):
         o = self.build()
@@ -420,7 +420,7 @@ class Layered(Base):
         self.assertIn(5, [z[5] for z in rows], "the selected row is in the frame")
 
     # ================================================================== Stage UI-D5 (commit 1): the scroll arrows of a drop-down have NO background
-    # Owner contract 2026-11-08 (after PAIR-COMPAT-C-01): only the glyphs of the two arrows are drawn; the tile background (20,20,20,240) of af46056 is gone. The hit rectangles (40 x 45) stay and are never painted.
+    # Owner contract 2026-11-08 (after PAIR-COMPAT-C-01): only the glyphs of the two arrows are drawn; the tile background (20,20,20,240) of a27411b is gone. The hit rectangles (40 x 45) stay and are never painted.
     ARROW_SCENES = (("both", 12, 3, 5), ("only_down", 12, 0, 0), ("only_up", 12, 5, 5), ("none", 5, 0, 0))
 
     def probe(self, o, state, width=1920, height=1080):

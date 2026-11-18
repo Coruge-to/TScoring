@@ -852,27 +852,27 @@ class E_StaticGuards(unittest.TestCase):
         self.assertEqual(src.count("OpenProcess("), 1)              # one lookup of the pid, at start; afterwards only the handle is waited on
 
     def test_normal_mode_and_the_overlay_are_untouched(self):
-        # P1 (commit 2b13435) did not touch the normal mode or the Overlay. (Phase SI-A changes the working tree on purpose: the comparison is the P1 commit against its parent.)
-        parent = _git("rev-parse", "2b1343521d29e98ae4011280021b3620414c9c55^")
+        # P1 (commit 309c1d5) did not touch the normal mode or the Overlay. (Phase SI-A changes the working tree on purpose: the comparison is the P1 commit against its parent.)
+        parent = _git("rev-parse", "309c1d5a6462dec1017a316f92a819f3aad4dd53^")
         if parent is None:
             self.skipTest("git not available (INCONCLUSIVE)")
-        self.assertEqual(_git("diff", parent.strip(), "2b1343521d29e98ae4011280021b3620414c9c55", "--", "main.py", "hud_ui.py", "menu_ui.py", "scoring_logic.py", "network.py", "config.py", "utils.py"),
+        self.assertEqual(_git("diff", parent.strip(), "309c1d5a6462dec1017a316f92a819f3aad4dd53", "--", "main.py", "hud_ui.py", "menu_ui.py", "scoring_logic.py", "network.py", "config.py", "utils.py"),
                          "")
 
     def test_the_control_plane_is_not_touched_by_this_fix(self):
         # the fix lives in managed_mode.py; the Caller, both Bridges and the shared protocol stay out of it. (Phase SI-A6 changes those files in the working tree on
         # purpose: the comparison is the P1 commit against its parent, as for the normal mode above.)
-        parent = _git("rev-parse", "2b1343521d29e98ae4011280021b3620414c9c55^")
+        parent = _git("rev-parse", "309c1d5a6462dec1017a316f92a819f3aad4dd53^")
         if parent is None:
             self.skipTest("git not available (INCONCLUSIVE)")
-        changed = (_git("diff", "--name-only", parent.strip(), "2b1343521d29e98ae4011280021b3620414c9c55") or "").split()
+        changed = (_git("diff", "--name-only", parent.strip(), "309c1d5a6462dec1017a316f92a819f3aad4dd53") or "").split()
         self.assertGreater(len(changed), 0)
         for path in changed:
             self.assertFalse(path.startswith(("TsScoringPlugin/Handshake/Caller/", "TsScoringPlugin/Handshake/Bridge/", "TsScoringPlugin/Handshake/Shared/")), path)
 
     def test_the_e2_e3_contract_of_managed_mode_is_kept(self):
         # replaces the E4 guard "managed_mode.py is unchanged since E3": the fix is additive (the Stop contract, names, exit codes stay as they were)
-        numstat = _git("diff", "--numstat", "b9611dad47e2c95f8fa1c89a8bd0286896c75cea", "--", "managed_mode.py")
+        numstat = _git("diff", "--numstat", "60794f2caf3d7643d9a29723e5fe0d2674e44d53", "--", "managed_mode.py")
         if numstat is None:
             self.skipTest("git not available (INCONCLUSIVE)")
         added, deleted, _ = numstat.split()

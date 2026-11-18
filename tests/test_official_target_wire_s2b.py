@@ -395,7 +395,7 @@ class D_CurrentSource(unittest.TestCase):
                          sorted({"string", "officialValue", "try", "catch", "data", "stidxListId"}))
 
     def test_the_terminal_sentinel_of_the_machine_target_is_still_there_and_is_not_part_of_the_official_read(self):
-        self.assertEqual(len(re.findall(r"TerminalDepartureTime", self.text)), 9)                     # the three sites of the machine target (NEXTTIME), as at 855f8b4
+        self.assertEqual(len(re.findall(r"TerminalDepartureTime", self.text)), 9)                     # the three sites of the machine target (NEXTTIME), as at 3c9ddf0
         self.assertNotIn("TerminalDepartureTime", self.host)
         self.assertNotIn("TerminalDepartureTime", self.flat[self.flat.index("stringofficialValue;try{"):self.flat.index("lastUdpData=data;")])
 

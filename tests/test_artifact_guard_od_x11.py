@@ -30,7 +30,7 @@ MSBUILD = r"C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Curren
 EVIDENCE = r"C:\Users\tsuru\Documents\TS-Scoring-Claude-Handoff\csender-range-v1-20261115"
 SHA_ON = "A" * 64
 SHA_OTHER = "B" * 64
-COMMIT = "a92b47eb04443676428f35faf178b95359da14fd"
+COMMIT = "0f7c1827e9281fad97ca5f5c2a3c43de97e5545a"
 
 
 def read(path):
@@ -45,7 +45,7 @@ def formal_cap(sha=SHA_ON, **over):
     return cap
 
 
-# The ledger as committed with the OD-X11 v2 contract (f42f0df): no history, the Jump OFF 17CA7159 baseline. The stage tests run from this frozen
+# The ledger as committed with the OD-X11 v2 contract (70e45cb): no history, the Jump OFF 17CA7159 baseline. The stage tests run from this frozen
 # initial state, not from the live repository ledger, which moves on at every promote (the first promote of D6E6E324 on 2026-11-15).
 INITIAL_LEDGER = json.loads(r'''{
   "schema": "ts-capability-ledger/1",
@@ -65,7 +65,7 @@ INITIAL_LEDGER = json.loads(r'''{
   },
   "baseline": {
     "sha256": "17CA7159C4C6F891CC4EF626047A44180F1001668393AAA70A6C2647C9185C17",
-    "sourceCommit": "b0a42d377b7b078f3b6910de8b5aa1005aa8e5c0",
+    "sourceCommit": "721510833e3b5597f3b905251379838b95eed329",
     "sizeBytes": 180736,
     "capabilities": {
       "legacyJumpExec": false,
@@ -118,7 +118,7 @@ INITIAL_LEDGER = json.loads(r'''{
         ]
       },
       "path": "csender-range-v1-20261115/candidate-ljx/TScoring.TelemetryA.dll",
-      "note": "acceptance build of b0a42d3 (Jump ON, no AssemblyMetadata); not a formal candidate under OD-X11 v2; kept as evidence"
+      "note": "acceptance build of 7215108 (Jump ON, no AssemblyMetadata); not a formal candidate under OD-X11 v2; kept as evidence"
     },
     {
       "sha256": "B0640455305E2C99D0DB6D560E11570B5705B6A21434079079EF52A5C5540220",
@@ -475,7 +475,7 @@ class E_LedgerAndClose(unittest.TestCase):
         self.assertTrue({"17CA7159", "B0640455", "D6E6E324", "EDEB5766", "BEAE0167"} <= set(by_sha), sorted(by_sha))
         # since the first OD-X11 v2 promote (D6E6E324, 2026-11-15) the baseline is a Jump ON formal build and the Jump OFF 17CA7159 is an emergency,
         # capability-losing rollback that needs an Owner approval id and is never selected automatically
-        # S05 pulse gate fix (on purpose; Owner 2026-11-16): the baseline moved on to BEAE0167 (source b408bf5), promoted after the formal live acceptance
+        # S05 pulse gate fix (on purpose; Owner 2026-11-16): the baseline moved on to BEAE0167 (source cfb66e1), promoted after the formal live acceptance
         base = ledger["baseline"]
         # 2026-11-18: the expected baseline is no longer a literal here. It is the TelemetryA entry of package/artifact-baselines.json (the single source of truth that baseline_check.py guards), so a raise cannot leave the two out of step.
         manifest = json.load(open(os.path.join(os.path.dirname(os.path.abspath(G.__file__)), "artifact-baselines.json"), encoding="utf-8"))

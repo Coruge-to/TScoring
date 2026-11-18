@@ -1,4 +1,4 @@
-"""INITIAL-DEFAULTS Commit 2 (Owner contract 2026-11-10): static facts of the Caller's Properties entry. RED = fails on 98e4698; messages start with 'ID2C-RED'.
+"""INITIAL-DEFAULTS Commit 2 (Owner contract 2026-11-10): static facts of the Caller's Properties entry. RED = fails on edd4773; messages start with 'ID2C-RED'.
 
   * the Caller starts the 'initial defaults' window ONLY through the existing launcher.json contract (LauncherConfigLoader): python / script / working directory, argument --initial-defaults; no public DLL file name, no registry, no
     WinForms window of its own (the window is the Python process), no WaitForExit in the Properties path (the callback returns at once).

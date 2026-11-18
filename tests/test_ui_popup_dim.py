@@ -3,7 +3,7 @@ dim layer inside the 16:9 area (since 2026-03-25 / 03-27 / 04-19). In a BVE wind
 837 x 668). The Owner decided to remove the second layer (the common layer stays: the background behind the pop-ups keeps its darkness, the band is gone).
 
 The REAL screen (menu_ui.draw_menu on an offscreen QImage of the window size 837 x 668, a flat light background) is driven. A pixel far to the left of every frame is read in the top strip, in the 16:9 area and in the bottom strip:
-all three must be equally dark for EVERY menu state. RED = fails on the baseline 569843c (states 7, 8, 9); GUARD = passes on the baseline."""
+all three must be equally dark for EVERY menu state. RED = fails on the baseline 855e067 (states 7, 8, 9); GUARD = passes on the baseline."""
 import os
 import sys
 import unittest

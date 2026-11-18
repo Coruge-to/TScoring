@@ -1,4 +1,4 @@
-"""Post-Finish Retry Recovery, Stage PFR-R - a Retry after the scoring finished is accepted again (Owner ruling of 2026-11-12; REQUIREMENT REGRESSION of LC-4 0957634 undone).
+"""Post-Finish Retry Recovery, Stage PFR-R - a Retry after the scoring finished is accepted again (Owner ruling of 2026-11-12; REQUIREMENT REGRESSION of LC-4 9af98d2 undone).
 
 THE ORIGINAL CONTRACT (restored)
   After the scoring finished - the result may be shown and SAVED - F1 > "選択した駅からやり直す" > a station > 「はい」 keeps the state of the check point (its ARRIVAL at the chosen station, itself included), discards

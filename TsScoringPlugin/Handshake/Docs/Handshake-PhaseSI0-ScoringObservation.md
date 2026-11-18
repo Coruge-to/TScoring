@@ -51,7 +51,7 @@ Ready／ScenarioReady は制御プレーン（Bridge／Caller）の観測ログ 
 |---|---|
 | 観測 | `Telemetry\Legacy\src\LegacyScoringProbe.cs`（新規）、`LegacyTelemetrySession.cs`（観測と順序記録の配線）、`LegacyTelemetryExtension.cs`（アダプターの読み取り）、`AssemblyInfo.cs`（0.3.1.0）、`TSScoringPlugin.AtsExLegacy.Telemetry.csproj`（新規ソース 1 件） |
 | 試験 | `Tests\Test-ScoringObservationSI0.ps1`（新規）、`Tests\TelemetryTestFixture.cs`（偽物の追加）、`tests\test_scoring_observation_si0.py`（新規） |
-| 既存試験の更新 | バージョン検査（0.3.0.0 または 0.3.1.0）: LI0／LI1／LI2／`Verify-PhaseL3.ps1`。スコープ許可リストへ SI-0 のファイルを追加: M1／L1／`Verify-PhaseL3.ps1`。LI2 の G04〜G08 は LI2 コミット（`0010a8b` → `3158ce2`）の履歴に固定（内容は不変、作業ツリーの後続変更に依存しなくなった） |
+| 既存試験の更新 | バージョン検査（0.3.0.0 または 0.3.1.0）: LI0／LI1／LI2／`Verify-PhaseL3.ps1`。スコープ許可リストへ SI-0 のファイルを追加: M1／L1／`Verify-PhaseL3.ps1`。LI2 の G04〜G08 は LI2 コミット（`28bdf60` → `5c55b8d`）の履歴に固定（内容は不変、作業ツリーの後続変更に依存しなくなった） |
 | 文書 | 本書 |
 
 Caller、両 Bridge、Current 送信側、`Shared`、Python 本番ファイル、`LegacyApi.cs`、`LegacyInputProbe.cs`、ハンドル契約、入力テレメトリは変更しない。

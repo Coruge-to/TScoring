@@ -1,4 +1,4 @@
-"""INITIAL-DEFAULTS Commit 1 (Owner contract 2026-11-10): the saved_defaults model. RED = fails on the baseline 73e00b5 (the module does not exist); every message starts with 'ID-RED'.
+"""INITIAL-DEFAULTS Commit 1 (Owner contract 2026-11-10): the saved_defaults model. RED = fails on the baseline 3ed207f (the module does not exist); every message starts with 'ID-RED'.
 
 Contract
   * file: %LOCALAPPDATA%\\Coruge-to\\TS Scoring\\initial-defaults.json (UTF-8 JSON, schemaVersion 1, per user, shared by BVE5 / BVE6 and Current / Legacy). No registry, no INI, never launcher.json.

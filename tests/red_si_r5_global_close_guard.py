@@ -1,8 +1,8 @@
 """Phase SI-R5.1 - the GLOBAL CLOSE GUARD of StationIndex Season 2: no product path selects a station identity, a target or a NEXTLOC by a distance.
 
 NOT a discovery test (the name starts with red_): run it as   python -B tests/red_si_r5_global_close_guard.py [result.tsv]
-    RED    must FAIL on fd431b4 (it finds the five 1 m reverse lookups of scoring_logic.py) and pass when the last of them is gone (SI-R5.2-C)
-    GUARD  must PASS on fd431b4 and after: the detector itself (positive and negative samples), the empty Python allow-list, the narrow C# allow-list
+    RED    must FAIL on cda9a3a (it finds the five 1 m reverse lookups of scoring_logic.py) and pass when the last of them is gone (SI-R5.2-C)
+    GUARD  must PASS on cda9a3a and after: the detector itself (positive and negative samples), the empty Python allow-list, the narrow C# allow-list
 
 THE DETECTOR (lexical and conservative: dead code is scanned like live code; it needs no call graph):
     F1  a loop / comprehension / generator over a station list whose body or condition COMPARES a station's ["location"] / .get("location")   (the 1 m lookup in every spelling, next(...) included)

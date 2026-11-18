@@ -2,7 +2,7 @@
 #
 # Builds the SAME fixture as the LJX-1 runner (the 8 LJX-1 sources) plus LegacyJumpLcTestCases.cs, loads the DLL under test and runs ONLY the LC-J cases. Nothing is installed or
 # edited; it writes under -LogDir only. No BVE, no AtsEX runtime (the fakes of the LJX-1 harness). Loopback sockets and mappings of synthetic PIDs only.
-#   -Expect red   (the state of cab7dce): RED rows must FAIL with their declared check text; GUARD rows must PASS.
+#   -Expect red   (the state of 15e2d9d): RED rows must FAIL with their declared check text; GUARD rows must PASS.
 #   -Expect green (after the LC-4 fix):   every row must PASS.
 # Exit codes: 0 every row as expected; 1 a row differs; 2 inconclusive (DLL absent).
 param(

@@ -50,7 +50,7 @@ class A_TheFormalFilesPass(unittest.TestCase):
     def test_the_session_adds_exactly_the_formal_two_lines_to_the_LC4b_file(self):
         base = base_session()
         if base is None:
-            self.skipTest("cbebfd3 is not known to this checkout")
+            self.skipTest("4650073 is not known to this checkout")
         self.assertEqual(S.session_violations(base, read(S.SESSION)), [])
 
     def test_the_session_alone_has_exactly_one_formal_key_at_the_formal_place(self):

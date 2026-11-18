@@ -6,7 +6,7 @@
   cancellation:               speed != 0 from the arrival tick on (0-5 s and 5-10 s alike): the Jump is cancelled, the guidance is removed at once, the arrival result popups end (the existing popup list is
                               filtered), the red two-line warning (5.0 s), the RESTOP_WAIT state
   after a re-stop (UNCHANGED, Stage 4): two-line white guidance at once, ONE Jump 5.0 s after the re-stop - never 10.0 s
-RED = fails on the baseline fe8c26d (the old contract: 5.0 s, special popups 3.0 s); GUARD = already true and must stay true.
+RED = fails on the baseline cb213d8 (the old contract: 5.0 s, special popups 3.0 s); GUARD = already true and must stay true.
 The product is driven through the REAL update_physics_and_scoring (tests/pt_scene.py, tests/tbg_c01_rig.py)."""
 import ast
 import inspect
@@ -372,7 +372,7 @@ class D_ContractsKept(Base):
         score_before = o.score
         f.land()
         f.after(3)
-        self.assertEqual(o.score, score_before, "RED/GUARD (C-01 Root Fix 161c037): the landing at B scores nothing")
+        self.assertEqual(o.score, score_before, "RED/GUARD (C-01 Root Fix 8049e85): the landing at B scores nothing")
         self.assertTrue(o.is_scoring_mode)
         self.assertEqual(f.fail_reasons(), [])
         self.assertEqual([cp.get("origin") for cp in o.save_data if cp.get("station_index") == 2], ["turnback"], "ONE pseudo-turnback B checkpoint")

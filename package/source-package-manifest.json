@@ -2,7 +2,7 @@
   "schema": "ts-source-package-manifest/1",
   "package_contract": "ts-package-contract/1",
   "contract_tag": "TSJUMP2",
-  "source_base_commit": "0b8e51137af2bf3c888dc77182981a89bf64090a",
+  "source_base_commit": "34f92c1e6bf97208c40940e458ecbcef8f2a1f87",
   "source_branch": "refactor/state-transitions",
   "request_wire_version": 2,
   "completion_wire_version": 2,

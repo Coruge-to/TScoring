@@ -33,8 +33,8 @@ import managed_state as ms  # noqa: E402
 
 HAS_QT = importlib.util.find_spec("PyQt6") is not None
 CHILD = os.path.join(ROOT, "tests", "managed_hud_child.py")
-E3_COMMIT = "b9611dad47e2c95f8fa1c89a8bd0286896c75cea"
-L3_GRADIENT_COMMIT = "d9cc783df283138124396475bb9daaa95c1b6ea0"      # the commit before the HUD Z-order fix: main.py / hud_ui.py must not differ from it
+E3_COMMIT = "60794f2caf3d7643d9a29723e5fe0d2674e44d53"
+L3_GRADIENT_COMMIT = "9a460cfa5bd3c5d81fd44d144d4b9fa43da679c7"      # the commit before the HUD Z-order fix: main.py / hud_ui.py must not differ from it
 CALLER_SRC = os.path.join(ROOT, "TsScoringPlugin", "Handshake", "Caller", "src")
 
 
@@ -1770,7 +1770,7 @@ class G_RealOverlayAndScoringLifecycle(unittest.TestCase):
         # and every other member are AST-identical to the E3 commit, the datagram intake differs only by the accept() line, and the two blocks
         # that moved (telemetry application, jump completion) moved unchanged.
         old = _git("show", E3_COMMIT + ":main.py")
-        new = _git("show", "9f25a26c6bc4a578767c7f306672811bf7bf341c:main.py")      # the commit Phase SI-A started from: SI-A's own change set is pinned by tests/test_split_equivalence_sia2.py
+        new = _git("show", "085e58fe17e0215fa448c50340b1f1c89ea6f0c9:main.py")      # the commit Phase SI-A started from: SI-A's own change set is pinned by tests/test_split_equivalence_sia2.py
         if old is None or new is None:
             self.skipTest("E3 commit / git not available (INCONCLUSIVE)")
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # tests\ is not a package
@@ -2010,7 +2010,7 @@ class H_StaticGuards(unittest.TestCase):
             self.assertNotIn(token, hud, token)
 
     def test_main_py_and_hud_ui_are_untouched_by_the_z_order_fix(self):
-        out = _git("diff", "--name-only", L3_GRADIENT_COMMIT, "9f25a26c6bc4a578767c7f306672811bf7bf341c", "--", "main.py", "hud_ui.py", "scoring_logic.py", "menu_ui.py", "network.py", "telemetry_contract.py")
+        out = _git("diff", "--name-only", L3_GRADIENT_COMMIT, "085e58fe17e0215fa448c50340b1f1c89ea6f0c9", "--", "main.py", "hud_ui.py", "scoring_logic.py", "menu_ui.py", "network.py", "telemetry_contract.py")
         if out is None:
             self.skipTest("git not available (INCONCLUSIVE)")
         self.assertEqual(out.strip(), "")

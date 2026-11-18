@@ -82,7 +82,7 @@ class OracleVsVectors(unittest.TestCase):
 
 
 class ProductDecode(unittest.TestCase):
-    """The product module (RED on cab7dce: it does not exist)."""
+    """The product module (RED on 15e2d9d: it does not exist)."""
 
     def setUp(self):
         import importlib

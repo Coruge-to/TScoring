@@ -3,8 +3,8 @@
     "allowed":  [
                     {
                         "ownerRef":  "Owner 2026-11-18 (H-1 promotion with settle 100 ms)",
-                        "reason":  "H-1 (978cdf0): the timer callback Heartbeat that read BVE state from the thread-pool thread was replaced by ComposeHeartbeat + event-driven flags (heartbeatScenarioActive, lastTick)",
-                        "sourceCommit":  "978cdf08e3cec17bcb25344ee10eaabf838407e6",
+                        "reason":  "H-1 (addc290): the timer callback Heartbeat that read BVE state from the thread-pool thread was replaced by ComposeHeartbeat + event-driven flags (heartbeatScenarioActive, lastTick)",
+                        "sourceCommit":  "addc290b7797c22325875773bd9f8cbe25852947",
                         "artifact":  "TScoring.TelemetryB.dll",
                         "string":  "n:Heartbeat"
                     }

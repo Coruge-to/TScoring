@@ -39,7 +39,7 @@ import lc_legacy_feed as F  # noqa: E402
 import pid_s3_undo  # noqa: E402  (PID-S3, on purpose: ObservationLog.cs names one file per BVE process)
 
 SHAPES = ("current", "legacy")
-BASE_HEAD = "cab7dce265429ee43775ecbaa4c42f450058a653"
+BASE_HEAD = "15e2d9d1751f1bd26f9c68bec485809c05c43090"
 
 # what the sender wrote, as the Overlay holds it after the line (the normalized INPUT); DOORTIME (bve_door_close_time_ms) is the known difference and is compared apart
 INPUT_FIELDS = ("bve_time_ms", "bve_speed", "bve_location", "bve_next_loc", "bve_next_time", "bve_margin_b", "bve_margin_f", "bve_door", "bve_doordir", "bve_is_pass", "bve_term",
@@ -284,7 +284,7 @@ class E_Equivalence(LC2Base):
 # =====================================================================================================================================================
 # E05 - E06: the minimal slice (absolute values) and the station / target progression
 # =====================================================================================================================================================
-# the minimal slice of cab7dce / 52a11a9, measured (LC-2): phases = (name, target index, arrival index, history length, latest check point station, score, NEXTLOC, finished)
+# the minimal slice of 15e2d9d / a0d0379, measured (LC-2): phases = (name, target index, arrival index, history length, latest check point station, score, NEXTLOC, finished)
 EXPECTED = {
     "strong": {
         "score": 400,

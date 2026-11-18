@@ -10,10 +10,10 @@ What is_first_station IS (fixed by the audit of ST-2c; the audit documents are o
   start station is verified at the places that SET the latch (N-01 / N-05 / T05 / T06 of the ST-2 canon) and again when the jump completes (ST-3d: selected_idx and the position,
   judged by jump_transaction.judge_completion); a train that is far from the station on the first line is simply a train that has not been jumped yet.
 
-N-11   FIRST-STATION-100M-REMOVED        the latch does not depend on where the train is on the first UDP line (RED against 618d4b8)
+N-11   FIRST-STATION-100M-REMOVED        the latch does not depend on where the train is on the first UDP line (RED against aa4b02d)
 G-xx   GUARD                             a contract that is GREEN before and after ST-2c and that keeps a mutation of the new code honest
 
-Each RED fails with ContractViolation whose .code is the declared one against the product of 618d4b8 and passes against the product of ST-2c.
+Each RED fails with ContractViolation whose .code is the declared one against the product of aa4b02d and passes against the product of ST-2c.
 
 ISOLATION: as the files this one builds on (tests/sia_rig.py: the real Overlay offscreen, every outside effect a recorder, a stub UDP socket: 54321 / 54322 are never bound or
 sent to). USERPROFILE / HOME point to an empty temporary folder for the whole module and the module asserts at its end that nothing was written there. The static tests (class
@@ -59,7 +59,7 @@ class ContractViolation(AssertionError):
 
 
 def st2c(tid, kind, code="", note=""):
-    """Declare a test of ST-2c: its id, its kind ("RED": fails against 618d4b8 with `code`; "GUARD": green before and after) and one line."""
+    """Declare a test of ST-2c: its id, its kind ("RED": fails against aa4b02d with `code`; "GUARD": green before and after) and one line."""
     assert kind in ("RED", "GUARD"), kind
 
     def deco(fn):

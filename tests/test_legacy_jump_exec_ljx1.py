@@ -69,16 +69,16 @@ PYTHON_PINS = {
 # reason - StationIndex, identity, checkpoint - broke the pin; two of the three had already moved from the LJX-1 value to "the last accepted commit"). The old values are KEPT here as
 # history; the jump contract is pinned by regions (class A2) instead.
 SUPERSEDED_WHOLE_FILE_PINS = {
-    # was F1C9457A... at the LJX-1 commit ca58586; moved to 4D077792... by ST-1A / ST-1B (the STIDX intake, _station_index_finish)
+    # was F1C9457A... at the LJX-1 commit 9bd5d7b; moved to 4D077792... by ST-1A / ST-1B (the STIDX intake, _station_index_finish)
     "main.py": {"ljx1": "F1C9457A9366084D2D53D41F46D5A2AF1A8A8BB5C0F7C72B4A9588EAFAC81B68", "last": "4D077792FDD5084C35A8253EE4E8FCA383E4CAEC7DB1ACA83F8559B1F99FB813"},
-    # was 6A7B6594... at ca58586; moved to 060A958C... by ST-1B Prep (EVENT_LINE_CAPS "stidx": 24)
+    # was 6A7B6594... at 9bd5d7b; moved to 060A958C... by ST-1B Prep (EVENT_LINE_CAPS "stidx": 24)
     "managed_input.py": {"ljx1": "6A7B6594FE626C78863ED73E09517A74839D4A0DF3DA7340E583F9E358163851", "last": "060A958CA831382282C282A17D6C38BF72EFC27D8766A325F5A57A7C2A6234A9"},
     # never moved: the CRLF form of the blob that the LJX-1 commit holds (see SCORING_LOGIC_AT_LJX1)
     "scoring_logic.py": {"ljx1": "3A790E478C0A2F10DDC9E28E905A399D736E4DF8AA3D9C646AD76B76D1611945", "last": "3A790E478C0A2F10DDC9E28E905A399D736E4DF8AA3D9C646AD76B76D1611945"},
 }
 
 # the formal LJX-1 commit and scoring_logic.py in it (read from git, never from a copy): the historical evidence
-LJX1_COMMIT = "ca585868b99bedce0917ae0bb42dc1d2b6e6d3e5"
+LJX1_COMMIT = "9bd5d7b4075e901b79225b807049be4969cc7211"
 SCORING_LOGIC_AT_LJX1 = {
     "blob": "3c4731183d3b08aee8497a405d1d4f88e58c708c",
     "lf_sha256": "640CA3FB04E05C76B214A082DFFE4AEDB18956EA0ABAAD91CD4AF0C7C81E0E22",
@@ -139,8 +139,8 @@ JUMP_UNITS = {
     },
 }
 
-# digests of the regions (kind, SHA-256, number of jump records). Computed from the LJX-1 commit ca58586 and found IDENTICAL at 69077aa, in the ST-2a working tree and (main.py, managed_input.py)
-# at ea0a3fb - except the units named in the Phase ST-3d notes below, which ST-3d changed on purpose and re-pinned in the SAME change (old value -> new value, with the purpose).
+# digests of the regions (kind, SHA-256, number of jump records). Computed from the LJX-1 commit 9bd5d7b and found IDENTICAL at 2838cb9, in the ST-2a working tree and (main.py, managed_input.py)
+# at 8d1bcaf - except the units named in the Phase ST-3d notes below, which ST-3d changed on purpose and re-pinned in the SAME change (old value -> new value, with the purpose).
 REGION_PINS = {
     "main.py": {
         "Overlay._note_jump_complete": ("whole", "4E0813095DE0203C269FE5F2A3DC1E85235DA836D53BFC63FA615E73716C91D9", 1),
@@ -291,7 +291,7 @@ def unit_problems(name, source):
 
 
 class A2_TheLegacyJumpContractRegionsOfThePythonSide(unittest.TestCase):
-    """Phase ST-2a Commit Prep (owner decision O-1): the contract regions of main.py / managed_input.py are those of LJX-1 (identical at ca58586, 69077aa and in the ST-2a
+    """Phase ST-2a Commit Prep (owner decision O-1): the contract regions of main.py / managed_input.py are those of LJX-1 (identical at 9bd5d7b, 2838cb9 and in the ST-2a
     tree), and scoring_logic.py is compared with its blob in the formal LJX-1 commit. A change for another reason (StationIndex, identity, checkpoint) does not touch them."""
 
     def test_the_jump_regions_of_main_py_are_those_of_ljx1(self):

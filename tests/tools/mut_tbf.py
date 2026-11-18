@@ -4,7 +4,7 @@ One mutant at a time on a THROW-AWAY byte copy; the file is restored after every
 (cr-entry-1-followup-plan V-1..V-3 plus the two extra mutants TF-04 / TF-05 for +/-0.0 and sign reversal).
 A mutant is KILLED when at least one test of MODS fails. The failing tests are split into
   'new'  = the TB-F guard class  test_pt_tbd_real_flow.C_TheLandingAtBScoresCorrectly
-  'old'  = every other test of MODS (the tests that existed at HEAD 6d4d1af)
+  'old'  = every other test of MODS (the tests that existed at HEAD 8e9fed9)
 so that the contribution of the added guards is visible. Per mutant the line is printed:  NAME  KILLED/SURVIVED  old=<n> new=<n>"""
 import os
 import subprocess

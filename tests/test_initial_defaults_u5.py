@@ -8,7 +8,7 @@ L / R                      indicator left edge of the left column (8 environment
 U5-2                       ink centre of 「勾配」 = ink centre of 「簡単設定」 (heading, three buttons and the A-rank row move together; their internal gaps stay).
 U5-3                       the timing row and the A-rank row stand at the same visual height (the A-rank row moves up by RANK_ROW_RAISE, the timing item does not); the baselines are within 1 device px (priority), the visual (bounding box) centres within 2 (measured at the four real scales: baseline +1/0/0/0, centre +1.5/+1/+1/+2).
 Spin                       the up / down button geometry is NOT changed in this stage (centred within 0..0.5 device px already).
-RED = fails on the tree of the FIRST U5 (variant B, 315c9d5 + the first U5 diff). Messages start with 'U5-RED' (a missing contract) or 'U5-GUARD' (a contract that already holds and must stay).
+RED = fails on the tree of the FIRST U5 (variant B, b89e715 + the first U5 diff). Messages start with 'U5-RED' (a missing contract) or 'U5-GUARD' (a contract that already holds and must stay).
 The ink measurements render the REAL window (QWidget.grab) at the scale of the test process; the four REAL Windows scales (100 / 125 / 150 / 175 %) are measured by the external probe of the deliverable.
 Numbers marked NATIVE FONT are measured with Yu Gothic UI 9 pt on Windows at 100 % (the Owner's machine); they are skipped when another font is in use."""
 import os

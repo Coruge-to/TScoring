@@ -6,7 +6,7 @@
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
     [string]$PythonExe = 'C:\Python314\python.exe',
-    [string]$Baseline = 'a43f18efca37caf64d33bb7c7d5529efd5b7067b'
+    [string]$Baseline = '476b57110b9412b1fde26052ffe68e541a7860fb'
 )
 $ErrorActionPreference = 'Stop'
 $script:fail = 0
@@ -164,7 +164,7 @@ $stop.Dispose()
 Push-Location $Root
 try {
     # Phase E3: the working tree moves on, so the Phase E2 COMMIT is what is compared
-    $e2 = '6d20650395262e62c10916a4bdb0653947149a8a'
+    $e2 = 'b33661a7b312e527fed276759e7d11616f444f5b'
     $changed = @(git diff --name-only $Baseline $e2 -- TsScoringPlugin)
     Check 'TsScoringPlugin (Caller, Bridge, DLL) identical to baseline in the E2 commit' ($changed.Count -eq 0) ($changed -join ',')
     $hit = @(git grep -n -E 'Process\.Start|ProcessStartInfo' $e2 -- 'TsScoringPlugin/Handshake/Caller/src')

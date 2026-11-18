@@ -7,10 +7,10 @@
 # Sessions that are driven by hand (Step) have no monitor thread, so every ordering below is deterministic. This script is ASCII-only on purpose.
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
-    [string]$Baseline = '4c5dad48cbf90d5593e6f6e27f4b8d66e1b4a719',
+    [string]$Baseline = '3f10b9f859cd0a0f6771908efb31dbb940c43ac0',
     # Phase E3: the static (source / scope) checks of this test describe THE PHASE E1 COMMIT (the last commit before Python / process start),
     # not the moving working tree. Phase E3 has its own scope test.
-    [string]$E1Commit = 'a43f18efca37caf64d33bb7c7d5529efd5b7067b',
+    [string]$E1Commit = '476b57110b9412b1fde26052ffe68e541a7860fb',
     [switch]$Probe32
 )
 
@@ -568,7 +568,7 @@ Check 'D06 the Tick path starts nothing and has no UDP / Python (no Process, Sta
 Check 'D07 [31] the Tick time and count are written with Interlocked.Exchange / Interlocked.Increment, and every other access to the two 64-bit fields is Interlocked.Read (BVE5 is a 32-bit process)' (($notifyBody -match 'Interlocked\.Exchange\(ref lastTickQpc, Stopwatch\.GetTimestamp\(\)\)') -and ($notifyBody -match 'Interlocked\.Increment\(ref tickSeq\)') -and (@([regex]::Matches((NoComments $hsNow), '\b(lastTickQpc|tickSeq)\b') | Where-Object { $true }).Count -eq @([regex]::Matches((NoComments $hsNow), 'Interlocked\.(Exchange|Increment|Read)\(ref (lastTickQpc|tickSeq)\b')).Count + 2))
 Check 'D08 the first-Tick flag logic of Phase M1 is kept in NotifyTick (flag test, one timestamp, one volatile write)' (($notifyBody -match 'if \(tickSeen\)') -and ($notifyBody -match 'firstTickQpc = Stopwatch\.GetTimestamp\(\)') -and ($notifyBody -match 'tickSeen = true'))
 Check 'D09 [37] no Process.Start / ProcessStartInfo / CreateProcess / ShellExecute in any Caller or shared source, nor a reference in the DLL' (((@(E1Cs 'Caller/src') + @(Get-ChildItem (Join-Path $Root 'Shared') -Filter *.cs) | Where-Object { (NoComments (WorkText $_.FullName.Substring($Root.Length + 1))) -match 'Process\.Start|ProcessStartInfo|CreateProcess|ShellExecute|WinExec|UseShellExecute' }).Count -eq 0))
-Check 'D10 [38] no Python in the Caller sources or the DLL, and no .py file is among the files of this phase (changes since the baseline inside the Handshake tree, and the committed history since the baseline)' ((@(E1Cs 'Caller/src' | Where-Object { (NoComments (WorkText ('Caller\src\' + $_.Name))) -match '(?i)python|\.py\b' }).Count -eq 0) -and (@(((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '--', $prefix)) -split "`n") | Where-Object { $_ -match '\.py$' }).Count -eq 0) -and (@(((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '6018a5b')) -split "`n") | Where-Object { $_ -match '\.py$' }).Count -eq 0))
+Check 'D10 [38] no Python in the Caller sources or the DLL, and no .py file is among the files of this phase (changes since the baseline inside the Handshake tree, and the committed history since the baseline)' ((@(E1Cs 'Caller/src' | Where-Object { (NoComments (WorkText ('Caller\src\' + $_.Name))) -match '(?i)python|\.py\b' }).Count -eq 0) -and (@(((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '--', $prefix)) -split "`n") | Where-Object { $_ -match '\.py$' }).Count -eq 0) -and (@(((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '837e375')) -split "`n") | Where-Object { $_ -match '\.py$' }).Count -eq 0))
 Check 'D11 no AppReady / Stop event for an application, no job object, no UDP / socket, no hook, no registry, no Mutex in the Caller sources or the DLL' ((@(E1Cs 'Caller/src' | Where-Object { (NoComments (WorkText ('Caller\src\' + $_.Name))) -match 'AppReady|JobObject|UdpClient|Socket|SetWindowsHook|RegisterHotKey|Registry|HttpClient|WebClient|Mutex' }).Count -eq 0))
 $nonCommentSt = NoComments $stSrc
 Check 'D12 DrivingActivityState.cs is pure: no clock (Stopwatch / DateTime), no I/O, no thread, no lock, no kernel object, no log call' ($nonCommentSt -notmatch 'Stopwatch|DateTime|File|Stream|Thread|lock\s*\(|Interlocked|EventWaitHandle|Mutex|Obs\(|ObsA\(|ObservationLog|MessageBox|Process')

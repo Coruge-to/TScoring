@@ -399,7 +399,7 @@ $frozen = @(
     'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyStationTimeline.cs'
 )
 # (Phase LI1 is committed: the guard compares the LI1 commit with its parent, like G08. Phase SI-A changes the Python files in the working tree on purpose; its own tests pin that.)
-$changedFrozen = @((RunGit (@('-C', $top, 'diff', '--name-only', '0010a8b^', '0010a8b', '--') + $frozen)) -split "`n" | Where-Object { $_ })
+$changedFrozen = @((RunGit (@('-C', $top, 'diff', '--name-only', '28bdf60^', '28bdf60', '--') + $frozen)) -split "`n" | Where-Object { $_ })
 Check ('G06 the Current contract and everything the brief freezes are byte-identical to HEAD: Current sender Class1.cs, Caller, both Bridges, the Handshake shared protocol, telemetry_contract / telemetry_gate / network / main / hud_ui / scoring_logic / managed_* (' + $changedFrozen.Count + ' changed) ' + ($changedFrozen -join ',')) ($changedFrozen.Count -eq 0)
 $tcDiff = RunGit @('-C', $top, 'diff', '-U0', 'HEAD', '--', 'TsScoringPlugin/Handshake/Telemetry/Shared/TelemetryContract.cs')
 $tcPlus = @($tcDiff -split "`n" | Where-Object { $_ -match '^\+[^+]' })
@@ -407,8 +407,8 @@ $tcMinus = @($tcDiff -split "`n" | Where-Object { $_ -match '^-[^-]' })
 # Phase ST-3c (allow-list widened, as SI-1 and LJX-1 did before it): the shared contract also gains the optional interface ITelemetrySinkAck (R1-B) - a documented, purely additive block (its comment lines, the declaration, the braces, the one TrySend member, a blank line); nothing removed.
 $ackAdded = 'ITelemetrySinkAck|bool TrySend\(string text\)|^\+\s*///|^\+\s*[{}]\s*$|^\+\s*$'
 Check 'G07 the shared telemetry contract is byte-identical to HEAD, or differs from it ONLY by the two token constants Phase SI-1 added (trainlen, maplimit_ahead), the one token constant Phase LJX-1 added (jump) and the optional interface ITelemetrySinkAck that Phase ST-3c added (nothing removed, nothing else added); LI1 added the three token constants handle, bcp, bpp; it defines them' (((-not $tcDiff) -or (($tcMinus.Count -eq 0) -and (@($tcPlus | Where-Object { ($_ -notmatch 'TokMapLimitAhead|TokTrainLen|TokJump') -and ($_ -notmatch $ackAdded) }).Count -eq 0))) -and ([IO.File]::ReadAllText((Join-Path $Root 'Telemetry\Shared\TelemetryContract.cs')) -match 'TokHandle[\s\S]*TokBcp[\s\S]*TokBpp'))
-# G08 describes what THIS phase changed: the LI1 work is committed (0010a8b, parent d7f5d8f), so it is pinned to that commit pair in history (the same assertion as while the work was uncommitted, no longer dependent on a LATER phase's working tree).
-$changed = @((RunGit @('-C', $top, 'diff', '--name-only', 'd7f5d8f', '0010a8b')) -split "`n" | Where-Object { $_ })
+# G08 describes what THIS phase changed: the LI1 work is committed (28bdf60, parent 8f80532), so it is pinned to that commit pair in history (the same assertion as while the work was uncommitted, no longer dependent on a LATER phase's working tree).
+$changed = @((RunGit @('-C', $top, 'diff', '--name-only', '8f80532', '28bdf60')) -split "`n" | Where-Object { $_ })
 $untracked = @((RunGit @('-C', $top, 'ls-files', '--others', '--exclude-standard')) -split "`n" | Where-Object { $_ })
 $touched = @($changed | Sort-Object -Unique)
 $li1Allowed = @($touched | Where-Object { $_ -match '^TsScoringPlugin/Handshake/(Telemetry/(Legacy/|Shared/TelemetryContract\.cs)|Tests/|Tools/|Docs/Handshake-PhaseLI[12]|Docs/Handshake-PhaseL3-LegacyTelemetry\.md)|^tests/(test_legacy_input_li[12]|legacy_input_reference)\.py$|^tests/legacy_input_matrix24\.json$' })

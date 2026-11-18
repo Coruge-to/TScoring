@@ -4,7 +4,7 @@ U4-A  the fixed title bar colour (#F1F3F6 through DWMWA_CAPTION_COLOR) is gone: 
       replaces it (no Mica / Acrylic / gradient / transparency / blur / background reading / BVE colour code / per-position branch). The dialog keeps: × / Alt+F4 / Esc cancel without saving, the OK save, the re-opening.
 U4-B  the indicator of the check boxes of this window is ONE logical size, 13 (PM_IndicatorWidth / PM_IndicatorHeight), given by the OpticalStyle (the style of these check boxes only); every other metric and every drawing
       is delegated to the native style (the checked blue tick, the white box, the grey disabled box, hover and focus come from windowsvista); no scale branch; CHECKBOX_OPTICAL_LIFT stays 0.5.
-RED = fails on the tree of fe668d2. Messages start with 'U4-RED' (a missing contract) or 'U4-GUARD' (a contract that already holds and must stay). The REAL Windows scales (100 / 125 / 150 / 175 %) are measured by the
+RED = fails on the tree of 795f1f8. Messages start with 'U4-RED' (a missing contract) or 'U4-GUARD' (a contract that already holds and must stay). The REAL Windows scales (100 / 125 / 150 / 175 %) are measured by the
 external probe of the deliverable (a deterministic offscreen test can not change the Windows scale)."""
 import ast
 import os

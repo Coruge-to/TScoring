@@ -1,4 +1,4 @@
-"""INITIAL-DEFAULTS Commit 5 (Owner contract 2026-11-10): the easy settings (簡単設定) of the 'initial defaults' window. RED = fails on e2294bd; messages start with 'ID5-RED'.
+"""INITIAL-DEFAULTS Commit 5 (Owner contract 2026-11-10): the easy settings (簡単設定) of the 'initial defaults' window. RED = fails on bba0a9f; messages start with 'ID5-RED'.
 
 Contract
   * three buttons 初級 / 中級 / 上級 (objectName preset_beginner / preset_intermediate / preset_advanced), coloured with the EXISTING colour constants of config.py (green COLOR_N, blue COLOR_P, red COLOR_B_EMG: the colours the F1 page

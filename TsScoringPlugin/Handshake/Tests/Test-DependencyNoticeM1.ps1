@@ -6,7 +6,7 @@
 # This script is ASCII-only on purpose.
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
-    [string]$Baseline = '0f4c841122d1ce1590ca897f742db09d2265d5ae'
+    [string]$Baseline = '8bc10908058869c18ba75ad0700d6da81d3e616f'
 )
 
 Add-Type -TypeDefinition @'
@@ -655,7 +655,7 @@ $legSha = (Get-FileHash ((Require-TsArtifact $Root 'TScoring.BridgeA.dll')) -Alg
 $top = (RunGit @('rev-parse', '--show-toplevel')).Trim()
 $changed = @((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '--', $prefix)) -split "`n" | Where-Object { $_ })
 $untracked = @((RunGit @('-C', $top, 'ls-files', '--others', '--exclude-standard', '--', $prefix)) -split "`n" | Where-Object { $_ })
-$committedAll = @((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '6018a5b')) -split "`n" | Where-Object { $_ })   # whole repository, committed history only (a dirty file of someone else is not this phase)
+$committedAll = @((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '837e375')) -split "`n" | Where-Object { $_ })   # whole repository, committed history only (a dirty file of someone else is not this phase)
 $touched = @($changed + $untracked | Sort-Object -Unique)
 # Phase SI-A6 changes exactly these core sources (the load marker next to ScenarioReady); every other Bridge / shared source is still the baseline
 $si6Core = @('Bridge/src/ScenarioReadyTracker.cs', 'Bridge/src/ScenarioReadyPublisher.cs', 'Bridge/src/AssemblyInfo.cs', 'Bridge/Legacy/src/AssemblyInfo.cs', 'Shared/HandshakeProtocol.cs') | ForEach-Object { $prefix + $_ }

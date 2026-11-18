@@ -1,6 +1,6 @@
 """Phase SI-R5.1 - the CHARACTERIZATION scenarios of the five 1 m reverse lookups (a helper: neither discovered nor a runner).
 
-run_all(main, scoring_logic, sia_rig) -> {scenario name: observation}. The same scenarios run against the product of fd431b4 (the distance lookups) and against any
+run_all(main, scoring_logic, sia_rig) -> {scenario name: observation}. The same scenarios run against the product of cda9a3a (the distance lookups) and against any
 replacement; tests/si_r5_char_pins.json holds the two answers (head / new). Nothing here is a requirement by itself: tests/test_si_r5_characterization.py says which rows
 are INVARIANT (head == new, pinned for good) and which are the KNOWN-DEFECT or the identity-missing rows that the replacement changes on purpose.
 """

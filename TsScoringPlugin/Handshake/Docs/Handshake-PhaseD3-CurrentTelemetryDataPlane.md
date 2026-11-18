@@ -33,7 +33,7 @@ left untouched by `discard_generation_state`, i.e. also kept) and only completes
 `tests/test_managed_input_sia3.py`). Provenance, owner decision (a):
 
 - `dataplane_receiver`, `dataplane_strict`: attributes NEW in PID-D3.
-- `udp_port`: NOT a PID-D3 attribute. It was introduced by PID-D2 (commit 830b5a8) and left unclassified there; the gap was found during PID-D3 and is completed here. It is the
+- `udp_port`: NOT a PID-D3 attribute. It was introduced by PID-D2 (commit 9641d88) and left unclassified there; the gap was found during PID-D3 and is completed here. It is the
   generation-independent port of the Overlay's own socket used to publish the Telemetry Directory, so "kept" is its correct meaning. Record it as a PID-D2 residual fix.
 
 ## Known constraints (owner decisions)

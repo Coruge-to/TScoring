@@ -2,9 +2,9 @@
 frame and touched the centred done button ('設定完了'), found on the live run S-01b (2026-11-05, photo 094213). The frame is TIMING_EXTRA_H (80) logical pixels taller, split top and bottom (Stage UI-1); Stage UI-3 (Owner, 2026-11-05: the top became too empty) keeps the extra height but puts ALL of it below (40 px) and re-centres the whole screen (20 px up), so that
 
   * the frame stays centred on the 1920 x 1080 base screen (UI-C): 940 high, y 70 .. 1010,
-  * every other element - the title, the arrows, the rows and their click zones, the done button - keeps its place INSIDE the frame (the distance to the frame's top edge is the one of the baseline 81b4f41, so the whole group is 20 px higher on the screen than on the baseline; UI-P, the zones are the baseline values minus 20 px), the corner button stays at its screen position,
+  * every other element - the title, the arrows, the rows and their click zones, the done button - keeps its place INSIDE the frame (the distance to the frame's top edge is the one of the baseline 5148ecc, so the whole group is 20 px higher on the screen than on the baseline; UI-P, the zones are the baseline values minus 20 px), the corner button stays at its screen position,
   * the bulk / reset button keeps its 20 px distance from the bottom edge of the frame, so its gap to the done button grew by the extra height: EXTRA_H - 16 px (UI-G), and it stays inside the frame (UI-I).
-The REAL screen (menu_ui.draw_menu on an offscreen QImage) is driven. RED = fails on the baseline 81b4f41 (the overlap, the panel size); GUARD = passes on the baseline and must keep passing."""
+The REAL screen (menu_ui.draw_menu on an offscreen QImage) is driven. RED = fails on the baseline 5148ecc (the overlap, the panel size); GUARD = passes on the baseline and must keep passing."""
 import os
 import sys
 import unittest
@@ -23,12 +23,12 @@ ACTION_BULK = 998
 ACTION_CLOSE = 999
 EXTRA_H = 36.0                      # the value of menu_ui TIMING_EXTRA_H (Stage UI-3; the Owner lowers it step by step: 40 -> 36 -> ...)
 BASE_H = 900.0
-BASELINE_OVERLAP = 16.0              # the bulk button overlapped the done button by this on the baseline 81b4f41
+BASELINE_OVERLAP = 16.0              # the bulk button overlapped the done button by this on the baseline 5148ecc
 GAP = EXTRA_H - BASELINE_OVERLAP     # the gap that the extra height gives
 GAP_MIN = GAP
 SHIFT_UP = EXTRA_H / 2.0             # the whole screen is re-centred: it is this much higher than on the baseline
 
-# the baseline 81b4f41 (measured on the real screen, the scene of test_pt_tbh_bulk_timing_button: start 0, end 4): every click zone except the bulk button (998)
+# the baseline 5148ecc (measured on the real screen, the scene of test_pt_tbh_bulk_timing_button: start 0, end 4): every click zone except the bulk button (998)
 BASELINE_ZONES_EXCEPT_BULK = [
     (410.0, 403.0, 1510.0, 473.0, 1, -1),
     (425.0, 403.0, 469.0, 473.0, 1, -1),

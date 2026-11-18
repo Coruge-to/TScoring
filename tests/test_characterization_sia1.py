@@ -802,8 +802,8 @@ class D_Windows(Base):
         self.tick(3)
         self.assertEqual(self.gui.mutating(), [])
 
-    # KF-FIX (on purpose; the CURRENT formal contract of the "time and position" window, Owner 2026-11-15 P-7). Introduced by 7f8edc6 (2026-10-11 "the window can be closed
-    # while scoring") and e485965 ("controls only during an active scoring run"); these tests used to pin the older whole-window lock (EnableWindow(777, False), menu = lock).
+    # KF-FIX (on purpose; the CURRENT formal contract of the "time and position" window, Owner 2026-11-15 P-7). Introduced by 8644db2 (2026-10-11 "the window can be closed
+    # while scoring") and 0bdd7d4 ("controls only during an active scoring run"); these tests used to pin the older whole-window lock (EnableWindow(777, False), menu = lock).
     #   * the WINDOW ITSELF is never disabled, moved, raised or lowered: the title bar and the close button stay usable (it can be closed at any time);
     #   * only its child controls (the ones that could change the BVE time / position) are locked, and ONLY during an active scoring run (menu open or not);
     #   * an open menu on its own locks nothing; when the run ends (finished / aborted) every control this process disabled is enabled again, one change = one call.

@@ -5,7 +5,7 @@ Owner contract (after the TB-G / TB-H C-06 live run):
   * its label is ONE text for every route (no case split on the pseudo-turnback): 変更可能な非採時駅を全て採時駅にする : A  (the old text 始発駅以外を採時駅にする : A must not remain)
   * the A key makes only the changeable untimed stations timed; it never writes an override for a fixed station and never changes a fixed reason (UNTIMED_SCORING_START / UNTIMED_TURNBACK_B), the Run snapshot or the theoretical score (9100 on the C-01 shape)
   * the one key keeps its two roles: after a user change it is the reset ('初期設定に戻す : A', the existing text, behaviour and priority); without a user change it makes the changeable untimed stations timed; with no changeable untimed station and no user change the button is hidden
-The REAL handlers and the REAL screen (menu_ui.draw_menu on an offscreen QImage) are driven. RED = fails on the baseline fe8c26d (only the LABEL assertions); GUARD = passes on the baseline and must keep passing."""
+The REAL handlers and the REAL screen (menu_ui.draw_menu on an offscreen QImage) are driven. RED = fails on the baseline cb213d8 (only the LABEL assertions); GUARD = passes on the baseline and must keep passing."""
 import os
 import sys
 import unittest

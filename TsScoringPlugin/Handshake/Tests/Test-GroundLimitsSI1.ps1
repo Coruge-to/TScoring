@@ -479,7 +479,7 @@ if ($git) {
         }
         catch { return $null }
     }
-    $siaChain = @('9f25a26c6bc4a578767c7f306672811bf7bf341c', '0aa3fa6b5d35dd0e23cfc305213057f05b01677b', 'eec43e3c1a901e414c4a7b69894c634eb80d618f', '71744d6483a772e5f26a7b03675c18285aac71b5')   # SI-1 head -> load marker (C#) -> Python / pause recovery -> docs
+    $siaChain = @('085e58fe17e0215fa448c50340b1f1c89ea6f0c9', 'b20dd70346be550a38c0089671e5ece19d9a8a01', 'a901a90a2f32330b266f533506815146bac0f4bb', 'f19e8374d43a0c63b63fca99c932a1c0d427d883')   # SI-1 head -> load marker (C#) -> Python / pause recovery -> docs
     $siaChainOk = Test-SiaChain $repo $siaChain
     $changedLines = $null
     if ($siaChainOk) { $changedLines = Get-SiaGitLines $repo @('diff', '--name-only', $siaChain[0], $siaChain[3]) }
@@ -487,7 +487,7 @@ if ($git) {
     $tracked = @(& git -C $repo ls-files)
     $pyProduction = @($tracked | Where-Object { $_ -like '*.py' -and $_ -notlike 'tests/*' })
     # (Phase SI-1 is committed: its scope is the commit pair after the SI-0 commit, not the working tree. Phase SI-A changes the Python production files on purpose; its own tests pin that.)
-    $changedPy = @((& git -C $repo diff --name-only f9b2ed5d7a3c0c7479d5798e2826b58bbdd9180b 9f25a26c6bc4a578767c7f306672811bf7bf341c) | Where-Object { $_ })
+    $changedPy = @((& git -C $repo diff --name-only 407a438383041e82268180cecfa38b854ad4f9e7 085e58fe17e0215fa448c50340b1f1c89ea6f0c9) | Where-Object { $_ })
     $touchedPy = @($changedPy | Where-Object { $_ -in $pyProduction })
     Check ('L07 Python production code is untouched by Phase SI-1 (' + $pyProduction.Count + ' tracked production .py files, none changed between the SI-0 commit and the SI-1 commit)') (($pyProduction.Count -gt 10) -and ($touchedPy.Count -eq 0))
     # (Phase SI-A6 changes exactly these Caller / Bridge / shared files on purpose - the load marker; Test-PauseRecoverySIA6.ps1 and the other re-pinned guards say what changed in them)
@@ -496,7 +496,7 @@ if ($git) {
                   'TsScoringPlugin/Handshake/Caller/src/AppStatePublisher.cs', 'TsScoringPlugin/Handshake/Caller/src/HandshakeSession.cs', 'TsScoringPlugin/Handshake/Caller/src/AssemblyInfo.cs')
     $immutable = @($changed | Where-Object { $_ -notin $si6Files } | Where-Object { $_ -like 'TsScoringPlugin/Handshake/Caller/*' -or $_ -like 'TsScoringPlugin/Handshake/Bridge/*' -or $_ -like 'TsScoringPlugin/TsScoringPlugin/*' -or $_ -like 'TsScoringPlugin/Handshake/Shared/*' -or $_ -like 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyApi.cs' -or $_ -like 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyHandleContract.cs' -or $_ -like 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyInput*.cs' -or $_ -like 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyStationTimeline.cs' -or $_ -like 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyScoringProbe.cs' })
     Check ('L08 untouched: the Caller, both Bridges, the Current sender, the Handshake shared files (the nine Phase SI-A6 load-marker files excepted), and the Legacy API / handle / input / station / SI-0 observation sources (' + $immutable.Count + ' changed between the SI-1 commit and the SI-A docs commit)') ($siaChainOk -and ($null -ne $changedLines) -and ($immutable.Count -eq 0) -and (@($si6Files | Where-Object { $_ -in $changed }).Count -eq 9))
-    $contractDiff = @(& git -C $repo diff -U0 f9b2ed5d7a3c0c7479d5798e2826b58bbdd9180b 9f25a26c6bc4a578767c7f306672811bf7bf341c -- TsScoringPlugin/Handshake/Telemetry/Shared/TelemetryContract.cs | Where-Object { $_ -match '^[+-][^+-]' })
+    $contractDiff = @(& git -C $repo diff -U0 407a438383041e82268180cecfa38b854ad4f9e7 085e58fe17e0215fa448c50340b1f1c89ea6f0c9 -- TsScoringPlugin/Handshake/Telemetry/Shared/TelemetryContract.cs | Where-Object { $_ -match '^[+-][^+-]' })
     Check 'L09 the shared telemetry contract only gained the two token names (trainlen, maplimit_ahead): nothing removed, nothing else added' ((@($contractDiff | Where-Object { $_ -match '^-' }).Count -eq 0) -and (@($contractDiff | Where-Object { $_ -match '^\+' }).Count -eq 2) -and (($contractDiff -join "`n") -match 'TokMapLimitAhead = "maplimit_ahead"') -and (($contractDiff -join "`n") -match 'TokTrainLen = "trainlen"'))
 }
 else { Skip 'L07-L09 (git is not available)' }

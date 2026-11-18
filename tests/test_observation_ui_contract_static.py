@@ -25,7 +25,7 @@ REPO_PATHS = {
     "TsScoringLegacyBridge.cs": os.path.join(HS, "Bridge", "Legacy", "src", "TsScoringLegacyBridge.cs"),
 }
 
-# a snapshot of the blocking primitives in the product sources on the commit this Stage started from (f375cf1):  file -> (WaitOne, Join, Sleep)
+# a snapshot of the blocking primitives in the product sources on the commit this Stage started from (86d2c26):  file -> (WaitOne, Join, Sleep)
 WAIT_SNAPSHOT = {
     os.path.join("Shared", "ObservationLog.cs"): (1, 0, 0),
     os.path.join("Bridge", "src", "ScenarioObserver.cs"): (0, 2, 0),
@@ -41,7 +41,7 @@ WAIT_SNAPSHOT = {
 }
 # The files whose scratch prototype is allowed to differ in the primitives above: none (the fix must not ADD a wait/join/sleep to any of them).
 
-# event vocabulary of the observation log on the commit this Stage started from (f375cf1): file -> event names
+# event vocabulary of the observation log on the commit this Stage started from (86d2c26): file -> event names
 EVENT_VOCABULARY = {
     "ScenarioObserver.cs": ("ALL_EXT_LOADED", "CAND_D_NOT_MET", "CAND_E_PENDING", "CAND_F_PENDING", "FRAME_ORDER", "GEN_BEGIN", "GEN_SUMMARY", "IS_CREATED_CHANGED", "LATE_ATTACH", "OBSERVER_DISPOSE", "SCN_CLOSED", "SCN_CREATED", "SCN_OPENED", "SCN_PREVIEW_CREATED", "TICK_GAP", "TICK_OUTSIDE_GENERATION"),
     "ScenarioReadyTracker.cs": ("SR_CLEARED", "SR_CLOSED_NO_LEVEL", "SR_CREATED", "SR_CREATED_WITHOUT_OPEN", "SR_DISPOSED", "SR_E_STALLED", "SR_EPOCH", "SR_EPOCH_TICK", "SR_ESTABLISHED", "SR_F_DIAG", "SR_GENERATION_WRAPPED", "SR_OPENED", "SR_PENDING", "SR_PUBLISH_FAIL", "SR_PUBLISHED", "SR_WAIT", "SR_WITHDRAWN"),

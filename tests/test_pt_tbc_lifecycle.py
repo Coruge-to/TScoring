@@ -131,7 +131,7 @@ for _k in ("ARMED", "REQUESTED", "AWAITING_B"):
 
 
 def _display_update_with_the_scoring_off(self):
-    """The guidance window of an ARMED chain must not raise when the scoring is off (measured at 73c2125: IndexError on popups[-1], add_score_popup refuses outside a scoring)."""
+    """The guidance window of an ARMED chain must not raise when the scoring is off (measured at e6a955b: IndexError on popups[-1], add_score_popup refuses outside a scoring)."""
     s = self.build("ARMED")
     s.o.is_scoring_mode = False
     s.o.popups.clear()

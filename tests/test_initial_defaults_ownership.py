@@ -3,7 +3,7 @@ never goes behind its owner, is not global top-most, follows the owner to the BV
 
 NATIVE-ONLY tests: they start the REAL product entry (`python main.py --initial-defaults`) in child processes together with a fake-BVE helper process that owns REAL top-level windows (tests/ownership_fake_bve.py);
 the owner / z-order / style facts are read with Win32 from this process. They need an interactive Windows desktop and are never judged offscreen. Every child gets a temporary LOCALAPPDATA (nothing real is touched).
-Messages: 'IO1-RED: ...' = the ownership contract is not met (PRODUCT-RED on d4eb3cc); 'IO1-GUARD: ...' = a contract that already holds and must stay GREEN; 'IO1-HARNESS: ...' = the harness itself is broken.
+Messages: 'IO1-RED: ...' = the ownership contract is not met (PRODUCT-RED on 5cee17a); 'IO1-GUARD: ...' = a contract that already holds and must stay GREEN; 'IO1-HARNESS: ...' = the harness itself is broken.
 The Caller half of the contract (re-press, restore, re-own, foreground, flash, foreign BVE, double start) is tested by TsScoringPlugin/Handshake/Tests/Test-InitialDefaultsOwnership.ps1."""
 import ctypes
 import ctypes.wintypes as wt

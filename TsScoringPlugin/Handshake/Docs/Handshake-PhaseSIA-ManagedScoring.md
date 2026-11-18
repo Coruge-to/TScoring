@@ -17,7 +17,7 @@ SI-A は、手動起動（`python main.py`）で成立していた採点・操�
 
 ## 2. 構成
 
-* `main.py` — `Overlay.update_logic` を**文を変えずに**責務別メソッドへ分割（`_kick_start_first_press` / `_follow_bve_window` / `_run_input_and_scoring_step` と、その中の `_detect_and_release_fast_forward` / `_resolve_bve_advancing` / `_kick_start_second_press` / `_sync_system_key_suppression` / `_sync_f8_suppression` / `_sync_time_position_window_lock` / `_sync_menu_key_suppression` / `_sync_numeric_input` / `_handle_mouse` / `_handle_keys` / `_restore_standard_window` / `_advance_scoring_clock_and_score`）。手動起動は `update_logic` から同じ順序で呼ぶ。分割前後の同値は、`git show 9f25a26:main.py` を別モジュールとして読み込み、同じ乱数シナリオ 40 本 × 420 ステップを両方に与えて Overlay 全属性と外部作用の記録が一致することで証明（`tests/test_split_equivalence_sia2.py`）。
+* `main.py` — `Overlay.update_logic` を**文を変えずに**責務別メソッドへ分割（`_kick_start_first_press` / `_follow_bve_window` / `_run_input_and_scoring_step` と、その中の `_detect_and_release_fast_forward` / `_resolve_bve_advancing` / `_kick_start_second_press` / `_sync_system_key_suppression` / `_sync_f8_suppression` / `_sync_time_position_window_lock` / `_sync_menu_key_suppression` / `_sync_numeric_input` / `_handle_mouse` / `_handle_keys` / `_restore_standard_window` / `_advance_scoring_clock_and_score`）。手動起動は `update_logic` から同じ順序で呼ぶ。分割前後の同値は、`git show 085e58f:main.py` を別モジュールとして読み込み、同じ乱数シナリオ 40 本 × 420 ステップを両方に与えて Overlay 全属性と外部作用の記録が一致することで証明（`tests/test_split_equivalence_sia2.py`）。
 * `managed_input.py`（新規）— 世代／採点セッションの破棄表、破棄関数、採点開始ゲート、`ManagedInputController`（管理 HUD コントローラーとの接続）、結果保存ダイアログ。
 * `managed_hud.py` — `attach_input`（入力コントローラーを 1 つ接続）、`linked_hwnd`、`telemetry_ready`、状態変化の通知。HUD 自体の挙動は変えない。
 * `telemetry_gate.py` — `last_verdict`（accepted / held / stale / invalid）を追加。受理判定は不変。
@@ -72,7 +72,7 @@ HUD コントローラーの `shutdown()`（Stop／親消失）で、結果ダ�
 
 ### 10.1 Pause（Driving OFF）で採点を破棄しない
 
-* **〔Phase PP-13 の訂正注〕** 下の「Caller は 2 秒を超える Tick 停止を Driving OFF にする」は BVE6 Current／BVE5 Legacy の実機では起きない（Caller の Tick は Pause 中も継続: SI-A7 O4／O5。拡張の Tick が止まる Pause では、拡張の pause pulse が状態の再生成を担い、heartbeat は PAUSED のまま）。「Driving OFF は採点の終了ではない」という契約は維持する。また「時刻と位置」ウィンドウは、採点の実行中は Pause でも無効のまま（e485965 以降の契約。PP-0 で確認）で、下の「同じ tick で解除」はそのウィンドウには及ばない。
+* **〔Phase PP-13 の訂正注〕** 下の「Caller は 2 秒を超える Tick 停止を Driving OFF にする」は BVE6 Current／BVE5 Legacy の実機では起きない（Caller の Tick は Pause 中も継続: SI-A7 O4／O5。拡張の Tick が止まる Pause では、拡張の pause pulse が状態の再生成を担い、heartbeat は PAUSED のまま）。「Driving OFF は採点の終了ではない」という契約は維持する。また「時刻と位置」ウィンドウは、採点の実行中は Pause でも無効のまま（0bdd7d4 以降の契約。PP-0 で確認）で、下の「同じ tick で解除」はそのウィンドウには及ばない。
 * **原因**: BVE の Pause は Tick を止め、Caller は 2 秒を超える Tick 停止を Driving OFF（`tick-stale`、soft OFF）にする。SI-A の `ManagedHudController` は ACTIVE → Driving OFF で `ManagedInputController.on_inactive("driving-off")` を呼び、`discard_scoring_session` で採点を破棄していた。
 * **分離できないこと（契約の前提）**: 状態ブロックの Driving OFF には Pause・短い Tick 停止・シナリオ選択画面・利用者の操作による停止の区別が無い。Caller を変えずに Python が見分ける手段は無い。したがって **Driving OFF は採点の終了ではない**とし、Pause を含む全ての Driving OFF で採点を保持する（利用者の「採点を中断する」操作は従来どおり採点側の規則）。
 * **契約**: Driving OFF（Session ON）→ `on_pause`: プロセス・Overlay・採点セッション（得点・設定・駅リスト・時刻基準）を保持、入力抑止（F7／P／F8／メニューキー／「時刻と位置」ウィンドウ）は同じ tick で解除、HUD は待機で非表示、開いていたメニューは何も押さずに閉じる、`scoring-abort` は出さない。Driving ON → 次のステップで `_resync_clock`: BVE 時刻が進んでいれば採点クロック基準を現在時刻へ（そのステップの dt = 0。Pause 時間を 1 ステップとして数えない）、早送り測定を初期化（Pause 後の時刻差を早送りと誤認して F8 を送らない）。時刻が戻っていた場合・採点クロックが未開始（0.0）の場合は既存規則（`reset_transient_scoring_state`）に任せる。

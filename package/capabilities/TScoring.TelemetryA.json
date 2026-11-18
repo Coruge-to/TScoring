@@ -16,7 +16,7 @@
   },
   "baseline": {
     "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
-    "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+    "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
     "sizeBytes": 184320,
     "capabilities": {
       "legacyJumpExec": true,
@@ -31,13 +31,13 @@
       ]
     },
     "promotedAt": "2026-11-18T02:01:02Z",
-    "closeRef": "Owner approved 100 ms 2026-11-18, pushed b75575a, remote verified; Live (automated, 2026-11-18, handoff s05-settle100-h1-promotion-v1-20261118\\09-live-results.md): Current 137M 12/12 + Iida 25/25, Legacy 920T 10/10 paused-F5, 0 new WER/dump, tickInGen=0 for every paused-F5 establishment."
+    "closeRef": "Owner approved 100 ms 2026-11-18, pushed 124a5c3, remote verified; Live (automated, 2026-11-18, handoff s05-settle100-h1-promotion-v1-20261118\\09-live-results.md): Current 137M 12/12 + Iida 25/25, Legacy 920T 10/10 paused-F5, 0 new WER/dump, tickInGen=0 for every paused-F5 establishment."
   },
   "history": [
     {
       "stage": "build",
       "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
-      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "sourceCommit": "70e45cbe97348e622ece0ab4eaf4a7b3d6a960f5",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -50,13 +50,13 @@
           "PseudoTurnbackPairCodec"
         ]
       },
-      "evidence": "formal build from remote-matched f42f0df, 2 clean roots",
+      "evidence": "formal build from remote-matched 70e45cb, 2 clean roots",
       "at": "2026-11-15T13:02:18Z"
     },
     {
       "stage": "accept",
       "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
-      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "sourceCommit": "70e45cbe97348e622ece0ab4eaf4a7b3d6a960f5",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -75,7 +75,7 @@
     {
       "stage": "deploy",
       "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
-      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "sourceCommit": "70e45cbe97348e622ece0ab4eaf4a7b3d6a960f5",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -88,13 +88,13 @@
           "PseudoTurnbackPairCodec"
         ]
       },
-      "evidence": "deployed to C:\\Users\\Public\\Documents\\BveEx\\Legacy\\Extensions\\TScoring.TelemetryA.dll ; old 17CA7159 backed up at C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\legacy-formal-artifact-capability-audit-v1-20261115\\formal-final-f42f0df\\backup\\TScoring.TelemetryA.dll.17CA7159 (emergency capability-losing rollback only)",
+      "evidence": "deployed to C:\\Users\\Public\\Documents\\BveEx\\Legacy\\Extensions\\TScoring.TelemetryA.dll ; old 17CA7159 backed up at C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\legacy-formal-artifact-capability-audit-v1-20261115\\formal-final-70e45cb\\backup\\TScoring.TelemetryA.dll.17CA7159 (emergency capability-losing rollback only)",
       "at": "2026-11-15T22:03:16"
     },
     {
       "stage": "accept",
       "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
-      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "sourceCommit": "70e45cbe97348e622ece0ab4eaf4a7b3d6a960f5",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -113,7 +113,7 @@
     {
       "stage": "promote",
       "sha256": "D6E6E324689F53205877BCF1EB9E585101FEB4676CB1A7047651EEACBEA9E0EC",
-      "sourceCommit": "f42f0df48f539e8b37117030266c0b627e6f6b2c",
+      "sourceCommit": "70e45cbe97348e622ece0ab4eaf4a7b3d6a960f5",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -126,13 +126,13 @@
           "PseudoTurnbackPairCodec"
         ]
       },
-      "evidence": "PROMOTED 2026-11-15: ACCEPTED=DEPLOYED=PROMOTED sha D6E6E324, source f42f0df on remote, formal live acceptance PASS (start/START Jump/forward+backward pseudo-turnback/backward Retry/normal exit, missing-jump 0, turnback-fail 0). 1 AppCrash BveTs.exe clr.dll 80131506 +0x2b7e58 at the first Current->Legacy handoff process (PID 19568) is classified non-blocking host-transition signature (dump comparison: no TScoring/BveEX plugin frames, TelemetryA not loaded, same signature in 4 dumps incl. 2 before this DLL).",
+      "evidence": "PROMOTED 2026-11-15: ACCEPTED=DEPLOYED=PROMOTED sha D6E6E324, source 70e45cb on remote, formal live acceptance PASS (start/START Jump/forward+backward pseudo-turnback/backward Retry/normal exit, missing-jump 0, turnback-fail 0). 1 AppCrash BveTs.exe clr.dll 80131506 +0x2b7e58 at the first Current->Legacy handoff process (PID 19568) is classified non-blocking host-transition signature (dump comparison: no TScoring/BveEX plugin frames, TelemetryA not loaded, same signature in 4 dumps incl. 2 before this DLL).",
       "at": "2026-11-15T22:21:29"
     },
     {
       "stage": "build",
       "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
-      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "sourceCommit": "cfb66e1d10e0f6b254796a3e09705628cabdef75",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -145,13 +145,13 @@
           "PseudoTurnbackPairCodec"
         ]
       },
-      "evidence": "formal build of b408bf5 (on remote, remote-verified local=remote 0/0), 2 clean roots matched, Jump ON, featureBits 7; build-report in out-ta; S05 pulse gate fix",
+      "evidence": "formal build of cfb66e1 (on remote, remote-verified local=remote 0/0), 2 clean roots matched, Jump ON, featureBits 7; build-report in out-ta; S05 pulse gate fix",
       "at": "2026-11-16T02:55:15Z"
     },
     {
       "stage": "accept",
       "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
-      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "sourceCommit": "cfb66e1d10e0f6b254796a3e09705628cabdef75",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -171,7 +171,7 @@
     {
       "stage": "deploy",
       "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
-      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "sourceCommit": "cfb66e1d10e0f6b254796a3e09705628cabdef75",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -190,7 +190,7 @@
     {
       "stage": "accept",
       "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
-      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "sourceCommit": "cfb66e1d10e0f6b254796a3e09705628cabdef75",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -203,14 +203,14 @@
           "PseudoTurnbackPairCodec"
         ]
       },
-      "evidence": "LIVE acceptance 2026-11-16 (Owner PF-2/PF-3/PF-9/PF-10, OSK-driven): S05 pulse gate fix, deployed Current+Legacy pairs of b408bf5. Current Pause-F5 x10 (V-A x7, V-B x1, V-C x1 + one aborted V-B attempt by tool timing) and Legacy Pause-F5 x10 (V-A x7, V-B x1, V-C x1 + one aborted V-A attempt by logger-dropped lines): ScenarioReady re-established tick-less (tickInGen=0 or Caller SCN_READY_ON before first formal Tick), formal Tick resumed, TickSeen illegal updates 0, Jump execution 0, missing-jump 0, turnback-fail 0, pulse exceptions 0; Class1 gate stats req=enter+stale+tick (backlog 0, reent 0, expired 0). WER/dump: S01 x1 (Legacy entry process, known), S02 x1 (BVE6 exit, known), S04 x1 (BVE5 exit, known), 1 new UNRESOLVED host signature BveTs nvd3dumx.dll 0xC0000005 +0x32A442 while running (no TScoring frame, pulse idle, no GPU TDR; Owner ruled resume), no python/TScoring WER. Normal exit TEL_DISPOSE/TEL_FINAL ok. S05 stays HISTORICAL PRODUCT_SUSPECT / DIRECT CAUSATION UNPROVEN.",
+      "evidence": "LIVE acceptance 2026-11-16 (Owner PF-2/PF-3/PF-9/PF-10, OSK-driven): S05 pulse gate fix, deployed Current+Legacy pairs of cfb66e1. Current Pause-F5 x10 (V-A x7, V-B x1, V-C x1 + one aborted V-B attempt by tool timing) and Legacy Pause-F5 x10 (V-A x7, V-B x1, V-C x1 + one aborted V-A attempt by logger-dropped lines): ScenarioReady re-established tick-less (tickInGen=0 or Caller SCN_READY_ON before first formal Tick), formal Tick resumed, TickSeen illegal updates 0, Jump execution 0, missing-jump 0, turnback-fail 0, pulse exceptions 0; Class1 gate stats req=enter+stale+tick (backlog 0, reent 0, expired 0). WER/dump: S01 x1 (Legacy entry process, known), S02 x1 (BVE6 exit, known), S04 x1 (BVE5 exit, known), 1 new UNRESOLVED host signature BveTs nvd3dumx.dll 0xC0000005 +0x32A442 while running (no TScoring frame, pulse idle, no GPU TDR; Owner ruled resume), no python/TScoring WER. Normal exit TEL_DISPOSE/TEL_FINAL ok. S05 stays HISTORICAL PRODUCT_SUSPECT / DIRECT CAUSATION UNPROVEN.",
       "at": "2026-11-16T03:52:09Z",
       "ownerApproval": "Owner-PF-3-20261116"
     },
     {
       "stage": "promote",
       "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
-      "sourceCommit": "b408bf5410555001299188ff3486d54481335e9b",
+      "sourceCommit": "cfb66e1d10e0f6b254796a3e09705628cabdef75",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -223,13 +223,13 @@
           "PseudoTurnbackPairCodec"
         ]
       },
-      "evidence": "PROMOTED 2026-11-16: ACCEPTED=DEPLOYED=PROMOTED sha BEAE0167, source b408bf5 on remote (tree ad76a963), S05 pulse gate fix; formal live acceptance PASS (Current x10 + Legacy x10 Pause-F5, see the accept entry). Known host signatures S01/S02/S04 recorded separately; 1 UNRESOLVED host signature nvd3dumx (no TScoring frame) recorded in the handoff 08-live-stop-report; Owner ruled resume. Companion baselines (no ledger): TelemetryB 7977259D, BridgeB E35A19BF, BridgeA FE6EEA1B. Rollback asset: D6E6E324 (previous baseline, handoff backup-old).",
+      "evidence": "PROMOTED 2026-11-16: ACCEPTED=DEPLOYED=PROMOTED sha BEAE0167, source cfb66e1 on remote (tree ad76a963), S05 pulse gate fix; formal live acceptance PASS (Current x10 + Legacy x10 Pause-F5, see the accept entry). Known host signatures S01/S02/S04 recorded separately; 1 UNRESOLVED host signature nvd3dumx (no TScoring frame) recorded in the handoff 08-live-stop-report; Owner ruled resume. Companion baselines (no ledger): TelemetryB 7977259D, BridgeB E35A19BF, BridgeA FE6EEA1B. Rollback asset: D6E6E324 (previous baseline, handoff backup-old).",
       "at": "2026-11-16T03:52:18Z"
     },
     {
       "stage": "build",
       "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
-      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -242,13 +242,13 @@
           "PseudoTurnbackPairCodec"
         ]
       },
-      "evidence": "settle 150->100 final + H-1 (b75575a). Build: 2 clean roots 3FB6D2A2, guard ACCEPT. Gate S1 4732/0, S2 27/27.",
+      "evidence": "settle 150->100 final + H-1 (124a5c3). Build: 2 clean roots 3FB6D2A2, guard ACCEPT. Gate S1 4732/0, S2 27/27.",
       "at": "2026-11-18T00:48:47Z"
     },
     {
       "stage": "accept",
       "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
-      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -261,13 +261,13 @@
           "PseudoTurnbackPairCodec"
         ]
       },
-      "evidence": "settle 150->100 final + H-1 (b75575a). Build: 2 clean roots 3FB6D2A2, guard ACCEPT. Gate S1 4732/0, S2 27/27. (pre-deploy accept)",
+      "evidence": "settle 150->100 final + H-1 (124a5c3). Build: 2 clean roots 3FB6D2A2, guard ACCEPT. Gate S1 4732/0, S2 27/27. (pre-deploy accept)",
       "at": "2026-11-18T00:48:47Z"
     },
     {
       "stage": "deploy",
       "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
-      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -286,7 +286,7 @@
     {
       "stage": "accept",
       "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
-      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -305,7 +305,7 @@
     {
       "stage": "promote",
       "sha256": "3FB6D2A2689DA498C870BBA4026F6E3FBE52CE80B67A1FC40241F684C04F209A",
-      "sourceCommit": "b75575a859bfe45122cbe5523a62d0de73d8c6dd",
+      "sourceCommit": "124a5c31e59834cc1fc4b897c23e0c47ca0dc09a",
       "capabilities": {
         "legacyJumpExec": true,
         "executionCompiledIn": true,
@@ -318,7 +318,7 @@
           "PseudoTurnbackPairCodec"
         ]
       },
-      "evidence": "Owner approved 100 ms 2026-11-18, pushed b75575a, remote verified; Live (automated, 2026-11-18, handoff s05-settle100-h1-promotion-v1-20261118\\09-live-results.md): Current 137M 12/12 + Iida 25/25, Legacy 920T 10/10 paused-F5, 0 new WER/dump, tickInGen=0 for every paused-F5 establishment.",
+      "evidence": "Owner approved 100 ms 2026-11-18, pushed 124a5c3, remote verified; Live (automated, 2026-11-18, handoff s05-settle100-h1-promotion-v1-20261118\\09-live-results.md): Current 137M 12/12 + Iida 25/25, Legacy 920T 10/10 paused-F5, 0 new WER/dump, tickInGen=0 for every paused-F5 establishment.",
       "at": "2026-11-18T02:01:02Z"
     }
   ],
@@ -342,7 +342,7 @@
       "role": "EMERGENCY CAPABILITY-LOSING ROLLBACK",
       "requiresOwnerApprovalId": true,
       "automaticSelection": false,
-      "backupPath": "C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\legacy-formal-artifact-capability-audit-v1-20261115\\formal-final-f42f0df\\backup\\TScoring.TelemetryA.dll.17CA7159"
+      "backupPath": "C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\legacy-formal-artifact-capability-audit-v1-20261115\\formal-final-70e45cb\\backup\\TScoring.TelemetryA.dll.17CA7159"
     },
     {
       "sha256": "EDEB5766BEAF1C7E6F8974828001E7AFF885BB4C92092735B398DC891C89D640",
@@ -359,7 +359,7 @@
         ]
       },
       "path": "csender-range-v1-20261115/candidate-ljx/TScoring.TelemetryA.dll",
-      "note": "acceptance build of b0a42d3 (Jump ON, no AssemblyMetadata); not a formal candidate under OD-X11 v2; kept as evidence"
+      "note": "acceptance build of 7215108 (Jump ON, no AssemblyMetadata); not a formal candidate under OD-X11 v2; kept as evidence"
     },
     {
       "sha256": "B0640455305E2C99D0DB6D560E11570B5705B6A21434079079EF52A5C5540220",
@@ -393,7 +393,7 @@
         ]
       },
       "path": "C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\s05-pulse-deploy-live-v1-20261116-20261116-115544\\backup-old\\TScoring.TelemetryA.dll",
-      "note": "previous formal baseline D6E6E324 (source f42f0df, Jump ON, featureBits 7): ordinary rollback target of the S05 pulse gate promote (no capability loss); backup copy in the deploy folder backup-old with SHA ledger"
+      "note": "previous formal baseline D6E6E324 (source 70e45cb, Jump ON, featureBits 7): ordinary rollback target of the S05 pulse gate promote (no capability loss); backup copy in the deploy folder backup-old with SHA ledger"
     },
     {
       "sha256": "BEAE01670281A90ED108B6D58D537EB6E404C0977FDA1DF44F372D720F08FAD9",
@@ -410,7 +410,7 @@
         ]
       },
       "path": "C:\\Users\\tsuru\\Documents\\TS-Scoring-Claude-Handoff\\s05-settle100-h1-promotion-v1-20261118\\backup-old\\TScoring.TelemetryA.dll",
-      "note": "previous baseline BEAE0167 (S05 pulse gate fix, source b408bf5); ordinary rollback target (capability kept: Jump ON, featureBits 7)"
+      "note": "previous baseline BEAE0167 (S05 pulse gate fix, source cfb66e1); ordinary rollback target (capability kept: Jump ON, featureBits 7)"
     }
   ]
 }

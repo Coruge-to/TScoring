@@ -6,7 +6,7 @@ Contract:
   * pair A chosen as a boundary: it ends the previous rule and the NEXT rule starts at the corresponding pair B (W..A, B..Z; never A..Z).
   * boundary candidates: pair A stays (selectable), pair B is out, ordinary stations are unchanged.
   * the effective ranges are what the screens draw (basic brake, summary, initial / relaxation); the stored data is the boundary list (end_idx) only; the initial / relaxation rules mirror it.
-On the baseline 02515c9 the RED ones failed for the contract reason (RED-API: Overlay.brake_rule_ranges did not exist); GUARD = passed there and must keep passing.
+On the baseline c202833 the RED ones failed for the contract reason (RED-API: Overlay.brake_rule_ranges did not exist); GUARD = passed there and must keep passing.
 The REAL handlers (menu_state 5 / 6 / 7 / 9, handle_dropdown_enter) and the REAL menu_ui.draw_menu are driven."""
 import copy
 import inspect

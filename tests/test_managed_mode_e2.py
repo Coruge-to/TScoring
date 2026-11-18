@@ -29,9 +29,9 @@ import managed_mode as mm  # noqa: E402
 
 HAS_QT = importlib.util.find_spec("PyQt6") is not None
 CHILD = os.path.join(ROOT, "tests", "managed_smoke_child.py")
-BASELINE = "a43f18efca37caf64d33bb7c7d5529efd5b7067b"
+BASELINE = "476b57110b9412b1fde26052ffe68e541a7860fb"
 # Phase E3: the Caller-side guards below describe the Phase E2 commit (the last commit with no process start); Phase E3 has its own tests.
-E2_COMMIT = "6d20650395262e62c10916a4bdb0653947149a8a"
+E2_COMMIT = "b33661a7b312e527fed276759e7d11616f444f5b"
 
 
 def read_text(path, encoding="utf-8"):
@@ -934,7 +934,7 @@ class E_StaticGuardsAndRegression(unittest.TestCase):
         old = _git("show", BASELINE + ":main.py")
         if old is None:
             self.skipTest("baseline commit / git not available (INCONCLUSIVE)")
-        new = _git("show", "9f25a26c6bc4a578767c7f306672811bf7bf341c:main.py")       # the commit Phase SI-A started from (SI-A's own change set: tests/test_split_equivalence_sia2.py)
+        new = _git("show", "085e58fe17e0215fa448c50340b1f1c89ea6f0c9:main.py")       # the commit Phase SI-A started from (SI-A's own change set: tests/test_split_equivalence_sia2.py)
         if new is None:
             self.skipTest("baseline commit / git not available (INCONCLUSIVE)")
 

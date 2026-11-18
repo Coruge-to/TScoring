@@ -1,6 +1,6 @@
-"""Owner's visual adjustments of the scoring setting cursors (2026-11-09, after the live smoke; baseline = f8d1f11 + the environment settings padding). Owner convention: "+" increases, "-" cuts:
+"""Owner's visual adjustments of the scoring setting cursors (2026-11-09, after the live smoke; baseline = 5daec7d + the environment settings padding). Owner convention: "+" increases, "-" cuts:
 LEFT "-n" = n px cut from the left side (the left edge moves to the right), RIGHT "+n" = the right side extended by n px, RIGHT "-n" = n px cut from the right side. Only the drawn cursor rectangles change (no text, no zone, no state).
-  (cumulative totals vs f8d1f11)
+  (cumulative totals vs 5daec7d)
   1/3: scoring section stations A: left -3 / right +3, B: left -3 / right +3 | stop distance (XXX m): left -2 / right +2 | "変更": right +3 | summary after the basic brake setting: left -6 / right +3
   basic brake setting: station name left -2 / right +4, the "n段 制動" cell left -2 / right +2, the "m段 緩め" cell left -2 / right +2
   2/3: ON right +4, OFF right +3 | "変更": right +3 | summary after the initial / release setting: left -6 / right -13 | initial / release setting: the initial value right +2, the release value left -1 / right +3

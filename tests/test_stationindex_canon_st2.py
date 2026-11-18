@@ -11,9 +11,9 @@ What this file holds
   E  the migrated ST-0 REDs and the book-keeping that keeps one contract id in exactly one place
 
 The N-xx tests are written as REDs first (the contract is what the audit of ST-2 fixed, the codes are its declared codes): each of them fails with ContractViolation
-whose .code is the declared one against the product of 69077aa, and passes against the product of ST-2a. The proof for 69077aa is the optional runner:
+whose .code is the declared one against the product of 2838cb9, and passes against the product of ST-2a. The proof for 2838cb9 is the optional runner:
 
-        python -B tests\\test_stationindex_canon_st2.py --red-check        (a repository copy at 69077aa: every N-xx must be RED-VALID; at ST-2a: every N-xx is UNEXPECTED-PASS)
+        python -B tests\\test_stationindex_canon_st2.py --red-check        (a repository copy at 2838cb9: every N-xx must be RED-VALID; at ST-2a: every N-xx is UNEXPECTED-PASS)
 
 T09 / T05 (start) / T04 (save) are the three ST-0 REDs that ST-2a turns GREEN: their conditions are executed HERE (same contract id, same declared code) and they are marked
 MIGRATED in tests/red_st0_stationindex_contract.py, which keeps the original as the evidence of the RED.
@@ -43,7 +43,7 @@ except Exception:  # pragma: no cover
 
 try:
     import station_identity as SI
-except ImportError:                                  # the product of 69077aa (the --red-check against the state before ST-2a): the pure tests then error, the N-xx REDs do not need it
+except ImportError:                                  # the product of 2838cb9 (the --red-check against the state before ST-2a): the pure tests then error, the N-xx REDs do not need it
     SI = None
 import station_index_contract as SIC  # noqa: E402
 import sia_rig as R  # noqa: E402
@@ -1275,7 +1275,7 @@ class G_TheCheckpointByKindOfStop(ContractMixin, CH.Base):
 #     history change, no count, no score change, no exception) and the refusal leaves ONE diagnostic line. The history is not cut by the request (ST-3 cuts it).
 # ==============================================================================================================================================
 def n2b_red(tid, code, note=""):
-    """Declare an ST-2b N-xx contract: its id and the ONE failure code it has against the product of ST-2a (1483b4b)."""
+    """Declare an ST-2b N-xx contract: its id and the ONE failure code it has against the product of ST-2a (4b8b0a3)."""
     def deco(fn):
         fn.st2b = {"id": tid, "code": code, "note": note}
         return fn
@@ -2191,7 +2191,7 @@ class Z_Meta(unittest.TestCase):
 
 
 # ==============================================================================================================================================
-# the optional runner: the N-xx REDs against the product of 69077aa
+# the optional runner: the N-xx REDs against the product of 2838cb9
 # ==============================================================================================================================================
 def red_check(classes=None, attr="st2a"):
     """python -B tests\\test_stationindex_canon_st2.py --red-check   Every N-xx must fail with ContractViolation(declared code) (RED-VALID) against the product BEFORE ST-2a;

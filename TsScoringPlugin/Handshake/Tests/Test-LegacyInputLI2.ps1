@@ -464,8 +464,8 @@ $frozen = @(
     'telemetry_contract.py', 'telemetry_gate.py', 'network.py', 'main.py', 'hud_ui.py', 'scoring_logic.py', 'managed_hud.py', 'managed_mode.py', 'managed_state.py', 'menu_ui.py', 'config.py', 'utils.py',
     'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyApi.cs', 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyStationTimeline.cs', 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyTelemetrySession.cs'
 )
-# The scope guards G04 - G08 describe what THIS phase changed. The LI2 work is committed now (3158ce2, parent 0010a8b), so they are pinned to that commit pair in history: they keep saying exactly what they said while the work was uncommitted, and they no longer depend on what a LATER phase changes in the working tree.
-$li2Parent = '0010a8b'; $li2Commit = '3158ce2'
+# The scope guards G04 - G08 describe what THIS phase changed. The LI2 work is committed now (5c55b8d, parent 28bdf60), so they are pinned to that commit pair in history: they keep saying exactly what they said while the work was uncommitted, and they no longer depend on what a LATER phase changes in the working tree.
+$li2Parent = '28bdf60'; $li2Commit = '5c55b8d'
 $changedFrozen = @((RunGit (@('-C', $top, 'diff', '--name-only', $li2Parent, $li2Commit, '--') + $frozen)) -split "`n" | Where-Object { $_ })
 Check ('G04 frozen by the brief and byte-identical between the LI1 commit and the LI2 commit: Current sender, Caller, both Bridges, the Handshake protocol, the shared telemetry contract, the Python reader / HUD / scoring / managed mode (Python production code has NO Legacy or holding speed branch), the Legacy session (' + $changedFrozen.Count + ' changed) ' + ($changedFrozen -join ',')) ($changedFrozen.Count -eq 0)
 $probeDiff = RunGit @('-C', $top, 'diff', '-U0', $li2Parent, $li2Commit, '--', 'TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyInputProbe.cs')

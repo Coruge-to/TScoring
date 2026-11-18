@@ -1,4 +1,4 @@
-"""UI adjustment (Owner ruling 2026-11-10, Level 2): the standard Windows widgets (check boxes, spin box), a dense row pitch, the A boundary spin box with a focus-only mouse wheel, and the standard DPI following (no own layout per DPI). RED = fails on 8436eb1; messages start with 'UI9-RED'."""
+"""UI adjustment (Owner ruling 2026-11-10, Level 2): the standard Windows widgets (check boxes, spin box), a dense row pitch, the A boundary spin box with a focus-only mouse wheel, and the standard DPI following (no own layout per DPI). RED = fails on 1dc6684; messages start with 'UI9-RED'."""
 import json
 import os
 import re

@@ -17,7 +17,7 @@ The contract (Phase U10)
     timer is added. The latch ends where the scenario ends (the scenario is gone / the scenario changed), which is the existing way to a new list
   * ONE diagnostic line per rejection (fixed words and numbers; never an exception message, a path or a station name)
 
-Each RED fails with ContractViolation whose .code is the declared one against the tree of b3a5fe1 (the preconditions are plain assertions that come first, so a moved source is
+Each RED fails with ContractViolation whose .code is the declared one against the tree of 0f667b1 (the preconditions are plain assertions that come first, so a moved source is
 RED-INVALID and never a RED) and passes against the tree of this phase. A GUARD passes before and after.
 """
 import os
@@ -41,7 +41,7 @@ class ContractViolation(AssertionError):
 
 
 def u10(tid, kind, code="", note=""):
-    """Declare a test of U10: its id, its kind ("RED": fails against b3a5fe1 with `code`; "GUARD": green before and after) and one line."""
+    """Declare a test of U10: its id, its kind ("RED": fails against 0f667b1 with `code`; "GUARD": green before and after) and one line."""
     assert kind in ("RED", "GUARD"), kind
 
     def deco(fn):

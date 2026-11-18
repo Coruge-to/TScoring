@@ -11,8 +11,8 @@ for _p in (ROOT, os.path.join(ROOT, 'tests')):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-import pseudo_turnback_contract as C          # RED on cab7dce: the module does not exist
-import pseudo_turnback_machine as M           # RED on cab7dce: the module does not exist
+import pseudo_turnback_contract as C          # RED on 15e2d9d: the module does not exist
+import pseudo_turnback_machine as M           # RED on 15e2d9d: the module does not exist
 
 LID = "A1B2C3D4"
 GEN = 7

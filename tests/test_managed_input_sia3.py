@@ -32,7 +32,7 @@ except Exception:  # pragma: no cover
     HAS_QT = False
 
 ROOT = R.ROOT
-BASELINE = "9f25a26c6bc4a578767c7f306672811bf7bf341c"
+BASELINE = "085e58fe17e0215fa448c50340b1f1c89ea6f0c9"
 
 
 def read(name):
@@ -1577,7 +1577,7 @@ class I_DesktopLogAndStaticGuards(unittest.TestCase):
 
     # -- the senders and the Caller are not touched ----------------------------------------------------------------------------------------------
     # KF-FIX (Owner 2026-11-15 P-2, KF-09 option A of 2026-11-16) retired `test_the_senders_the_bridges_the_caller_and_the_protocol_are_unchanged_since_si_a_started`: it demanded an
-    # EMPTY git diff of TsScoringPlugin against commit 3d148e2c (2026-10), which any C# change makes fail for ever (its `allowed` / `sia7` sets were never used by an assert).
+    # EMPTY git diff of TsScoringPlugin against commit 3224c761 (2026-10), which any C# change makes fail for ever (its `allowed` / `sia7` sets were never used by an assert).
     # Replaced by the MAINTAINED source pin tests/test_bridge_caller_protocol_source_pin.py: the SHA-256 and the file SET (added / deleted / renamed) of every source under
     # Handshake/Bridge, Handshake/Caller and Handshake/Shared (the Handshake protocol), with an update ledger (stage, Owner contract, files, reason, new SHA, tests, live acceptance).
     # The senders (Current Class1 + Legacy / Shared Telemetry) stay under the manifest blob pins (tests/test_stationindex_package_st3e0.py). See the retired-test ledger of the KF-FIX Stage.
@@ -1748,7 +1748,7 @@ class I_DesktopLogAndStaticGuards(unittest.TestCase):
             'if p_loc >= 0:',
             'p_idx = i',
         )
-        # Legacy scoring LC-3B (on purpose, 5aad2f1): a repeated clock time replaces the last g_history entry instead of appending another one, so the one append moved into the else branch of a condition (a deeper
+        # Legacy scoring LC-3B (on purpose, 8af2316): a repeated clock time replaces the last g_history entry instead of appending another one, so the one append moved into the else branch of a condition (a deeper
         # indent). This is the 1 distinct line (stripped) that the diff shows as removed because it moved; no score, no rule and no constant is among it (tests/test_lc3b_clock_freeze.py pins the behaviour).
         lc3b_same_time_history_replace = (
             'self.g_history.append((current_time, decel_g, self.bve_brk_notch, self.bve_brk_max))',

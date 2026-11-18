@@ -1,6 +1,6 @@
-"""Phase SI-R5.1 - the CHARACTERIZATION of the five 1 m reverse lookups (P01-P05) at fd431b4, kept as data (tests/si_r5_char_pins.json: "head" and "new").
+"""Phase SI-R5.1 - the CHARACTERIZATION of the five 1 m reverse lookups (P01-P05) at cda9a3a, kept as data (tests/si_r5_char_pins.json: "head" and "new").
 
-What this file pins (it passes on fd431b4 and keeps passing while the stages of SI-R5.2 are implemented):
+What this file pins (it passes on cda9a3a and keeps passing while the stages of SI-R5.2 are implemented):
   INVARIANT   the scenes whose observable output is the SAME with the distance lookups and with the identity-based replacement (identity bound, index 0, last index, hold, pass station,
               Case 2, NEXTLOC = -1, scoring off): pinned for good.
   CHANGED     the scenes the replacement changes ON PURPOSE, each with its meaning:
@@ -8,7 +8,7 @@ What this file pins (it passes on fd431b4 and keeps passing while the stages of 
                 IDENTITY-MISSING the identity is missing / outside the list / does not match the position: today a distance fills it in, after the step is skipped
               Such a row is pinned to its HEAD answer until its stage is declared done in STAGE_DONE (the one line an implementation Stage edits: 'A' P03, 'B' P01+P04+P05, 'C' P02);
               from then on it is pinned to its NEW answer. Only the keys of the site (SITE_KEYS) are compared, so one stage never disturbs the rows of another.
-The NEW answers are asserted as REDs in tests/red_si_r5_station_identity.py (class H_Characterization), which must fail on fd431b4 and pass on the replacement.
+The NEW answers are asserted as REDs in tests/red_si_r5_station_identity.py (class H_Characterization), which must fail on cda9a3a and pass on the replacement.
 Isolation as tests/sia_rig.py (the real Overlay offscreen, every outside effect a recorder; nothing is written outside the redirected profile). Without PyQt6 every test is SKIPPED.
 """
 import json

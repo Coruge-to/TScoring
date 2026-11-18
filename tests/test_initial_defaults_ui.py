@@ -1,4 +1,4 @@
-"""INITIAL-DEFAULTS Commit 2 (Owner contract 2026-11-10): the 'initial defaults' window opened by `main.py --initial-defaults` (the process the Caller starts from the Input Device Properties). RED = fails on 98e4698; messages start with 'ID2-RED'.
+"""INITIAL-DEFAULTS Commit 2 (Owner contract 2026-11-10): the 'initial defaults' window opened by `main.py --initial-defaults` (the process the Caller starts from the Input Device Properties). RED = fails on edd4773; messages start with 'ID2-RED'.
 
 Contract
   * `main.py --initial-defaults` opens ONE window titled 初期値設定 (nothing else: not managed mode, no Overlay). Any other combination of arguments with the flag is refused (exit 2). A second start while one is open exits at once (named mutex).

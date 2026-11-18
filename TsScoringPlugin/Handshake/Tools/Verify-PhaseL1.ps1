@@ -4,7 +4,7 @@
 # This script is ASCII-only on purpose.
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
-    [string]$Baseline = 'fe2b223ee20db1a682468e6b75168f39ed7e9942',
+    [string]$Baseline = '5619cf2b62d2afe7c3ba81299fb4f5902fe69a0b',
     [string]$LegacyDll = '', [switch]$Historical
 )
 # Phase-closure verification: it is valid only at the commit of its own Phase, so it is a RECORD, not part of the regression (Owner 2026-11-18, first completion). Run it with -Historical against that Phase's commit.
@@ -225,7 +225,7 @@ Write-Host '==== repository scope ===='
 $top = (RunGit @('rev-parse', '--show-toplevel')).Trim()
 $changedTracked = @((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '--', $prefix)) -split "`n" | Where-Object { $_ })
 $untracked = @((RunGit @('-C', $top, 'ls-files', '--others', '--exclude-standard', '--', $prefix)) -split "`n" | Where-Object { $_ })
-$committedAll = @((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '6018a5b')) -split "`n" | Where-Object { $_ })   # whole repository, committed history only (a dirty file of someone else is not this phase)
+$committedAll = @((RunGit @('-C', $top, 'diff', '--name-only', $Baseline, '837e375')) -split "`n" | Where-Object { $_ })   # whole repository, committed history only (a dirty file of someone else is not this phase)
 $touched = @($changedTracked + $untracked | Sort-Object -Unique)
 "files touched relative to the baseline (tracked changes + untracked): " + $touched.Count
 $touched | ForEach-Object { "   " + $_ }

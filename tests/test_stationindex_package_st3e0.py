@@ -12,7 +12,7 @@ What ST-3e0 IS (recovered from the canon: ST-3d Push Close 05 / 08, ST-3 Start A
   * N-12 (package/source_package.py, TsScoringPlugin/Handshake/Tests/Test-PackageGuardST3.ps1) accepts the one official combination and rejects every other (fail-closed).
   * U13 returns from a declared RED to a GUARD whose meaning is "code and package consistency", not a build, a deployment or a live acceptance.
 
-Each RED fails with ContractViolation whose .code is the declared one against the tree of 0b8e511 (the preconditions are plain assertions that come first, so a moved source is
+Each RED fails with ContractViolation whose .code is the declared one against the tree of 34f92c1 (the preconditions are plain assertions that come first, so a moved source is
 RED-INVALID and never a RED) and passes against the tree of this phase. A GUARD passes before and after.
 """
 import copy
@@ -36,14 +36,14 @@ CS_CONTRACT = os.path.join(PLUGIN, "Handshake", "Telemetry", "Shared", "PackageC
 CURRENT_PROJECT = "TsScoringPlugin/TsScoringPlugin/TsScoringPlugin.csproj"
 LEGACY_PROJECT = "TsScoringPlugin/Handshake/Telemetry/Legacy/TSScoringPlugin.AtsExLegacy.Telemetry.csproj"
 SHARED_DIR = "TsScoringPlugin/Handshake/Telemetry/Shared"
-BASE_COMMIT = "0b8e51137af2bf3c888dc77182981a89bf64090a"
+BASE_COMMIT = "34f92c1e6bf97208c40940e458ecbcef8f2a1f87"
 BRANCH = "refactor/state-transitions"
 TAG = "TSJUMP2"
 THIS_FILE = "tests/test_stationindex_package_st3e0.py"
 SET_RANK = {"python": 0, "current": 1, "legacy": 2, "shared": 3}
 
 REQUIRED_PYTHON = ("main.py", "scoring_logic.py", "managed_input.py", "station_identity.py", "jump_wire.py", "jump_transaction.py")
-# SI-R2.2-S2a added official_target_contract.py (the receiver of the OFFTGT part, imported by main.py): the closure is the 22 modules of 0b8e511 plus this one (plus package_contract)
+# SI-R2.2-S2a added official_target_contract.py (the receiver of the OFFTGT part, imported by main.py): the closure is the 22 modules of 34f92c1 plus this one (plus package_contract)
 # SI-R2.3 (C4b) added hud_target_contract.py (the display target of the HUD, imported by main.py): the closure is those 23 modules plus this one (plus package_contract)
 # Stage P1 (an intended change, not a drift) added effective_station_state.py (the pure effective station state of the TScoring display, imported by main.py): the closure is those 27 modules plus this one (plus package_contract)
 # Stage TB-E (an intended change, not a drift) added route_pairset.py (the receiver and holder of the PTPAIR part, imported by main.py and managed_input.py) and, through it, pseudo_turnback_contract.py: the closure is those 24 modules plus these two (plus package_contract)
@@ -54,24 +54,24 @@ PYTHON_24 = ("config", "current_jump_client", "dataplane_contract", "effective_s
 CAPABILITIES = ("jump-request-v2", "jump-completion-v2", "current-selected-idx", "legacy-selected-idx", "python-completion-settlement", "stationindex-transaction",
                 "target-reinitialization", "retry-history-settlement", "legacy-r1b", "current-station-range-fail-closed", "whole-list-reject", "partial-list-not-published")
 
-# the git blob ids of commit 0b8e511 of every runtime source that ST-3e0 must not change (main.py and the two projects are handled apart: one line is added to each)
+# the git blob ids of commit 34f92c1 of every runtime source that ST-3e0 must not change (main.py and the two projects are handled apart: one line is added to each)
 BASE_BLOBS = {
     "config.py": "df1ce749b5d38cb39233d54d77c632f40deb49bf",  # HUD distance case C4-30 (on purpose; Owner 2026-11-17): DIST_KM_UNIT_POINT_SIZE 28 -> 30 (was 2cb5a5d7...; case C: the constant was added, was 0b83a545...)
     #       # 2026-11-08 (the pin moved, an intended change: formal LastStop BveG, CalcG / sway retired; was 9572d1b7...)       # 2026-11-08 (the pin moved, an intended change: display change (--- and plain description); was 07f9a29f...)
     "current_jump_client.py": "bfcee44c0a0f79a76a8a6e950c738084523f1cf9",
     "dataplane_contract.py": "56da8579207ae7f6d866f17ce4aafe6d0553c23f",
-    # SI-R2.3 (C4b) changed hud_ui.py on purpose (the distance row, the time-left row and the timing label read the display target of the main.py sync - hud_target_* - and no longer the machine target; tests/test_hud_target_wiring_r23.py): the blob moved from a581b87c... (0b8e511)
+    # SI-R2.3 (C4b) changed hud_ui.py on purpose (the distance row, the time-left row and the timing label read the display target of the main.py sync - hud_target_* - and no longer the machine target; tests/test_hud_target_wiring_r23.py): the blob moved from a581b87c... (34f92c1)
     # Stage ENV-1 (on purpose; Owner contract 2026-11-08): the red / blue blink of the HUD limit row is drawn only while the new HUD switch limit_advance (制限速度予告) is shown (one condition at the blink branch; tests/test_env_settings_layout.py)
     "hud_ui.py": "f0a5dcad899dd596ead69f952042427564f2e8b8",  # HUD distance case C (on purpose; Owner 2026-11-16): the remaining distance draws the km unit small in the slot of ' m' (draw_row_local unit_text / unit_font; tests/test_hud_distance_km_unit.py); case C1: the m range has two decimals below 10 m (edge 9.995 m); case C2 / C3-d: small units km and km/h, decimal point centred, slash as tall as k, inner kerning of the handle row; was 878a2445...
     #  # Stage UI-2 (the F2 telemetry GRAPH is not drawn: hud_ui.G_GRAPH_ENABLED = False, a provisional Owner setting; the F2 diagnostic text is unchanged): was fc29e331...  # Stage P1 (the remaining-time row reads the effective station state, effective_station_state.py, not hud_target_next_time / turnback_remaining_view): was 5b5fd255...  # Stage TB-J (the remaining-time field draws the pseudo-turnback Jump wait / the B departure from Overlay.turnback_remaining_view): was 15ebccbb...       # 2026-11-08 (the pin moved, an intended change: formal LastStop BveG, CalcG / sway retired; was 06bbeeed...)       # 2026-11-08 (the pin moved, an intended change: display change (--- and plain description); was 9812e345...)
     "jump_transaction.py": "81996db3fa243cc0bc5412142c6035f8a6fb9648",
     "jump_wire.py": "00579f8031221333f2f6e471d7e30ab3f8b1a365",
     "managed_app_directory.py": "77bf8671ef364b05fb6a6524858ce2ffc2930060",
-    # UI-ALT-F4 changed managed_hud.py on purpose (the Overlay's input ownership for the operation screens, the one close request to BVE for a close the user asked for, the shown flag re-aligned with the real Overlay, tests/test_managed_hud_input_ownership.py / tests/test_overlay_user_close_altf4.py / tests/test_managed_hud_shown_reconcile.py): the blob moved from 38a2e4b9... (0b8e511); the package manifest is regenerated for it
+    # UI-ALT-F4 changed managed_hud.py on purpose (the Overlay's input ownership for the operation screens, the one close request to BVE for a close the user asked for, the shown flag re-aligned with the real Overlay, tests/test_managed_hud_input_ownership.py / tests/test_overlay_user_close_altf4.py / tests/test_managed_hud_shown_reconcile.py): the blob moved from 38a2e4b9... (34f92c1); the package manifest is regenerated for it
     # Legacy scoring LC-4b (A15) changed managed_hud.py on purpose (+3 lines: the HUD tick polls the Jump availability of the Overlay, tests/test_lc4b_python_jump_state.py; the P18 lines of the pin ledger): the blob moved from b8f04304... (UI-ALT-F4)
     "managed_hud.py": "cc8ec608be73c747d4c8f75766b595c6c708279b",  # repaint only when the picture changes (on purpose; Owner 2026-11-17): the update step calls Overlay.request_repaint (a stand-in without it keeps update()); tests/test_hud_repaint_skip.py; was 21337599...; HUD Z order on resume (on purpose; Owner 2026-11-16): the HUD's place in the Z order is finalised once when the Tick comes back after a stop; tests/test_hud_z_resume.py; was f4aecb33...; HUD Z order on resume (on purpose; Owner 2026-11-16): the HUD's place in the Z order is finalised once when the Tick comes back after a stop; tests/test_hud_z_resume.py; was 19afdc76...; HUD Z order on resume (on purpose; Owner 2026-11-16): the HUD's place in the Z order is finalised once when the Tick comes back after a stop; tests/test_hud_z_resume.py; was fba05892...; HUD warm-up (on purpose; Owner 2026-11-16): Overlay.warm_up and the controller's once-per-process warm-up pay the first-use costs while the HUD is hidden; tests/test_hud_warmup.py; was 0af22bff...; HUD visibility rule (on purpose; Owner 2026-11-16): the driving screen keeps its HUD on a driving-off (only the Session end hides it); was 7bd9053e...
     #    # PP-13 (on purpose; Owner 2026-11-13): the P-to-P recovery wiring is removed (before: 80d2009da55ca0ba79d7f2ab28c491b05052e425)   # OFS-1 blink fix (on purpose): a driving-off (Caller soft OFF, "tick-stale" 2000 ms, which comes at the end of BVE's ~2 s stall when the display scale changes and is followed by driving-on 30-80 ms later) no longer hides the HUD at once: HIDE_GRACE_S 0.5 s (_hide_due, _settle_hide_grace, hide_graces; the scoring pause, session-off and a generation change are not delayed), and the rectangle is checked again in the tick that shows the window; was 74cea0ec...   # OFS-1 follow-up (on purpose): BVE re-creates its D3DProxyWindow on a display scale / mode change and the new topmost window lies over the HUD, so in the topmost band the HUD is checked every active Tick (one GetWindow call when nothing is wrong), the walk goes up from the HUD to the highest member of BVE's group, a failing Z call is retried at most once a second (_keep_in_topmost_band, _sync_topmost_band, MAX_ZORDER_WALK, ZKEEP_RETRY_S); was 943f3223...   # OFS-1 (on purpose): in BVE's native fullscreen (the BVE window is topmost) the HUD joins the TOPMOST band directly above the BVE window and its D3DProxyWindow(s) (place_below(topmost=True), is_bve_proxy, _place_hud_in_topmost_band; tests/test_ofs_official_fullscreen.py): was 503cb84f...   # OVS-1 (on purpose): the controller places the Overlay with overlay.set_client_rect_physical (Win32 physical px) and re-applies when client_rect_applied is false; was a0cde352...
-    # Time Fix B changed managed_input.py (one name added to GENERATION_DROP) and scoring_logic.py (the operational stop keeps its arrival range, tests/test_timefix_b_operational_stop_margin.py) on purpose: the blobs moved from 73aff45b... / 140d8471... (0b8e511); the package manifest is regenerated for them
+    # Time Fix B changed managed_input.py (one name added to GENERATION_DROP) and scoring_logic.py (the operational stop keeps its arrival range, tests/test_timefix_b_operational_stop_margin.py) on purpose: the blobs moved from 73aff45b... / 140d8471... (34f92c1); the package manifest is regenerated for them
     # Time Fix B2 changed managed_input.py (one more name in GENERATION_DROP) and scoring_logic.py (the operational stop is latched at its stop and completed by that record, tests/test_timefix_b2_operational_stop_contract.py): the blobs moved from 293b4a21... / 5be7a006... (Time Fix B)
     # UI-Q1-B changed managed_input.py on purpose (the Qt translation of the locale is installed for the result save dialog, the file filters are named in Japanese, tests/test_ui_q1b_result_dialog_localization.py): the blob moved from 7933e16d... (Time Fix B2)
     # Close-range departure reset added the two generation defaults (close_range_departure_reset_pending, prev_actual_stop_loc) to managed_input.py on purpose (tests/test_close_range_contract.py): the blob moved from 6b0bda0b... (UI-Q1-B)
@@ -89,15 +89,15 @@ BASE_BLOBS = {
     # Time Fix B3 changed scoring_logic.py on purpose (the speed limit guidance gate is speed != 0.0; the operational stop is neither formed nor completed on the telemetry of an outstanding official jump and leaves no record at the scoring finish, tests/test_timefix_b3_zero_speed_contract.py): the blob moved from db5145a0... (Time Fix B2)
     # Close-range departure reset changed scoring_logic.py on purpose (the previous actual stop position and the pending state, the departure reset of the early-stop and basic-braking state, the waiting gate, tests/test_close_range_contract.py): the blob moved from e8d1a3d0... (Time Fix B3)
     # SI-R5.2-A changed scoring_logic.py on purpose (P03, the HUD next station / rule section, takes the scoring target index bve_tgt_idx instead of the 1 m lookup at NEXTLOC; tests/test_si_r5_2a_stage_a.py / tests/red_si_r5_station_identity.py): the blob moved from 449e0c94... (Close-range departure reset)
-    # Legacy scoring LC-3A (c12339a, the stop jerk state is reset at a Jump boundary and not judged while a Jump is outstanding), LC-3B (5aad2f1, a repeated clock time replaces the last g_history entry), LC-4 (0957634, execute_retry refuses after the scoring finished)
-    # and LC-4b (cbebfd3, A14: execute_retry refuses while the Jump group is unavailable) changed scoring_logic.py on purpose (tests/test_lc3a_stop_jerk_boundary.py / tests/test_lc3b_clock_freeze.py / tests/test_lc4_retry_after_finish.py / tests/test_lc4b_python_jump_state.py): the blob moved from 88f61d75... (SI-R5.2-C)
+    # Legacy scoring LC-3A (82ecbad, the stop jerk state is reset at a Jump boundary and not judged while a Jump is outstanding), LC-3B (8af2316, a repeated clock time replaces the last g_history entry), LC-4 (9af98d2, execute_retry refuses after the scoring finished)
+    # and LC-4b (4650073, A14: execute_retry refuses while the Jump group is unavailable) changed scoring_logic.py on purpose (tests/test_lc3a_stop_jerk_boundary.py / tests/test_lc3b_clock_freeze.py / tests/test_lc4_retry_after_finish.py / tests/test_lc4b_python_jump_state.py): the blob moved from 88f61d75... (SI-R5.2-C)
     # Close-range entry paths (fix O1) added scoring_logic.close_range_fix_landing_stop on purpose (+17: the anchor of the close-range departure protection for a train PLACED at B by an official Jump; tests/test_close_range_entry_paths.py): the blob moved from 78e53ad3... (LC-4b)
     # Pseudo-turnback (Stage TB-B) added the A-side seam to scoring_logic.py on purpose (+126: the PairSet qualification at the arrival, the A time score once, no checkpoint for the A of a pair, the 3.0 s special popup window and the guidance, the B checkpoint; the module pseudo_turnback_machine joins the runtime set; tests/test_pt_display_contract.py / test_pt_scoring_continuity.py / test_pt_static_pins.py): the blob moved from debb31c8... (close-range entry paths)
     "scoring_logic.py": "982d00e02470eac9901a5c59b9001b1fc5fa4be2",       # blue not shown when the limit rises inside the red range of a lower limit ahead (on purpose; Owner 2026-11-17, option B): the pure rule blue_covered_by_red_range and its use right after the blue candidate is built (the red, the scoring and the effective limit are untouched); tests/test_blue_covered_by_red_range.py; was bd173d86...; speed limit advance probe (on purpose; Owner 2026-11-17): the evaluation record carries warn_dist / calc_v and the observation-only speed_limit_probe.note is called right after the debug log of the limit judgement (the judgement itself is unchanged); tests/test_speed_limit_probe.py; was 29652947...; Stage TB-G style (the guidance text ends with a full stop, COLOR_WHITE; no state change; was a4203493... after the C-01 fix); Stage TB-G C-01 (turnback_request takes jump_lock right after begin_official_jump; tests/test_pt_tbg_landing_order.py): was 7080b79e... (TB-D / TB-E / TB-F); Stage TB-D (the scoring section snapshot and its readers, the Retry drop of a waiting chain, the dormant-defence diagnostic; tests/test_pt_tbd_*.py): was bd54fc8b... (TB-C); was debb31c8... after the close-range entry paths; 78e53ad3... after the LC-4b state; after the LC-4b state; 88f61d75... after SI-R5.2-C: P02 takes prev_tgt_idx, the last distance lookup is gone (9c683795... after SI-R5.2-B: P01, P04, P05 take bve_tgt_idx; c4981e27... after SI-R5.2-A)  # Stage TB-H (C1): was 44211e39...  # Stage TB-H (C2): was efe37643...  # Stage TB-H (A-restop): was 0c16f6f6...  # Stage TB-H (5b): was 8614709e...  # Stage TB-H (s6): was 1cdcbb53...  # Stage TB-H (s6b): was 1f6eae26...  # Stage TB-H (s6f): was 792eb6bf...       # 2026-11-08 (the pin moved, an intended change: formal LastStop BveG, CalcG / sway retired; was 1187e257...)
     # SI-R5.2-A changed station_identity.py on purpose (the pure missing-index classifier, the run tracker and the managed diagnostic glue; tests/test_si_r5_2a_stage_a.py): the blob moved from 93ce7abc... (ST-3b)
     "station_identity.py": "2c971098059a6b8948cd842ed84af8ece9a054b9",
     "station_index_contract.py": "73c9ec9a75ca6dca450637f47d15d0ebdbdda423",
-    # SI-R2.2-S2a changed telemetry_contract.py on purpose (OFFTGT is a token of the station group; telemetry_state_defaults() carries the six published values of the OFFTGT part, tests/test_official_target_supply_s2a.py): the blob moved from 6eab0e7e... (0b8e511)
+    # SI-R2.2-S2a changed telemetry_contract.py on purpose (OFFTGT is a token of the station group; telemetry_state_defaults() carries the six published values of the OFFTGT part, tests/test_official_target_supply_s2a.py): the blob moved from 6eab0e7e... (34f92c1)
     # Stage TB-E (an intended change, not a drift) changed telemetry_contract.py on purpose (the word PTPAIR in TOKEN_KEYS["station"]; tests/test_pt_tbe_receiver.py): the blob moved from 0cc2ef6a... (SI-R2.2-S2a); the package manifest is regenerated for it
     # Stage ENV-1 (on purpose; Owner contract 2026-11-08): HUD_ITEM_REQUIRES gains limit_advance (the same limit tokens as limit; the HUD switches of the Overlay are exactly its items); no token, no wire, no part changed
     "telemetry_contract.py": "03349ae0578527222b039981b3ff603e15b406bd",       # 2026-11-08 (the pin moved, an intended change: formal LastStop BveG, CalcG / sway retired; was b9b8d7d8...)
@@ -116,10 +116,10 @@ BASE_BLOBS = {
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyJumpCommandQueue.cs": "c9517db9074f45ef447991cd52280ef512047070",
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyJumpControlPlane.cs": "04d3104d1005fca4a8fe4a9c3da835bd79d61309",
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyJumpEndpoint.cs": "eb3a0233d799e8abbeea47e7d01b46034ee68584",
-    # Legacy scoring LC-4 (89b234a, C-LJ-1: the completion payload is bound to the claimed request; C-LJ-2: a failure after the jump moved carries a note without an adopted station) changed LegacyJumpExecutor.cs on purpose (Handshake\Tests\LegacyJumpLcTestCases.cs / Test-LegacyJumpLC1b.ps1): the blob moved from b9575414... (ST-3c)
+    # Legacy scoring LC-4 (4817c61, C-LJ-1: the completion payload is bound to the claimed request; C-LJ-2: a failure after the jump moved carries a note without an adopted station) changed LegacyJumpExecutor.cs on purpose (Handshake\Tests\LegacyJumpLcTestCases.cs / Test-LegacyJumpLC1b.ps1): the blob moved from b9575414... (ST-3c)
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyJumpExecutor.cs": "40caa2f24ea1c2ddf21af65112babdce6ba9b768",
     "TsScoringPlugin/Handshake/Telemetry/Legacy/src/LegacyScoringProbe.cs": "1f0be23bc1c911e4bf83933a22016613834c2f48",
-    # Time Fix A changed LegacyStationTimeline.cs and Class1.cs on purpose (the arrival fill-in, tests/test_timefix_a_terminal_arrival.py): the blobs moved from 1bae94a1... / a9b420a0... (0b8e511); the package manifest is regenerated for them
+    # Time Fix A changed LegacyStationTimeline.cs and Class1.cs on purpose (the arrival fill-in, tests/test_timefix_a_terminal_arrival.py): the blobs moved from 1bae94a1... / a9b420a0... (34f92c1); the package manifest is regenerated for them
     # Time Fix B2 changed LegacyStationTimeline.cs on purpose (the same branch, tests\test_timefix_b2_operational_stop_contract.py / Handshake\Tests\Test-TimeFixB2.ps1): the blob moved from 4bb9c312... (Time Fix A)
     # Time Fix B3 changed LegacyStationTimeline.cs on purpose (the same two comparisons, tests\test_timefix_b3_zero_speed_contract.py / Handshake\Tests\Test-TimeFixB3.ps1): the blob moved from 4554795a... (Time Fix B2)
     # SI-R2.4 (C5b) changed LegacyStationTimeline.cs on purpose (SelectTarget: the loop of the position search is gone, a re-initialisation that carries no StationIndex leaves target = list.Count; Handshake\Tests\LegacyJumpST3CTestCases.cs N-35 / N-63 / Handshake\Tests\Test-TimeFixB3.ps1): the blob moved from d33ecdba... (Time Fix B3)
@@ -150,13 +150,13 @@ BASE_BLOBS = {
     "TsScoringPlugin/TsScoringPlugin/Properties/AssemblyInfo.cs": "9ae1be9509ef29f08b41350ceab4975a5d9210c4",
 }
 # Time Fix B3 changed main.py on purpose (the F8 hook and the fast-forward release test speed != 0.0 instead of >= 0.1 km/h / abs >= 0.1; a new scenario in the plain mode leaves no operational stop record): the blob (without its contract import)
-# moved from f2031b37... (Time Fix B2; main.py had been unchanged since 0b8e511 apart from the contract import)
+# moved from f2031b37... (Time Fix B2; main.py had been unchanged since 34f92c1 apart from the contract import)
 # UI-ALT-F4 changed main.py on purpose (Overlay.closeEvent / set_input_ownership / has_input_ownership / bring_to_foreground / post_close_to_bve, the "in front" of the managed step follows the Overlay, the wiring of the user close handler and the stop probe, the shutdown disarms the handler; tests/test_overlay_user_close_altf4.py / tests/test_managed_hud_input_ownership.py): the blob (without its contract import) moved from af943ef0... (Time Fix B3)
 # SI-R2.2-S2a changed main.py on purpose (the OFFTGT intake: the import of the receiver module, the six published values and their private judgement state, the capture of the part outside the key loop and the judgement at three moments; tests/test_official_target_supply_s2a.py): the blob (without its contract import) moved from bd8c31c9... (UI-ALT-F4)
 # SI-R2.3 (C4b) changed main.py on purpose (the display target: the import of hud_target_contract, the read-only hud_target_* views, the display state _hud_target / _hud_freeze, the sync after every judged line and before the HUD is drawn; tests/test_hud_target_wiring_r23.py): the blob (without its contract import) moved from 5da4fb7f... (SI-R2.2-S2a)
 # Close-range departure reset changed main.py on purpose (the two construction defaults close_range_departure_reset_pending / prev_actual_stop_loc; tests/test_close_range_contract.py): the blob (without its contract import) moved from 86e6929a... (SI-R2.3 C4b)
 # SI-R5.2-C changed main.py on purpose (the construction default prev_tgt_idx = -1 beside prev_next_loc; tests/red_si_r5_station_identity.py): the blob (without its contract import) moved from 2a0b103b... (Close-range departure reset)
-# Legacy scoring LC-4b (cbebfd3) changed main.py on purpose (A14: Overlay.jump_group_available, the Retry menu entry refuses while the Jump group is unavailable; A16: the baseline block of apply_telemetry_text looks at the JUMP key; tests/test_lc4b_python_jump_state.py): the blob (without its contract import) moved from 07043c51... (SI-R5.2-C)
+# Legacy scoring LC-4b (4650073) changed main.py on purpose (A14: Overlay.jump_group_available, the Retry menu entry refuses while the Jump group is unavailable; A16: the baseline block of apply_telemetry_text looks at the JUMP key; tests/test_lc4b_python_jump_state.py): the blob (without its contract import) moved from 07043c51... (SI-R5.2-C)
 # Close-range entry paths (fix O1) changed main.py on purpose (+4: the import of scoring_logic.close_range_fix_landing_stop and its one call in the success branch of Overlay._settle_jump_complete; tests/test_close_range_entry_paths.py): the blob (without its contract import) moved from c8be5715... (LC-4b)
 # Stage ENV-1 (on purpose; Owner contract 2026-11-08): main.py carries the 8 x 2 environment settings (the new switch limit_advance, the state functions set_speed_limit_visible / set_speed_limit_advance_visible /
 # normalize_speed_limit_settings / set_disp_setting / toggle_disp_setting, the Right / Left / Down / Enter of the screen 4); tests/test_env_settings_layout.py
@@ -179,7 +179,7 @@ class ContractViolation(AssertionError):
 
 
 def e0(tid, kind, code="", note=""):
-    """Declare a test of ST-3e0: its id, its kind ("RED": fails against 0b8e511 with `code`; "GUARD": green before and after) and one line."""
+    """Declare a test of ST-3e0: its id, its kind ("RED": fails against 34f92c1 with `code`; "GUARD": green before and after) and one line."""
     assert kind in ("RED", "GUARD"), kind
 
     def deco(fn):
@@ -402,7 +402,7 @@ class A_Tsjump2(unittest.TestCase):
         self.assertEqual(len(CAPABILITIES), len(set(CAPABILITIES)))
         self.assertTrue(all(re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", c) for c in CAPABILITIES), "capability names: lower case words joined by '-'")
 
-    @e0("E0-06", "GUARD", note="the wire versions and every codec / contract source of 0b8e511 are unchanged (the codec is not the place of TSJUMP2)")
+    @e0("E0-06", "GUARD", note="the wire versions and every codec / contract source of 34f92c1 are unchanged (the codec is not the place of TSJUMP2)")
     def test_GUARD_E0_06_the_codec_and_the_wire_versions_are_unchanged(self):
         for path in CODEC_FILES:
             data = clean(base_files()[path])
@@ -417,7 +417,7 @@ class A_Tsjump2(unittest.TestCase):
 
 class B_SourceSets(unittest.TestCase):
     # (the code word PYTHON-RUNTIME-SET-NOT-23-MODULES keeps its name: it identifies E0-07 in the handoff records; the closure is now 25 modules = 22 + official_target_contract + hud_target_contract + package_contract)
-    @e0("E0-07", "RED", "PYTHON-RUNTIME-SET-NOT-23-MODULES", "the import closure of main.py is the 22 modules of 0b8e511 plus official_target_contract (SI-R2.2-S2a) plus hud_target_contract (SI-R2.3) plus package_contract: missing 0, duplicate 0, dynamic import 0, network.py outside")
+    @e0("E0-07", "RED", "PYTHON-RUNTIME-SET-NOT-23-MODULES", "the import closure of main.py is the 22 modules of 34f92c1 plus official_target_contract (SI-R2.2-S2a) plus hud_target_contract (SI-R2.3) plus package_contract: missing 0, duplicate 0, dynamic import 0, network.py outside")
     def test_RED_E0_07_the_python_runtime_set(self):
         files = base_files()
         modules, dyn = ref_closure(files)
@@ -436,7 +436,7 @@ class B_SourceSets(unittest.TestCase):
     def test_RED_E0_08_the_current_source_set(self):
         items = ref_compile(CURRENT_PROJECT, read_text(os.path.join(ROOT, CURRENT_PROJECT.replace("/", os.sep))))
         before = [i for i in items if not i.endswith("PackageContract.cs")]
-        self.assertEqual(len(before), 14, "S05 fix (an intended change, on purpose; Owner 2026-11-16): + the shared PausePulseGate.cs (was 13); the sway diagnostics are retired with the shared SwayStateReader.cs (an intended change, 2026-11-08; it was 14 with it); the Shadow sway diagnostics had added the shared SwayStateReader.cs (an intended change, not a drift); the 11 compile inputs of 0b8e511 plus the two Shared pseudo-turnback sources of Stage TB-E (an intended change, not a drift; was 11)")
+        self.assertEqual(len(before), 14, "S05 fix (an intended change, on purpose; Owner 2026-11-16): + the shared PausePulseGate.cs (was 13); the sway diagnostics are retired with the shared SwayStateReader.cs (an intended change, 2026-11-08; it was 14 with it); the Shadow sway diagnostics had added the shared SwayStateReader.cs (an intended change, not a drift); the 11 compile inputs of 34f92c1 plus the two Shared pseudo-turnback sources of Stage TB-E (an intended change, not a drift; was 11)")
         contract(len(items) == 15, "E0-08", "CURRENT-SOURCE-SET-NOT-FIXED", "%d compile inputs" % len(items)) # S05 fix (on purpose; Owner 2026-11-16): the shared PausePulseGate.cs is compiled by both projects (15 = 14 + PausePulseGate.cs);       # 2026-11-08 (an intended change, formal LastStop BveG): 14 = 15 - SwayStateReader.cs       # Stage TB-E: was 12; Shadow sway diagnostics: 15 (+ SwayStateReader.cs)
         self.assertEqual(len(items), len(set(items)))
         for i in items:
@@ -447,7 +447,7 @@ class B_SourceSets(unittest.TestCase):
     def test_RED_E0_09_the_legacy_source_set(self):
         items = ref_compile(LEGACY_PROJECT, read_text(os.path.join(ROOT, LEGACY_PROJECT.replace("/", os.sep))))
         before = [i for i in items if not i.endswith("PackageContract.cs")]
-        self.assertEqual(len(before), 26, "S05 fix (an intended change, on purpose; Owner 2026-11-16): + the shared PausePulseGate.cs (was 25); the sway source lookup and the SwayStateReader.cs are retired (an intended change, 2026-11-08; it was 27 with them); the Legacy sway source lookup had added src\LegacySwaySource.cs (an intended change, not a drift); the Shadow sway diagnostics add the shared SwayStateReader.cs (an intended change, not a drift); the 23 compile inputs of 0b8e511 plus the two Shared pseudo-turnback sources of Stage TB-E (an intended change, not a drift; was 23)")
+        self.assertEqual(len(before), 26, "S05 fix (an intended change, on purpose; Owner 2026-11-16): + the shared PausePulseGate.cs (was 25); the sway source lookup and the SwayStateReader.cs are retired (an intended change, 2026-11-08; it was 27 with them); the Legacy sway source lookup had added src\LegacySwaySource.cs (an intended change, not a drift); the Shadow sway diagnostics add the shared SwayStateReader.cs (an intended change, not a drift); the 23 compile inputs of 34f92c1 plus the two Shared pseudo-turnback sources of Stage TB-E (an intended change, not a drift; was 23)")
         contract(len(items) == 27, "E0-09", "LEGACY-SOURCE-SET-NOT-FIXED", "%d compile inputs" % len(items)) # S05 fix (on purpose; Owner 2026-11-16): the shared PausePulseGate.cs is compiled by both projects (27 = 26 + PausePulseGate.cs);       # 2026-11-08 (an intended change, formal LastStop BveG): 26 = 28 - LegacySwaySource.cs - SwayStateReader.cs       # Stage TB-E: was 24; Shadow sway diagnostics: 27 (+ SwayStateReader.cs)
         self.assertEqual(len(items), len(set(items)))
         current = ref_compile(CURRENT_PROJECT, read_text(os.path.join(ROOT, CURRENT_PROJECT.replace("/", os.sep))))
@@ -456,7 +456,7 @@ class B_SourceSets(unittest.TestCase):
         self.assertEqual(sorted(set(items) & set(current) - {i for i in items if i.startswith(SHARED_DIR)}),
                          ["TsScoringPlugin/TsScoringPlugin/CurrentDataPlane.cs", "TsScoringPlugin/TsScoringPlugin/CurrentJumpEndpoint.cs"], "the two files Legacy links from Current")
 
-    @e0("E0-10", "RED", "SHARED-SOURCE-SET-NOT-FIXED", "Shared: 6 files of 0b8e511 + PackageContract.cs; both projects compile the one new blob; every shared file is compiled by at least one project")
+    @e0("E0-10", "RED", "SHARED-SOURCE-SET-NOT-FIXED", "Shared: 6 files of 34f92c1 + PackageContract.cs; both projects compile the one new blob; every shared file is compiled by at least one project")
     def test_RED_E0_10_the_shared_source_set(self):
         shared = sorted(n for n in base_files() if n.startswith(SHARED_DIR + "/"))
         self.assertEqual(len([s for s in shared if not s.endswith("PackageContract.cs")]), 9)       # S05 fix (an intended change, on purpose; Owner 2026-11-16): + PausePulseGate.cs;       # Shadow sway diagnostics (an intended change, not a drift): + SwayStateReader.cs; Stage TB-E (an intended change, not a drift): 6 + PseudoTurnbackQualifier.cs and PseudoTurnbackPairCodec.cs (moved from PseudoTurnbackStaging)
@@ -531,7 +531,7 @@ class C_Manifest(unittest.TestCase):
             self.assertEqual(e["blob_eol"], "none" if not (crlf or lf) else ("lf" if lf and not crlf else ("crlf" if crlf and not lf else "mixed")), e["path"])
             self.assertEqual(e["blob_sha256"], e["blob_sha256"].upper())
             self.assertRegex(e["blob_sha256"], r"^[0-9A-F]{64}$")
-        # the files of 0b8e511 keep the identity the U10 Push Close recorded (git blob id equal)
+        # the files of 34f92c1 keep the identity the U10 Push Close recorded (git blob id equal)
         for e in m["files"]:
             if e["path"] in BASE_BLOBS:
                 self.assertEqual(blob_id(clean(files[e["path"]])), BASE_BLOBS[e["path"]], e["path"])
@@ -641,7 +641,7 @@ def drop_file(ctx, path):
 
 
 def old_python(ctx, regen=True):
-    """A Python without the contract: no module, no import (the state of 0b8e511). regen: the manifest is rebuilt for it (a self consistent old package)."""
+    """A Python without the contract: no module, no import (the state of 34f92c1). regen: the manifest is rebuilt for it (a self consistent old package)."""
     del ctx.files["package_contract.py"]
     set_text(ctx, "main.py", lambda t: t.replace("import package_contract\n", ""))
     ctx.regen = ctx.regen or regen
@@ -716,7 +716,7 @@ def build_cases():
         Case("N12-05", "only Current has TSJUMP2", seq(old_python, old_legacy), ["tag-missing:python", "tag-missing:legacy", "tag-partial"]),
         Case("N12-06", "only Legacy has TSJUMP2 (new Legacy + old Python, Current old)", seq(old_python, old_current), ["tag-missing:python", "tag-missing:current", "tag-partial"]),
         Case("N12-07", "only Python has TSJUMP2", seq(old_current, old_legacy), ["tag-missing:current", "tag-missing:legacy", "tag-partial"]),
-        Case("N12-08", "none has TSJUMP2 (the package of 0b8e511)", seq(old_python, old_current, old_legacy), ["tag-missing:python", "tag-missing:current", "tag-missing:legacy"]),
+        Case("N12-08", "none has TSJUMP2 (the package of 34f92c1)", seq(old_python, old_current, old_legacy), ["tag-missing:python", "tag-missing:current", "tag-missing:legacy"]),
         # --- the tag text ---
         Case("N12-09", "Python tag differs (TSJUMP1)", py_replace('"TSJUMP2"', '"TSJUMP1"'), ["tag-mismatch:python"]),
         Case("N12-10", "C# tag differs (both projects)", cs_replace('"TSJUMP2"', '"TSJUMP1"'), ["tag-mismatch:current", "tag-mismatch:legacy"]),
@@ -806,7 +806,7 @@ def build_cases():
         Case("N12-73", "deployment status says deployed (forged)", mf("deployment_status", "deployed"), ["manifest-status-invalid"]),
         Case("N12-74", "build status is unknown", mf("build_status", "weird"), ["manifest-status-invalid"]),
         Case("N12-75", "build status in another case", mf("build_status", "Not-Built"), ["manifest-status-invalid"]),
-        Case("N12-76", "the base commit is not a 40 digit id", mf("source_base_commit", "0b8e511", refinger=False), ["manifest-base-commit-invalid"]),
+        Case("N12-76", "the base commit is not a 40 digit id", mf("source_base_commit", "34f92c1", refinger=False), ["manifest-base-commit-invalid"]),
         Case("N12-77", "an entry path is absolute", lambda c: (entry(c, "utils.py").update({"path": "C:/x/utils.py"}), setattr(c, "refinger", True)), ["manifest-path-invalid"]),
         Case("N12-78", "an entry path has a backslash", lambda c: (entry(c, "utils.py").update({"path": "sub\\utils.py"}), setattr(c, "refinger", True)), ["manifest-path-invalid"]),
         Case("N12-79", "an entry path climbs out", lambda c: (entry(c, "utils.py").update({"path": "../utils.py"}), setattr(c, "refinger", True)), ["manifest-path-invalid"]),
@@ -1043,13 +1043,13 @@ class E_U13(unittest.TestCase):
 # ---- F: nothing of the product changed --------------------------------------------------------------------------------------------------------------------------------------------
 
 class F_NonRegression(unittest.TestCase):
-    @e0("E0-25", "GUARD", note="every runtime source of 0b8e511 keeps its blob id; main.py and the two projects differ from 0b8e511 only by the one added contract line")
+    @e0("E0-25", "GUARD", note="every runtime source of 34f92c1 keeps its blob id; main.py and the two projects differ from 34f92c1 only by the one added contract line")
     def test_GUARD_E0_25_no_runtime_source_changed(self):
         files = base_files()
         for path, want in sorted(BASE_BLOBS.items()):
             self.assertEqual(blob_id(clean(files[path])), want, path)
         main = clean(files["main.py"])
-        self.assertEqual(blob_id(main.replace(b"import package_contract\n", b"")), BASE_MAIN, "main.py differs from 0b8e511 by the contract import only")
+        self.assertEqual(blob_id(main.replace(b"import package_contract\n", b"")), BASE_MAIN, "main.py differs from 34f92c1 by the contract import only")
         self.assertLessEqual(main.count(b"import package_contract\n"), 1)
         for proj, want in BASE_PROJECTS.items():
             text = clean(files[proj]).decode("utf-8")
@@ -1058,10 +1058,10 @@ class F_NonRegression(unittest.TestCase):
             stripped = re.sub(r'[ \t]*<Compile Include="[^"]*(?:PackageContract|PseudoTurnbackQualifier|PseudoTurnbackPairCodec|SwayStateReader|PausePulseGate)\.cs"><Link>[^<]*</Link></Compile>[ \t]*\n', "", stripped)
             # Legacy sway source lookup (an intended change, not a drift): the Legacy-only finder compile item is stripped too
             stripped = re.sub(r'[ \t]*<Compile Include="src\\LegacySwaySource\.cs" />[ \t]*\n', "", stripped)
-            # Public naming migration N3 / N4 (an intended change, not a drift; on purpose): the two projects carry the new AssemblyName; the one line is neutralised back to the 0b8e511 value
+            # Public naming migration N3 / N4 (an intended change, not a drift; on purpose): the two projects carry the new AssemblyName; the one line is neutralised back to the 34f92c1 value
             stripped = stripped.replace("<AssemblyName>TScoring.TelemetryB</AssemblyName>", "<AssemblyName>TsScoringPlugin</AssemblyName>")
             stripped = stripped.replace("<AssemblyName>TScoring.TelemetryA</AssemblyName>", "<AssemblyName>TSScoringPlugin.AtsExLegacy.Telemetry</AssemblyName>")
-            self.assertEqual(blob_id(stripped.encode("utf-8")), want, proj + " differs from 0b8e511 by the contract and the pseudo-turnback compile items only")
+            self.assertEqual(blob_id(stripped.encode("utf-8")), want, proj + " differs from 34f92c1 by the contract and the pseudo-turnback compile items only")
         self.assertEqual(len(re.findall(r"^import (?!package_contract)", main.decode("utf-8"), re.M)) >= 1, True)
 
 

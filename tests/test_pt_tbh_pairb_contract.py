@@ -8,7 +8,7 @@ Contract (R2 / R3 / R4 / R5):
   * the theoretical score (main.py, the scoring settings page) leaves the crossed B out of n1 / n2 / n3.
   * the timing setting screen shows the crossed B as untimed and does not let the user toggle it.
   * Retry to the B checkpoint (layer A, state transition) restores the 'B operating time handled' state by itself and (layer B, scoring contract) scores nothing at B even when that state is lost.
-RED = fails on the baseline 2387d17 for the contract reason. GUARD = passes on the baseline and must keep passing.
+RED = fails on the baseline 826fd4c for the contract reason. GUARD = passes on the baseline and must keep passing.
 The REAL handlers are driven (handle_menu_enter, execute_retry, update_physics_and_scoring); the API names that do not exist yet are marked RED-API in the test name."""
 import ast
 import os
@@ -288,7 +288,7 @@ class C_RetryToB(LandingBase):
                 self.assertEqual([cp.get("origin") for cp in o.save_data if cp.get("station_index") == 2], ["turnback"], "only the pseudo-turnback B checkpoint")
 
 def legacy_theory(owner, start, end):
-    """The theoretical score as the baseline 2387d17 computed it (main.py:1774-1802, every station after the start that is no pass station counts): the defect that Stage 2 removes, kept here as the reference formula."""
+    """The theoretical score as the baseline 826fd4c computed it (main.py:1774-1802, every station after the start that is no pass station counts): the defect that Stage 2 removes, kept here as the reference formula."""
     n1 = n2 = n3 = 0
     for i in range(start, end + 1):
         st = owner.station_list[i]

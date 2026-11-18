@@ -5,7 +5,7 @@ _settle_jump_complete ABSORBS the sender's JUMP counter (main.py: bve_jump_count
 jump_lock) never runs. The fix is ONE line in scoring_logic.turnback_request: jump_lock is taken right after begin_official_jump and released by the first departure from B (existing rule). The events are
 driven by the PRODUCT functions only (tests/pt_scene.py + tests/tbg_c01_rig.py); only the seams of the rig are replaced.
 
-class A_RealOrderContracts   what the fix guarantees (RED on the baseline a411e78: 8 failures; GREEN with the fix)
+class A_RealOrderContracts   what the fix guarantees (RED on the baseline 7a33149: 8 failures; GREEN with the fix)
 class B_LockOwnership        the lock is taken at the request (never earlier), kept through the landing, released only by the first departure; the checkpoint of B; a refused request takes no lock
 class C_RetryF5Start         Retry to B / F5 / the next START after the landing, in the real order
 class D_FixtureGapAndStatic  why the existing fixtures could not see it; the one line is in the one entry both hosts share

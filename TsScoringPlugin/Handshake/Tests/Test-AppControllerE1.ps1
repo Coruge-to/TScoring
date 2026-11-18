@@ -8,10 +8,10 @@
 # Sessions that are driven by hand (Step) have no monitor thread, so every ordering below is deterministic. This script is ASCII-only on purpose.
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
-    [string]$Baseline = 'b000a158cf2544614524bc73c12db0148e0f0a20',
+    [string]$Baseline = '3a9fafa1fd1aa34e1f8e83d43466fd0917bc3956',
     # Phase E3: the static (source / scope) checks of this test describe THE PHASE E1 COMMIT, not the moving working tree: later phases
     # (E2 Python, E3 process start) legitimately change files this test used to forbid. Phase E3 has its own scope test.
-    [string]$E1Commit = 'a43f18efca37caf64d33bb7c7d5529efd5b7067b',
+    [string]$E1Commit = '476b57110b9412b1fde26052ffe68e541a7860fb',
     [switch]$Probe32
 )
 

@@ -543,32 +543,32 @@ class S_CSharp(unittest.TestCase):
         in_order(self, body, ["UnsubscribeObservers()", "t.OnDispose()", 'c.Shutdown("bridge-dispose")', "c.WithdrawAvailability()"])
 
     def test_C7_no_c_sharp_file_of_the_shutdown_set_is_changed_by_lc5(self):
-        """GUARD (also the Close condition): the C# of the end is as it was at LC-4b (cbebfd3). Skipped when git is not available."""
+        """GUARD (also the Close condition): the C# of the end is as it was at LC-4b (4650073). Skipped when git is not available."""
         import subprocess
         try:
-            out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", "cbebfd3", "--", self.EXT, self.SES, self.CALLER, self.APM, self.BRIDGE], capture_output=True, timeout=60)
+            out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", "4650073", "--", self.EXT, self.SES, self.CALLER, self.APM, self.BRIDGE], capture_output=True, timeout=60)
         except (OSError, subprocess.SubprocessError):
             self.skipTest("git is not available")
         if out.returncode != 0:
-            self.skipTest("cbebfd3 is not known to this checkout")
+            self.skipTest("4650073 is not known to this checkout")
         # Stage TB-E (an intended change, not a drift): LegacyTelemetrySession.cs gained the PTPAIR key of the station group. Nothing of the end (Dispose, shutdown, withdraw) may differ: that file may differ
-        # from cbebfd3 by EXACTLY the two formal added lines (the comment and the one lb.Key call, directly after the STIDX statement) and by nothing else; every other file of the set not at all.
+        # from 4650073 by EXACTLY the two formal added lines (the comment and the one lb.Key call, directly after the STIDX statement) and by nothing else; every other file of the set not at all.
         # Stage TB-E 1.1 (OD-TE2-3): the check is STRUCTURAL (tests/pt_tbe_c7_structure.py), not "an added line mentions PTPAIR": an unknown line, a malformed / duplicate / misplaced PTPAIR or an
         # unrelated line that merely contains the word is a violation. The contrasting mutants are test_pt_tbe_c7_guard.
         changed = out.stdout.decode().split()
         # Shadow comparison (Stage 1, an intended change, not a drift): LegacyTelemetryExtension.cs gained the read-only AccelerationZ getter (AtsExLegacyApi implements ILegacyVibrationApi: one method + one interface name);
         # Dispose, shutdown and withdraw are not touched. LegacyTelemetrySession.cs stays under the structural guard of tests/pt_tbe_c7_structure.py (now with the formal ACCELZ block).
         # Shadow sway diagnostics, SWY-D1 (Owner ruling 2026-11-07, an intended change, diagnostic path only): the process manager gained NOTHING but the number of characters of an application line the Caller
-        # copies to the log (MaxStderrLineChars 160 -> 192). The stop sequence, the kill, the residual check and every other line are those of cbebfd3: after the number is neutralised the text must be identical.
+        # copies to the log (MaxStderrLineChars 160 -> 192). The stop sequence, the kill, the residual check and every other line are those of 4650073: after the number is neutralised the text must be identical.
         if self.APM in changed:
-            base_apm = subprocess.run(["git", "-C", ROOT, "show", "cbebfd3:" + self.APM], capture_output=True, timeout=60).stdout.decode("utf-8", "replace").replace("\r\n", "\n")
+            base_apm = subprocess.run(["git", "-C", ROOT, "show", "4650073:" + self.APM], capture_output=True, timeout=60).stdout.decode("utf-8", "replace").replace("\r\n", "\n")
             neutral = lambda text: re.sub(r"(MaxStderrLineChars = )\d+;", r"\g<1>N;", text.replace("\r\n", "\n"))
             self.assertEqual(neutral(read(self.APM)), neutral(base_apm), "the process manager may differ from LC-4b in the diagnostic cap number only")
             self.assertIn("MaxStderrLineChars = 192;", read(self.APM))
         # Public naming migration N1 (an intended change, not a drift; on purpose): the Caller's two human-facing strings (the MessageBox title and the first words of the notice) are TScoring now.
         # Nothing else of HandshakeSession.cs may differ from LC-4b: after the two strings are neutralised back the text must be identical.
         if self.CALLER in changed:
-            base_hs = subprocess.run(["git", "-C", ROOT, "show", "cbebfd3:" + self.CALLER], capture_output=True, timeout=60).stdout.decode("utf-8", "replace").replace("\r\n", "\n")
+            base_hs = subprocess.run(["git", "-C", ROOT, "show", "4650073:" + self.CALLER], capture_output=True, timeout=60).stdout.decode("utf-8", "replace").replace("\r\n", "\n")
             # Phase C-early (an intended change, on purpose; Owner 2026-11-16): ObserveAppControllerLocked gained ONE call line (the early start request) and the start-request reason text is chosen by AppStep.Early;
             # nothing of Dispose / shutdown / withdraw differs: after those two are neutralised back the text must be identical to LC-4b.
             undo_early = lambda text: re.sub(r"[ ]*LogAppStepLocked\(appController\.ObserveOpened\(scenarioGenerationSeen\)\);[^\n]*\n", "", text).replace("(step.Early ? AppRequestReasons.ScenarioOpened : AppRequestReasons.FirstDrivingOn)", "AppRequestReasons.FirstDrivingOn")
@@ -581,7 +581,7 @@ class S_CSharp(unittest.TestCase):
         self.assertEqual([c for c in changed if c not in (self.SES, self.EXT, self.APM, self.CALLER, "TsScoringPlugin/Handshake/Bridge/Legacy/src/TsScoringLegacyBridge.cs")], [])
         if self.SES in changed or self.EXT in changed:
             import pt_tbe_c7_structure
-            base = subprocess.run(["git", "-C", ROOT, "show", "cbebfd3:" + self.SES], capture_output=True, timeout=60).stdout.decode("utf-8", "replace")
+            base = subprocess.run(["git", "-C", ROOT, "show", "4650073:" + self.SES], capture_output=True, timeout=60).stdout.decode("utf-8", "replace")
             self.assertEqual(pt_tbe_c7_structure.session_violations(base, read(self.SES)), [])
 
 

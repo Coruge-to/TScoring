@@ -1,7 +1,7 @@
 """Phase LC-4 (Legacy scoring integration) - a Retry after the scoring finished, REVERSED by Post-Finish Retry Recovery (PFR-R, Owner ruling 2026-11-12).
 
 HISTORY (the contract ledger of the reversal)
-  LC-4 (commit 0957634, C-SIDX-4 / LC-A13) made execute_retry refuse EVERY Retry once is_scoring_finished was set (reason `scoring-finished`), changed nothing, and left the confirmation page on the screen
+  LC-4 (commit 9af98d2, C-SIDX-4 / LC-A13) made execute_retry refuse EVERY Retry once is_scoring_finished was set (reason `scoring-finished`), changed nothing, and left the confirmation page on the screen
   (RF01..RF09). That was a REQUIREMENT REGRESSION - the original contract (execute_retry has cleared is_scoring_finished since 2026-04-05; the menu offers 「選択した駅からやり直す」 next to 「採点結果を表示する」
   after the finish) is: after the finish - the result may be shown and SAVED - a Retry rewinds the same Run to the chosen check point and the scoring runs on from there.
   Owner ruling: OWNER REQUIREMENT DRIFT CAUSED BY INCOMPLETE CONTEXT (the LC-4 start instruction asked for the refusal; the context that was missing is in docs 02/03/10 of the investigation).
