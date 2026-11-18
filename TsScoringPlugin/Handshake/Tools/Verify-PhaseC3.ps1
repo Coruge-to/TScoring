@@ -2,7 +2,9 @@
 # Keeps the Phase B checks (contract, timings, notice text, forbidden dependencies), the Phase C1 observation checks and adds the
 # Phase C3 ScenarioReady checks. Phase B / Phase C1 reference sources are read from Git history (read-only; the commits that first added Shared\HandshakeProtocol.cs and Bridge\src\ScenarioObserver.cs) to prove which lines changed.
 # This script is ASCII-only on purpose.
-param([string]$Root = (Split-Path $PSScriptRoot -Parent))
+param([string]$Root = (Split-Path $PSScriptRoot -Parent), [switch]$Historical)
+# Phase-closure verification: it is valid only at the commit of its own Phase, so it is a RECORD, not part of the regression (Owner 2026-11-18, first completion). Run it with -Historical against that Phase's commit.
+if (-not $Historical) { Write-Host ('SKIP (HISTORICAL): Verify-PhaseC3 verifies the state of its own Phase; run with -Historical against that Phase commit.'); exit 0 }
 
 $results = New-Object System.Collections.Generic.List[object]
 function Check([string]$name, [bool]$ok) { $results.Add([pscustomobject]@{ Name = $name; Ok = $ok }); ("{0} {1}" -f $(if ($ok) { 'PASS' } else { 'FAIL' }), $name) }

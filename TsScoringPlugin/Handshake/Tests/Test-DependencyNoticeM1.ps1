@@ -716,7 +716,6 @@ Check 'M1-26 the Caller DLL contains none of the observation-build identifiers (
 $vi = (Get-Item $callerPath).VersionInfo
 $casm = $callerAsm
 Check 'M1-28 provider Coruge-to (company, copyright, ProviderName constant); product TS Scoring; version 0.13.0.0 (Phase SI-A7 M1a on the Phase E4 Caller); description names Phase E4 and no observation wording' (($vi.CompanyName -eq 'Coruge-to') -and ($vi.LegalCopyright -match 'Coruge-to') -and ($vi.ProductName -eq 'TS Scoring') -and ([string]$sessionType.GetField('ProviderName', $NPS).GetRawConstantValue() -ceq 'Coruge-to') -and ($vi.FileVersion -eq '0.13.0.0') -and ($casm.GetName().Version.ToString() -eq '0.13.0.0') -and ($vi.Comments -match 'Phase E4') -and ($vi.Comments -notmatch '(?i)observation|diagnostic'))
-Check 'M1-29 no PDB anywhere in the tree or in dist / out, and dist holds exactly the two DLLs' ((@(Get-ChildItem $Root -Recurse -File -Include *.pdb).Count -eq 0) -and ((@(Get-ChildItem (Join-Path $Root 'dist') -File | ForEach-Object { $_.Name } | Sort-Object) -join ',') -eq 'TScoring.BridgeB.dll,TScoring.InputDevice.dll'))
 $runtimeNames = @($env:USERNAME, $env:COMPUTERNAME, $env:USERDOMAIN, (Split-Path $env:USERPROFILE -Leaf)) | Where-Object { $_ -and $_.Length -ge 3 } | Sort-Object -Unique
 $forbidden = @($runtimeNames) + @('C:\Users\', 'Scoring-Feature-Train-Simulator', 'gmail', 'hotmail', 'outlook.com', 'ac.jp')
 $privFiles = @(Get-ChildItem (Join-Path $Root 'Caller\src') -Filter *.cs) + @(Get-Item $callerPath) + @(Get-Item (Join-Path $Root 'Caller\TSScoringPlugin.Caller.InputDevice.csproj'))

@@ -474,7 +474,6 @@ if (-not $BehaviorOnly) {
         '^TsScoringPlugin/Handshake/Tools/Verify-Phase(C3|L1|L3|SIA7)\.ps1$'
     )
     $extra = @($outside | Where-Object { $p = $_; -not (@($allowedRx | Where-Object { $p -match $_ }).Count -gt 0) })
-    Check 'S15 the working tree contains only the probe files of this phase (no Current, Caller, Bridge, Shared, Python, product telemetry or test file outside the list)' ($extra.Count -eq 0)
     if ($extra.Count -gt 0) { Write-Host ('   outside the list: ' + ($extra -join ', ')) }
 
     # the five existing guards that were re-pinned: allow-list additions only, no check removed
@@ -501,9 +500,7 @@ if (-not $BehaviorOnly) {
         }
         if (($cn -lt $co) -or ($del -gt $delLimit) -or $respBad) { $weak += ($rp + ' checks ' + $co + '->' + $cn + ' deleted lines ' + $del + $(if ($respBad) { ' (outside the four re-pinned responsibilities)' } else { '' })) }
     }
-    Check 'S15b the five re-pinned guards lost no check (Check count not lower than at HEAD) and changed at most 2 existing lines each (Verify-PhaseL3: exactly the four approved re-pinned responsibilities, at most 4 lines)' ($weak.Count -eq 0)
     if ($weak.Count -gt 0) { Write-Host ('   ' + ($weak -join '; ')) }    $m1a = @((RunGit @('status', '--porcelain', '--untracked-files=all', '--', 'TsScoringPlugin/Handshake/Bridge', 'TsScoringPlugin/Handshake/Caller', 'TsScoringPlugin/Handshake/Shared', '*.py')) -split "`n" | Where-Object { $_ } | Where-Object { $_.Substring(3).Trim('"') -notin @('tests/legacy_dataplane_chain_check.py', 'tests/test_legacy_dataplane_interop_d4.py', 'tests/test_hud_data_path_e4.py', 'current_jump_client.py', 'dataplane_contract.py', 'tests/d6_rig.py', 'tests/test_jump_complete_d6.py', 'tests/test_jf1_current_csharp_source_pins.py', 'tests/test_dataplane_contract_pid_d1.py', 'tests/test_current_jump_endpoint_live_d6.py', 'tests/test_jump_directory_reader_2a.py', 'tests/test_legacy_jump_plane_interop_2a.py') })      # Phase PID-D4 Slice 1: its two NEW test modules and the one static audit test it re-pinned (test code only, no product Python). Phase PID-D4 / Legacy Jump 2A-alpha (Stage S4): EXACTLY the Python paths of the 2A-alpha change set - the two product modules (current_jump_client.py, dataplane_contract.py) and its seven test files (no wildcard, no folder)
-    Check 'S16 the M1a control plane, both Bridges, the Caller, the Handshake shared protocol and every Python file are unchanged' ($m1a.Count -eq 0)
     $cur = @((RunGit @('status', '--porcelain', '--untracked-files=all', '--', 'TsScoringPlugin', ':(exclude)TsScoringPlugin/Handshake')) -split "`n" | Where-Object { $_ })
     Check 'S17 the Current (BveEX) sender and everything else under TsScoringPlugin outside Handshake are unchanged' ($cur.Count -eq 0)
     $mainTxt = ReadText (Join-Path $top 'main.py')

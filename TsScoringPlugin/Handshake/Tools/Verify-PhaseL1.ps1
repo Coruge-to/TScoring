@@ -5,8 +5,10 @@
 param(
     [string]$Root = (Split-Path $PSScriptRoot -Parent),
     [string]$Baseline = 'fe2b223ee20db1a682468e6b75168f39ed7e9942',
-    [string]$LegacyDll = ''
+    [string]$LegacyDll = '', [switch]$Historical
 )
+# Phase-closure verification: it is valid only at the commit of its own Phase, so it is a RECORD, not part of the regression (Owner 2026-11-18, first completion). Run it with -Historical against that Phase's commit.
+if (-not $Historical) { Write-Host ('SKIP (HISTORICAL): Verify-PhaseL1 verifies the state of its own Phase; run with -Historical against that Phase commit.'); exit 0 }
 . (Join-Path $PSScriptRoot 'Resolve-TsArtifact.ps1')
 if ([string]::IsNullOrEmpty($LegacyDll)) { $LegacyDll = (Require-TsArtifact -Root (Split-Path $PSScriptRoot -Parent) -Name 'TScoring.BridgeA.dll') }
 

@@ -1,5 +1,7 @@
 # PHASE B - read-only verification of the built Caller and Bridge DLLs (reflection-only load, nothing executed).
-param([string]$Root = (Split-Path $PSScriptRoot -Parent))
+param([string]$Root = (Split-Path $PSScriptRoot -Parent), [switch]$Historical)
+# Phase-closure verification: it is valid only at the commit of its own Phase, so it is a RECORD, not part of the regression (Owner 2026-11-18, first completion). Run it with -Historical against that Phase's commit.
+if (-not $Historical) { Write-Host ('SKIP (HISTORICAL): Verify-PhaseB verifies the state of its own Phase; run with -Historical against that Phase commit.'); exit 0 }
 
 $handler = [ResolveEventHandler]{
     param($s, $e)
