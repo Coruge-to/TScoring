@@ -53,13 +53,13 @@ function Invoke-Suite($type) {
     $a0 = (Req $g).Ok; $script:clock += 499; $a1 = (Req $g).Ok; $script:clock += 1; $a2 = (Req $g).Ok
     Add-Check 'U3' 'INV-P4: ScenarioCreated alone is no permission: refused at +0 and +499 ms, granted at +500 ms' ((-not $a0) -and (-not $a1) -and $a2)
 
-    # U3b / INV-P4': the PRODUCT default settle (Owner 2026-11-17, design 1': 150 ms, was 500 ms). The suite above runs the rules at an explicit 500 ms; this one pins the shipped value and its boundary.
+    # U3b / INV-P4': the PRODUCT default settle (Owner 2026-11-17, design 1'; 150 ms provisional, 100 ms final from 2026-11-18; was 500 ms). The suite above runs the rules at an explicit 500 ms; this one pins the shipped value and its boundary.
     $defSettle = [long]$type.GetField('DefaultSettleMs').GetRawConstantValue(); $defGap = [long]$type.GetField('DefaultGapMs').GetRawConstantValue()
     $script:clock = 25000; $fn = [Func[long]]{ $script:clock }
     $g = $type.GetConstructor([Type[]]@([Func[long]], [long], [long])).Invoke(@($fn, $defGap, $defSettle))
     $g.OnScenarioOpenedOrClosed(); $g.OnScenarioCreated()
     $d0 = (Req $g).Ok; $script:clock += ($defSettle - 1); $d1 = (Req $g).Ok; $script:clock += 1; $d2 = (Req $g).Ok
-    Add-Check 'U3b' 'INV-P4: the product default settle is 150 ms (gap 150 ms): refused at +0 and +149 ms, granted at +150 ms' (($defSettle -eq 150) -and ($defGap -eq 150) -and (-not $d0) -and (-not $d1) -and $d2)
+    Add-Check 'U3b' 'INV-P4: the product default settle is 100 ms (gap 150 ms): refused at +0 and +99 ms, granted at +100 ms' (($defSettle -eq 100) -and ($defGap -eq 150) -and (-not $d0) -and (-not $d1) -and $d2)
 
     # U4 / INV-P4' at callback time: a request made while ready, then Created again, is refused until settled even with the current epoch
     $script:clock = 30000; $g = New-Gate $type
